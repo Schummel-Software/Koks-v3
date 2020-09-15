@@ -18,10 +18,6 @@ public class Fly extends Module {
     public void onEvent(Event event) {
         if (event instanceof EventUpdate) {
             mc.thePlayer.motionY = 0;
-            mc.timer.timerSpeed = 10.0F;
-            if (mc.thePlayer.ticksExisted % 2 == 0) {
-                pushPlayer(1);
-            }
         }
     }
 

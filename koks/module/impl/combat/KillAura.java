@@ -15,9 +15,13 @@ import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemSword;
 import net.minecraft.network.play.client.C02PacketUseEntity;
+import net.minecraft.network.play.client.C07PacketPlayerDigging;
 import net.minecraft.network.play.client.C0APacketAnimation;
 import net.minecraft.network.play.server.S0BPacketAnimation;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
 
 import java.util.ArrayList;
@@ -45,6 +49,10 @@ public class KillAura extends Module {
     public Setting hurtTime = new Setting("HurtTime", 10.0F, 0.0F, 10.0F, true, this);
     public Setting fov = new Setting("Field of View", 360.0F, 10.0F, 360.0F, true, this);
     public Setting failChance = new Setting("Failing Chance", 7.0F, 0.0F, 20.0F, true, this);
+
+    // AUTOBLOCK SETTINGS
+    public Setting autoBlock = new Setting("AutoBlock", true, this);
+    public Setting blockMode = new Setting("BlockMode", new String[]{"On Attack", "Half", "Full"}, "Half", this);
 
     // SPECIFY ROTATION SETTINGS
     public Setting smoothRotations = new Setting("Smooth Rotations", false, this);
@@ -100,6 +108,10 @@ public class KillAura extends Module {
         registerSetting(fov);
         registerSetting(failChance);
 
+        // AUTOBLOCK SETTINGS
+        registerSetting(autoBlock);
+        registerSetting(blockMode);
+
         // SPECIFY ROTATION SETTINGS
         registerSetting(smoothRotations);
         registerSetting(lockView);
@@ -150,17 +162,23 @@ public class KillAura extends Module {
                         ((EventMotion) event).setYaw(yaw);
                         ((EventMotion) event).setPitch(pitch);
                     }
+
+                    if (canBlock() && autoBlock.isToggled() && blockMode.getCurrentMode().equals("Full"))
+                        mc.playerController.sendUseItem(mc.thePlayer, mc.theWorld, mc.thePlayer.getCurrentEquippedItem());
+
                     long cps = (long) this.cps.getCurrentValue();
                     cps = cps < 10 ? cps : cps + 5;
                     if (((EntityLivingBase) finalEntity).hurtTime <= hurtTime.getCurrentValue()) {
                         if (timeHelper.hasReached(1000L / cps + (long) randomUtil.getRandomGaussian(20))) {
                             attackEntity();
-                            mc.playerController.sendUseItem(mc.thePlayer, mc.theWorld, mc.thePlayer.getCurrentEquippedItem());
+                            if (canBlock() && autoBlock.isToggled() && (blockMode.getCurrentMode().equals("On Attck") || blockMode.getCurrentMode().equals("Half")))
+                                mc.playerController.sendUseItem(mc.thePlayer, mc.theWorld, mc.thePlayer.getCurrentEquippedItem());
                             timeHelper.reset();
                         }
                     } else {
                         timeHelper.reset();
-                        mc.playerController.sendUseItem(mc.thePlayer, mc.theWorld, mc.thePlayer.getCurrentEquippedItem());
+                        if (canBlock() && autoBlock.isToggled() && blockMode.getCurrentMode().equals("Half"))
+                            mc.playerController.sendUseItem(mc.thePlayer, mc.theWorld, mc.thePlayer.getCurrentEquippedItem());
                     }
                 }
             }
@@ -186,6 +204,10 @@ public class KillAura extends Module {
         if (!failing && rayCastEntity != null) {
             for (int i = 0; i < crackSize.getCurrentValue(); i++)
                 mc.effectRenderer.emitParticleAtEntity(finalEntity, EnumParticleTypes.CRIT);
+
+            if (canBlock() && autoBlock.isToggled() && blockMode.getCurrentMode().equals("Full"))
+                mc.getNetHandler().addToSendQueue(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, EnumFacing.DOWN));
+
             if (usePlayerController.isToggled()) {
                 mc.playerController.attackEntity(mc.thePlayer, rayCastEntity);
             } else {
@@ -212,6 +234,10 @@ public class KillAura extends Module {
             else
                 switchCounter = 0;
         }
+    }
+
+    boolean canBlock() {
+        return mc.thePlayer.getCurrentEquippedItem().getItem() != null && mc.thePlayer.getCurrentEquippedItem().getItem() instanceof ItemSword;
     }
 
     public void manageEntities() {
