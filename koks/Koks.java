@@ -25,7 +25,7 @@ public class Koks {
     public final String NAME = "Koks";
     public final String PREFIX = "§c" + NAME + " §7>> ";
     public final String VERSION = "2.1.2";
-    public final String[] AUTHORS = new String[]{"Kroko", "lmao", "Deleteboys", "DasDirt", "Phantom"};
+    public final String[] AUTHORS = new String[]{"DasDirt", "Deleteboys","Kroko", "lmao", "Phantom"};
 
     static {
         KOKS = new Koks();
