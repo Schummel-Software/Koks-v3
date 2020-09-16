@@ -20,10 +20,9 @@ public abstract class Files {
     }
 
     public Files(String name) {
-        this.file = new File(DIR, name +"." + Koks.getKoks().NAME.toLowerCase());
+        this.file = new File(DIR, name + "." + Koks.getKoks().NAME.toLowerCase());
     }
 
     public abstract void readFile(BufferedReader bufferedWriter) throws IOException;
     public abstract void writeFile(FileWriter fileWriter) throws IOException;
-
 }

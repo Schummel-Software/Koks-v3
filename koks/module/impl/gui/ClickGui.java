@@ -27,8 +27,9 @@ public class ClickGui extends Module {
 
     @Override
     public void onEvent(Event event) {
-        if (mc.currentScreen == null)
+        if (mc.currentScreen == null) {
             mc.displayGuiScreen(Koks.getKoks().clickGUI);
+        }
         toggle();
     }
 
