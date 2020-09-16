@@ -42,6 +42,7 @@ public class ModuleManager {
         addModule(new NoFall());
         addModule(new Speed());
         addModule(new Fly());
+        addModule(new NameTags());
 
         modules.sort(Comparator.comparing(Module::getName));
     }

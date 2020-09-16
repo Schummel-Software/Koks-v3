@@ -41,7 +41,7 @@ public class ESP extends Module {
 
             if (player.isToggled()) {
                 for (Entity entity : mc.theWorld.loadedEntityList) {
-                    if (!entity.isInvisible() && entity != mc.thePlayer && entity instanceof EntityLivingBase && entity instanceof EntityPlayer) {
+                    if (!entity.isInvisible() && entity != mc.thePlayer && entity instanceof EntityPlayer) {
                         double x = (entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * partialTicks) - mc.getRenderManager().renderPosX;
                         double y = (entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * partialTicks) - mc.getRenderManager().renderPosY;
                         double z = (entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * partialTicks) - mc.getRenderManager().renderPosZ;

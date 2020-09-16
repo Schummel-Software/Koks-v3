@@ -18,10 +18,12 @@ import java.util.ArrayList;
 public class TrailESP extends Module {
 
     public Setting length = new Setting("Length", 50, 5, 1000, true, this);
+    public Setting inFirstPerson = new Setting("Show In FirstPerson", true, this);
 
     public TrailESP() {
         super("TrailESP", "Its render your positions in to a line", Category.RENDER);
         registerSetting(length);
+        registerSetting(inFirstPerson);
     }
 
     public ArrayList<double[]> positions = new ArrayList<>();
@@ -29,24 +31,26 @@ public class TrailESP extends Module {
     @Override
     public void onEvent(Event event) {
         if(event instanceof EventRender3D) {
-            GL11.glPushMatrix();
-            GL11.glColor4f(Koks.getKoks().clientColor.getRed() / 255F, Koks.getKoks().clientColor.getGreen() / 255F, Koks.getKoks().clientColor.getBlue() / 255F, Koks.getKoks().clientColor.getAlpha() / 255F);
-            GL11.glDisable(GL11.GL_TEXTURE_2D);
-            GL11.glLineWidth(2F);
+            if (mc.gameSettings.thirdPersonView != 0 || inFirstPerson.isToggled()) {
+                GL11.glPushMatrix();
+                GL11.glColor4f(Koks.getKoks().clientColor.getRed() / 255F, Koks.getKoks().clientColor.getGreen() / 255F, Koks.getKoks().clientColor.getBlue() / 255F, Koks.getKoks().clientColor.getAlpha() / 255F);
+                GL11.glDisable(GL11.GL_TEXTURE_2D);
+                GL11.glLineWidth(2F);
 
-            GL11.glBegin(GL11.GL_LINE_STRIP);
+                GL11.glBegin(GL11.GL_LINE_STRIP);
 
 
-            for(double[] pos : positions) {
-                GL11.glVertex3d(pos[0] - mc.getRenderManager().renderPosX, pos[1] - mc.getRenderManager().renderPosY,pos[2] - mc.getRenderManager().renderPosZ);
+                for (double[] pos : positions) {
+                    GL11.glVertex3d(pos[0] - mc.getRenderManager().renderPosX, pos[1] - mc.getRenderManager().renderPosY, pos[2] - mc.getRenderManager().renderPosZ);
+                }
+
+                GL11.glVertex3d(0, 0.01, 0);
+                GL11.glEnd();
+                GL11.glEnable(GL11.GL_TEXTURE_2D);
+                GL11.glColor4f(1, 1, 1, 1);
+
+                GL11.glPopMatrix();
             }
-
-            GL11.glVertex3d(0,0.01,0);
-            GL11.glEnd();
-            GL11.glEnable(GL11.GL_TEXTURE_2D);
-            GL11.glColor4f(1,1,1,1);
-
-            GL11.glPopMatrix();
         }
 
         if(event instanceof EventUpdate) {
