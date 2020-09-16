@@ -171,7 +171,7 @@ public class KillAura extends Module {
                     if (((EntityLivingBase) finalEntity).hurtTime <= hurtTime.getCurrentValue()) {
                         if (timeHelper.hasReached(1000L / cps + (long) randomUtil.getRandomGaussian(20))) {
                             attackEntity();
-                            if (canBlock() && autoBlock.isToggled() && (blockMode.getCurrentMode().equals("On Attck") || blockMode.getCurrentMode().equals("Half")))
+                            if (canBlock() && autoBlock.isToggled() && (blockMode.getCurrentMode().equals("On Attack") || blockMode.getCurrentMode().equals("Half")))
                                 mc.playerController.sendUseItem(mc.thePlayer, mc.theWorld, mc.thePlayer.getCurrentEquippedItem());
                             timeHelper.reset();
                         }

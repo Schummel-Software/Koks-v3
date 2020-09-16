@@ -66,14 +66,11 @@ public abstract class Render<T extends Entity>
      */
     public void doRender(T entity, double x, double y, double z, float entityYaw, float partialTicks)
     {
-        // put away if doing nametags
-        if (/*!(entity instanceof EntityOtherPlayerMP) ||*/ !Koks.getKoks().moduleManager.getModule(NameTags.class).isToggled()) {
-            this.renderName(entity, x, y, z);
-        }
-//        else {
-//            final RenderUtil renderUtil = new RenderUtil();
-//            renderUtil.renderNameTag(entity, x,y,z, Koks.getKoks().clientColor, Color.red);
-//        }
+        NameTags nameTags = (NameTags) Koks.getKoks().moduleManager.getModule(NameTags.class);
+        if (nameTags.isToggled() && nameTags.isValid(entity))
+            return;
+
+        this.renderName(entity, x, y, z);
     }
 
     protected void renderName(T entity, double x, double y, double z)
