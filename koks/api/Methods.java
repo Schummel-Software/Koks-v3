@@ -2,6 +2,8 @@ package koks.api;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.Timer;
 import net.minecraft.world.World;
 
@@ -46,6 +48,69 @@ public class Methods {
 
     public void changePosition(double x, double y, double z) {
         mc.thePlayer.setPosition(mc.thePlayer.posX + x, mc.thePlayer.posY + y, mc.thePlayer.posZ + z);
+    }
+
+    public boolean validEntityName(Entity entity) {
+        if (!(entity instanceof EntityPlayer))
+            return true;
+        String name = entity.getName();
+        if (name.length() < 3 || name.length() > 16)
+            return false;
+        if (name.contains("^"))
+            return false;
+        if (name.contains("°"))
+            return false;
+        if (name.contains("!"))
+            return false;
+        if (name.contains("§"))
+            return false;
+        if (name.contains("$"))
+            return false;
+        if (name.contains("%"))
+            return false;
+        if (name.contains("&"))
+            return false;
+        if (name.contains("/"))
+            return false;
+        if (name.contains("("))
+            return false;
+        if (name.contains(")"))
+            return false;
+        if (name.contains("="))
+            return false;
+        if (name.contains("{"))
+            return false;
+        if (name.contains("}"))
+            return false;
+        if (name.contains("["))
+            return false;
+        if (name.contains("]"))
+            return false;
+        if (name.contains("ß"))
+            return false;
+        if (name.contains("?"))
+            return false;
+        if (name.contains("-"))
+            return false;
+        if (name.contains("."))
+            return false;
+        if (name.contains(":"))
+            return false;
+        if (name.contains(","))
+            return false;
+        if (name.contains("+"))
+            return false;
+        if (name.contains("*"))
+            return false;
+        if (name.contains("~"))
+            return false;
+        if (name.contains("#"))
+            return false;
+        if (name.contains(";"))
+            return false;
+        if (name.contains("'"))
+            return false;
+        return true;
     }
 
 }
