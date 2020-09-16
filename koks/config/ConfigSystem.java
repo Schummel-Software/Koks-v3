@@ -12,7 +12,7 @@ import java.io.*;
  */
 public class ConfigSystem {
 
-    private void saveConfig(Config config) {
+    public void saveConfig(Config config) {
         try{
             FileWriter fileWriter = new FileWriter(config.getFile());
             for(Module module : Koks.getKoks().moduleManager.getModules()) {
@@ -41,7 +41,7 @@ public class ConfigSystem {
         }
     }
 
-    private void loadConfig(Config config) {
+    public void loadConfig(Config config) {
         try {
             BufferedReader bufferedReader = new BufferedReader(new FileReader(config.getFile()));
             String line;

@@ -24,6 +24,8 @@ public class Speed extends Module {
             switch (mode.getCurrentMode()) {
                 case "Legit":
                     if (mc.thePlayer.onGround) mc.thePlayer.jump();
+                    mc.thePlayer.setSprinting(true);
+                    mc.thePlayer.speedInAir = 0.06F;
                     break;
                 case "Mineplex":
                     if (mc.thePlayer.onGround) mc.thePlayer.motionY = 0.5;
