@@ -6,6 +6,7 @@ import koks.event.impl.EventTick;
 import koks.event.impl.EventUpdate;
 import koks.module.Module;
 import koks.module.impl.combat.KillAura;
+import koks.module.impl.world.Scaffold;
 
 /**
  * @author deleteboys | lmao | kroko
@@ -21,6 +22,9 @@ public class Sprint extends Module {
     public void onEvent(Event event) {
         if (event instanceof EventUpdate) {
             KillAura killAura = (KillAura) Koks.getKoks().moduleManager.getModule(KillAura.class);
+            Scaffold scaffold = (Scaffold) Koks.getKoks().moduleManager.getModule(Scaffold.class);
+            if (scaffold.isToggled())
+                return;
             if (killAura.isToggled() && killAura.finalEntity != null && killAura.stopSprinting.isToggled())
                 return;
             mc.gameSettings.keyBindSprint.pressed = true;

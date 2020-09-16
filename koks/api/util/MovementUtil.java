@@ -1,6 +1,7 @@
 package koks.api.util;
 
 import koks.api.Methods;
+import net.minecraft.client.Minecraft;
 
 /**
  * @author deleteboys | lmao | kroko
@@ -17,7 +18,7 @@ public class MovementUtil extends Methods {
     }
 
     public boolean isMoving() {
-        return mc.gameSettings.keyBindForward.pressed || mc.gameSettings.keyBindRight.pressed || mc.gameSettings.keyBindLeft.pressed || mc.gameSettings.keyBindBack.pressed;
+        return Minecraft.getMinecraft().thePlayer.moveForward != 0 || Minecraft.getMinecraft().thePlayer.moveStrafing != 0;
     }
     
     public void setSpeed(double speed) {

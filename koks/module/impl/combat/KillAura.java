@@ -21,6 +21,7 @@ import net.minecraft.network.play.client.C07PacketPlayerDigging;
 import net.minecraft.network.play.client.C0APacketAnimation;
 import net.minecraft.network.play.server.S0BPacketAnimation;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
 
@@ -141,12 +142,16 @@ public class KillAura extends Module {
         if (event instanceof EventUpdate) {
             setInfo(entities.size() + "");
             failing = new Random().nextInt(100) < failChance.getCurrentValue();
-            manageEntities();
+
+            if (finalEntity == null)
+                mc.thePlayer.addChatMessage(new ChatComponentText("No Entity"));
 
             if (stopSprinting.isToggled() && finalEntity != null) {
                 mc.gameSettings.keyBindSprint.pressed = false;
                 mc.thePlayer.setSprinting(false);
             }
+
+            manageEntities();
         }
 
         if (event instanceof EventMotion) {
@@ -332,23 +337,14 @@ public class KillAura extends Module {
             return false;
         if (ignoreInvisible.isToggled() && entity.isInvisible())
             return false;
-        if (throughWalls.isToggled() && !mc.thePlayer.canEntityBeSeen(entity))
+        if (!throughWalls.isToggled() && !mc.thePlayer.canEntityBeSeen(entity))
             return false;
         return true;
     }
 
     public boolean checkedName(Entity entity) {
-        EntityPlayer entityPlayer = (EntityPlayer) entity;
-        String name = entityPlayer.getGameProfile().getName();
-
-        if (name.length() < 3 || name.length() > 16)
-            return false;
-        ArrayList<String> allowed = new ArrayList<>(Collections.singleton("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_"));
-        for (int i = 0; i < name.length(); i++) {
-            String filter = name.substring(i, i + 1);
-            if (!allowed.contains(filter))
+        if (!validEntityName(entity))
                 return false;
-        }
         return true;
     }
 

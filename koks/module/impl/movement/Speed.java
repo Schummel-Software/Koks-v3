@@ -1,6 +1,7 @@
 package koks.module.impl.movement;
 
 import koks.api.settings.Setting;
+import koks.api.util.MovementUtil;
 import koks.event.Event;
 import koks.event.impl.EventUpdate;
 import koks.module.Module;
@@ -21,16 +22,20 @@ public class Speed extends Module {
     @Override
     public void onEvent(Event event) {
         if (event instanceof EventUpdate) {
+            MovementUtil movementUtil = new MovementUtil();
             switch (mode.getCurrentMode()) {
                 case "Legit":
                     if (mc.thePlayer.onGround) mc.thePlayer.jump();
                     mc.thePlayer.speedInAir = 0.02F;
                     break;
                 case "Mineplex":
-                    if (mc.thePlayer.onGround) mc.thePlayer.motionY = 0.5;
-                    if (!mc.thePlayer.onGround) mc.thePlayer.motionY -= 0.1;
-                    mc.timer.timerSpeed = 0.3F;
-                    pushPlayer(1.35);
+                    if (mc.thePlayer.onGround) {
+                        mc.timer.timerSpeed = 10;
+                        mc.thePlayer.motionY = 0.42;
+                    } else {
+                        mc.timer.timerSpeed = 1.05F;
+                        movementUtil.setSpeed(0.34);
+                    }
                     break;
             }
         }
