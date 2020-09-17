@@ -13,6 +13,7 @@ import koks.module.Module;
 public class Speed extends Module {
 
     public Setting mode = new Setting("Mode", new String[]{"MCCentral", "Legit"}, "Legit", this);
+    private final MovementUtil movementUtil = new MovementUtil();
 
     public Speed() {
         super("Speed", "Speeeeedy", Category.MOVEMENT);
@@ -22,7 +23,6 @@ public class Speed extends Module {
     @Override
     public void onEvent(Event event) {
         if (event instanceof EventUpdate) {
-            MovementUtil movementUtil = new MovementUtil();
             switch (mode.getCurrentMode()) {
                 case "Legit":
                     if (mc.thePlayer.onGround) mc.thePlayer.jump();

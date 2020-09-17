@@ -46,6 +46,7 @@ public class ModuleManager {
         addModule(new NoFov());
         addModule(new NoBob());
         addModule(new NoHurtCam());
+        addModule(new CustomItem());
 
         modules.sort(Comparator.comparing(Module::getName));
     }

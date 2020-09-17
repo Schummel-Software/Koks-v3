@@ -54,7 +54,7 @@ public class Scaffold extends Module {
             Vec3 vector = rayCastUtil.rayCastedBlock(this.yaw, this.pitch).hitVec;
             mc.gameSettings.keyBindSprint.pressed = false;
             mc.thePlayer.setSprinting(false);
-            mc.gameSettings.keyBindSneak.pressed = true;
+            //mc.gameSettings.keyBindSneak.pressed = true;
             if (mc.theWorld.getBlockState(new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY - 1, mc.thePlayer.posZ)).getBlock() instanceof BlockAir && rayCastUtil.rayCastedBlock(this.yaw, this.pitch) != null) {
                 if (timeHelper.hasReached(randomUtil.getRandomLong(1, 2))) {
                     mc.thePlayer.swingItem();
@@ -75,9 +75,36 @@ public class Scaffold extends Module {
 
     public float[] getRotation() {
         float pitch = mc.thePlayer.onGround ? 82 : 90;
-        float yaw = mc.thePlayer.rotationYaw + 180;
 
-        return new float[]{yaw, pitch};
+        boolean forward = mc.gameSettings.keyBindForward.isKeyDown();
+        boolean left = mc.gameSettings.keyBindLeft.isKeyDown();
+        boolean right = mc.gameSettings.keyBindRight.isKeyDown();
+        boolean back = mc.gameSettings.keyBindBack.isKeyDown();
+
+        float yaw = 0;
+
+        // Only one Key directions
+        if (forward && !left && !right && !back)
+            yaw = 180;
+        if (!forward && left && !right && !back)
+            yaw = 90;
+        if (!forward && !left && right && !back)
+            yaw = -90;
+        if (!forward && !left && !right && back)
+            yaw = 0;
+
+        // Multi Key directions
+        if (forward && left && !right && !back)
+            yaw = 135;
+        if (forward && !left && right && !back)
+            yaw = -135;
+
+        if (!forward && left && !right && back)
+            yaw = 45;
+        if (!forward && !left && right && back)
+            yaw = -45;
+
+        return new float[]{mc.thePlayer.rotationYaw + yaw, pitch};
     }
 
     @Override
