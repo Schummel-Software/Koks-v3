@@ -72,6 +72,7 @@ public class ESPUtil {
 
         GlStateManager.depthMask(false);
         GL11.glDepthMask(false);
+        GlStateManager.disableDepth();
 
         GL11.glLineWidth(1F);
         RenderGlobal.func_181563_a(axisalignedbb, Koks.getKoks().clientColor.getRed(), Koks.getKoks().clientColor.getGreen(), Koks.getKoks().clientColor.getBlue(), 255);
@@ -79,6 +80,7 @@ public class ESPUtil {
         GL11.glColor4f(Koks.getKoks().clientColor.getRed() / 255F, Koks.getKoks().clientColor.getGreen() / 255F, Koks.getKoks().clientColor.getBlue() / 255F, 0.2F);
         drawFilledBox(axisalignedbb);
 
+        GlStateManager.enableDepth();
         GlStateManager.resetColor();
         GlStateManager.depthMask(true);
         GlStateManager.enableTexture2D();
