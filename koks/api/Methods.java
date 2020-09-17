@@ -50,6 +50,11 @@ public class Methods {
         mc.thePlayer.setPosition(mc.thePlayer.posX + x, mc.thePlayer.posY + y, mc.thePlayer.posZ + z);
     }
 
+/*    public void stopPlayer() {
+        mc.thePlayer.motionX = 0;
+        mc.thePlayer.motionZ = 0;
+    }*/
+
     public boolean validEntityName(Entity entity) {
         if (!(entity instanceof EntityPlayer))
             return true;

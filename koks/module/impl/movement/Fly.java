@@ -1,6 +1,7 @@
 package koks.module.impl.movement;
 
 import koks.api.settings.Setting;
+import koks.api.util.MovementUtil;
 import koks.event.Event;
 import koks.event.impl.EventUpdate;
 import koks.module.Module;
@@ -12,7 +13,7 @@ import koks.module.Module;
 public class Fly extends Module {
 
     public Setting aac3312boost = new Setting("AAC3.3.12-Boost", 9F, 1F, 10F, true, this);
-    public Setting mode = new Setting("Mode", new String[]{"AAC3.3.12"}, "AAC3.3.12", this);
+    public Setting mode = new Setting("Mode", new String[]{"AAC3.3.12", "MCCentral"}, "AAC3.3.12", this);
 
     public Fly() {
         super("Fly", "Flying around the world", Category.MOVEMENT);
@@ -30,6 +31,17 @@ public class Fly extends Module {
                     }
                 }
                 break;
+            case "MCCentral":
+                if (event instanceof EventUpdate) {
+                    MovementUtil movementUtil = new MovementUtil();
+                    mc.thePlayer.motionY = 0;
+                    movementUtil.setSpeed(0.8);
+                    if (mc.gameSettings.keyBindJump.isKeyDown())
+                        mc.thePlayer.motionY = 0.5;
+                    if (mc.gameSettings.keyBindSneak.isKeyDown())
+                        mc.thePlayer.motionY = -0.5;
+                }
+                break;
         }
     }
 
@@ -40,7 +52,10 @@ public class Fly extends Module {
 
     @Override
     public void onDisable() {
+        mc.thePlayer.speedInAir = 0.02F;
         mc.timer.timerSpeed = 1.0F;
+        mc.thePlayer.motionX = 0;
+        mc.thePlayer.motionZ = 0;
     }
 
 }

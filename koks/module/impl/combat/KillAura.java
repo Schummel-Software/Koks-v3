@@ -51,9 +51,9 @@ public class KillAura extends Module {
     public Setting fov = new Setting("Field of View", 360.0F, 10.0F, 360.0F, true, this);
     public Setting failChance = new Setting("Failing Chance", 7.0F, 0.0F, 20.0F, true, this);
 
-    // AUTOBLOCK SETTINGS
+    // AUTO BLOCK SETTINGS
     public Setting autoBlock = new Setting("AutoBlock", true, this);
-    public Setting blockMode = new Setting("BlockMode", new String[]{"On Attack", "Half", "Full"}, "Half", this);
+    public Setting blockMode = new Setting("BlockMode", new String[]{"On Attack", "Half", "Full"}, "On Attack", this);
 
     // SPECIFY ROTATION SETTINGS
     public Setting smoothRotations = new Setting("Smooth Rotations", false, this);
@@ -73,9 +73,9 @@ public class KillAura extends Module {
 
     // ANTI BOT SETTINGS
     public Setting healthNaNCheck = new Setting("Health NaN Check", false, this);
-    public Setting nameCheck = new Setting("Name Check", false, this);
+    public Setting nameCheck = new Setting("Name Check", true, this);
     public Setting ignoreInvisible = new Setting("Ignore Invisible", true, this);
-    public Setting throughWalls = new Setting("Through Walls", true, this);
+    public Setting throughWalls = new Setting("Through Walls", false, this);
     public Setting soundCheck = new Setting("Sound Check", true, this);
 
     public ArrayList<Entity> entities = new ArrayList<>();
@@ -109,7 +109,7 @@ public class KillAura extends Module {
         registerSetting(fov);
         registerSetting(failChance);
 
-        // AUTOBLOCK SETTINGS
+        // AUTO BLOCK SETTINGS
         registerSetting(autoBlock);
         registerSetting(blockMode);
 
@@ -142,9 +142,6 @@ public class KillAura extends Module {
         if (event instanceof EventUpdate) {
             setInfo(entities.size() + "");
             failing = new Random().nextInt(100) < failChance.getCurrentValue();
-
-            if (finalEntity == null)
-                mc.thePlayer.addChatMessage(new ChatComponentText("No Entity"));
 
             if (stopSprinting.isToggled() && finalEntity != null) {
                 mc.gameSettings.keyBindSprint.pressed = false;
@@ -179,6 +176,9 @@ public class KillAura extends Module {
                             if (canBlock() && autoBlock.isToggled() && (blockMode.getCurrentMode().equals("On Attack") || blockMode.getCurrentMode().equals("Half")))
                                 mc.playerController.sendUseItem(mc.thePlayer, mc.theWorld, mc.thePlayer.getCurrentEquippedItem());
                             timeHelper.reset();
+                        } else {
+                            if (canBlock() && autoBlock.isToggled() && blockMode.getCurrentMode().equals("Half"))
+                                mc.playerController.sendUseItem(mc.thePlayer, mc.theWorld, mc.thePlayer.getCurrentEquippedItem());
                         }
                     } else {
                         timeHelper.reset();

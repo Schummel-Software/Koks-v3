@@ -12,7 +12,7 @@ import koks.module.Module;
  */
 public class Speed extends Module {
 
-    public Setting mode = new Setting("Mode", new String[]{"Mineplex", "Legit"}, "Legit", this);
+    public Setting mode = new Setting("Mode", new String[]{"MCCentral", "Legit"}, "Legit", this);
 
     public Speed() {
         super("Speed", "Speeeeedy", Category.MOVEMENT);
@@ -28,13 +28,11 @@ public class Speed extends Module {
                     if (mc.thePlayer.onGround) mc.thePlayer.jump();
                     mc.thePlayer.speedInAir = 0.02F;
                     break;
-                case "Mineplex":
+                case "MCCentral":
                     if (mc.thePlayer.onGround) {
-                        mc.timer.timerSpeed = 10;
-                        mc.thePlayer.motionY = 0.42;
+                        mc.thePlayer.jump();
                     } else {
-                        mc.timer.timerSpeed = 1.05F;
-                        movementUtil.setSpeed(0.34);
+                        movementUtil.setSpeed(0.65);
                     }
                     break;
             }

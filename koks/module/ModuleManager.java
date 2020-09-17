@@ -43,6 +43,9 @@ public class ModuleManager {
         addModule(new Speed());
         addModule(new Fly());
         addModule(new NameTags());
+        addModule(new NoFov());
+        addModule(new NoBob());
+        addModule(new NoHurtCam());
 
         modules.sort(Comparator.comparing(Module::getName));
     }
