@@ -28,10 +28,6 @@ public class ESP extends Module {
 
     public ESP() {
         super("ESP", "Shows the all Chests, Items and Players in the world", Category.RENDER);
-        registerSetting(espMode);
-        registerSetting(player);
-        registerSetting(chests);
-        registerSetting(items);
     }
 
     @Override

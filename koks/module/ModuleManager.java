@@ -48,6 +48,8 @@ public class ModuleManager {
         addModule(new NoHurtCam());
         addModule(new CustomItem());
         addModule(new Step());
+        addModule(new Phase());
+        addModule(new SetBack());
 
         modules.sort(Comparator.comparing(Module::getName));
     }

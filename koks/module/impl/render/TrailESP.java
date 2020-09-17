@@ -22,8 +22,6 @@ public class TrailESP extends Module {
 
     public TrailESP() {
         super("TrailESP", "Its render your positions in to a line", Category.RENDER);
-        registerSetting(length);
-        registerSetting(inFirstPerson);
     }
 
     public ArrayList<double[]> positions = new ArrayList<>();

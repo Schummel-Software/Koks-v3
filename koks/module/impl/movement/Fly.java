@@ -18,8 +18,6 @@ public class Fly extends Module {
 
     public Fly() {
         super("Fly", "Flying around the world", Category.MOVEMENT);
-        registerSetting(aac3312boost);
-        registerSetting(mode);
     }
 
     @Override

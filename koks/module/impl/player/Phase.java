@@ -15,7 +15,6 @@ public class Phase extends Module {
 
     public Phase() {
         super("Phase", "You can walk through walls", Category.PLAYER);
-        registerSetting(mode);
     }
 
     public void Hive() {

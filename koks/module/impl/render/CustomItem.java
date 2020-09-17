@@ -17,10 +17,6 @@ public class CustomItem extends Module {
 
     public CustomItem() {
         super("CustomItem", "Customize the position of you item", Category.RENDER);
-        registerSetting(x);
-        registerSetting(y);
-        registerSetting(z);
-        registerSetting(size);
     }
 
     @Override

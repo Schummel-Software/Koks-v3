@@ -17,7 +17,6 @@ public class GodMode extends Module {
 
     public GodMode() {
         super("GodMode", "You cant take any damage", Category.PLAYER);
-        registerSetting(mode);
     }
 
     public TimeHelper timeHelper = new TimeHelper();

@@ -37,9 +37,6 @@ public class AutoArmor extends Module {
 
     public AutoArmor() {
         super("AutoArmor", "You put the armor automaticaly on", Category.PLAYER);
-        registerSetting(openedInventory);
-        registerSetting(startDelay);
-        registerSetting(throwDelay);
 
         helmet = Arrays.asList(Items.leather_helmet, Items.golden_helmet, Items.chainmail_helmet, Items.iron_helmet, Items.diamond_helmet);
         chest = Arrays.asList(Items.leather_chestplate, Items.golden_chestplate, Items.chainmail_chestplate, Items.iron_chestplate, Items.diamond_chestplate);
