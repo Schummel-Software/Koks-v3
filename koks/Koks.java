@@ -1,6 +1,7 @@
 package koks;
 
 import koks.command.CommandManager;
+import koks.config.ConfigSystem;
 import koks.event.EventManager;
 import koks.filemanager.FileManager;
 import koks.gui.tabgui.TabGUI;
@@ -47,6 +48,7 @@ public class Koks {
     public KeyBindManager keyBindManager;
     public FileManager fileManager;
     public TabGUI tabGUI;
+    public ConfigSystem configSystem;
 
     public void startClient() {
         settingsManager = new SettingsManager();
@@ -59,6 +61,7 @@ public class Koks {
         fileManager = new FileManager();
         tabGUI = new TabGUI();
         fileManager.readAllFiles();
+        configSystem = new ConfigSystem();
 
         StringBuilder author = new StringBuilder();
         for (int i = 0; i < KOKS.AUTHORS.length; i++) {

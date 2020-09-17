@@ -15,9 +15,14 @@ import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemSword;
 import net.minecraft.network.play.client.C02PacketUseEntity;
+import net.minecraft.network.play.client.C07PacketPlayerDigging;
 import net.minecraft.network.play.client.C0APacketAnimation;
 import net.minecraft.network.play.server.S0BPacketAnimation;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
 
 import java.util.ArrayList;
@@ -46,6 +51,10 @@ public class KillAura extends Module {
     public Setting fov = new Setting("Field of View", 360.0F, 10.0F, 360.0F, true, this);
     public Setting failChance = new Setting("Failing Chance", 7.0F, 0.0F, 20.0F, true, this);
 
+    // AUTO BLOCK SETTINGS
+    public Setting autoBlock = new Setting("AutoBlock", true, this);
+    public Setting blockMode = new Setting("BlockMode", new String[]{"On Attack", "Half", "Full"}, "On Attack", this);
+
     // SPECIFY ROTATION SETTINGS
     public Setting smoothRotations = new Setting("Smooth Rotations", false, this);
     public Setting lockView = new Setting("Lock View", false, this);
@@ -64,9 +73,9 @@ public class KillAura extends Module {
 
     // ANTI BOT SETTINGS
     public Setting healthNaNCheck = new Setting("Health NaN Check", false, this);
-    public Setting nameCheck = new Setting("Name Check", false, this);
+    public Setting nameCheck = new Setting("Name Check", true, this);
     public Setting ignoreInvisible = new Setting("Ignore Invisible", true, this);
-    public Setting throughWalls = new Setting("Through Walls", true, this);
+    public Setting throughWalls = new Setting("Through Walls", false, this);
     public Setting soundCheck = new Setting("Sound Check", true, this);
 
     public ArrayList<Entity> entities = new ArrayList<>();
@@ -90,12 +99,13 @@ public class KillAura extends Module {
         if (event instanceof EventUpdate) {
             setInfo(entities.size() + "");
             failing = new Random().nextInt(100) < failChance.getCurrentValue();
-            manageEntities();
 
             if (stopSprinting.isToggled() && finalEntity != null) {
                 mc.gameSettings.keyBindSprint.pressed = false;
                 mc.thePlayer.setSprinting(false);
             }
+
+            manageEntities();
         }
 
         if (event instanceof EventMotion) {
@@ -111,17 +121,26 @@ public class KillAura extends Module {
                         ((EventMotion) event).setYaw(yaw);
                         ((EventMotion) event).setPitch(pitch);
                     }
+
+                    if (canBlock() && autoBlock.isToggled() && blockMode.getCurrentMode().equals("Full"))
+                        mc.playerController.sendUseItem(mc.thePlayer, mc.theWorld, mc.thePlayer.getCurrentEquippedItem());
+
                     long cps = (long) this.cps.getCurrentValue();
                     cps = cps < 10 ? cps : cps + 5;
                     if (((EntityLivingBase) finalEntity).hurtTime <= hurtTime.getCurrentValue()) {
                         if (timeHelper.hasReached(1000L / cps + (long) randomUtil.getRandomGaussian(20))) {
                             attackEntity();
-                            mc.playerController.sendUseItem(mc.thePlayer, mc.theWorld, mc.thePlayer.getCurrentEquippedItem());
+                            if (canBlock() && autoBlock.isToggled() && (blockMode.getCurrentMode().equals("On Attack") || blockMode.getCurrentMode().equals("Half")))
+                                mc.playerController.sendUseItem(mc.thePlayer, mc.theWorld, mc.thePlayer.getCurrentEquippedItem());
                             timeHelper.reset();
+                        } else {
+                            if (canBlock() && autoBlock.isToggled() && blockMode.getCurrentMode().equals("Half"))
+                                mc.playerController.sendUseItem(mc.thePlayer, mc.theWorld, mc.thePlayer.getCurrentEquippedItem());
                         }
                     } else {
                         timeHelper.reset();
-                        mc.playerController.sendUseItem(mc.thePlayer, mc.theWorld, mc.thePlayer.getCurrentEquippedItem());
+                        if (canBlock() && autoBlock.isToggled() && blockMode.getCurrentMode().equals("Half"))
+                            mc.playerController.sendUseItem(mc.thePlayer, mc.theWorld, mc.thePlayer.getCurrentEquippedItem());
                     }
                 }
             }
@@ -147,6 +166,10 @@ public class KillAura extends Module {
         if (!failing && rayCastEntity != null) {
             for (int i = 0; i < crackSize.getCurrentValue(); i++)
                 mc.effectRenderer.emitParticleAtEntity(finalEntity, EnumParticleTypes.CRIT);
+
+            if (canBlock() && autoBlock.isToggled() && blockMode.getCurrentMode().equals("Full"))
+                mc.getNetHandler().addToSendQueue(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, EnumFacing.DOWN));
+
             if (usePlayerController.isToggled()) {
                 mc.playerController.attackEntity(mc.thePlayer, rayCastEntity);
             } else {
@@ -173,6 +196,10 @@ public class KillAura extends Module {
             else
                 switchCounter = 0;
         }
+    }
+
+    boolean canBlock() {
+        return mc.thePlayer.getCurrentEquippedItem().getItem() != null && mc.thePlayer.getCurrentEquippedItem().getItem() instanceof ItemSword;
     }
 
     public void manageEntities() {
@@ -267,23 +294,14 @@ public class KillAura extends Module {
             return false;
         if (ignoreInvisible.isToggled() && entity.isInvisible())
             return false;
-        if (throughWalls.isToggled() && !mc.thePlayer.canEntityBeSeen(entity))
+        if (!throughWalls.isToggled() && !mc.thePlayer.canEntityBeSeen(entity))
             return false;
         return true;
     }
 
     public boolean checkedName(Entity entity) {
-        EntityPlayer entityPlayer = (EntityPlayer) entity;
-        String name = entityPlayer.getGameProfile().getName();
-
-        if (name.length() < 3 || name.length() > 16)
-            return false;
-        ArrayList<String> allowed = new ArrayList<>(Collections.singleton("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_"));
-        for (int i = 0; i < name.length(); i++) {
-            String filter = name.substring(i, i + 1);
-            if (!allowed.contains(filter))
+        if (!validEntityName(entity))
                 return false;
-        }
         return true;
     }
 

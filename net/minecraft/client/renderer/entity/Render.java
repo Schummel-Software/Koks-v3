@@ -1,7 +1,11 @@
 package net.minecraft.client.renderer.entity;
 
+import koks.Koks;
+import koks.api.util.RenderUtil;
+import koks.module.impl.render.NameTags;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
@@ -22,6 +26,8 @@ import optifine.Config;
 
 import org.lwjgl.opengl.GL11;
 import shadersmod.client.Shaders;
+
+import java.awt.*;
 
 public abstract class Render<T extends Entity>
 {
@@ -60,6 +66,10 @@ public abstract class Render<T extends Entity>
      */
     public void doRender(T entity, double x, double y, double z, float entityYaw, float partialTicks)
     {
+        NameTags nameTags = (NameTags) Koks.getKoks().moduleManager.getModule(NameTags.class);
+        if (nameTags.isToggled() && nameTags.isValid(entity))
+            return;
+
         this.renderName(entity, x, y, z);
     }
 

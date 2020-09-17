@@ -52,19 +52,14 @@ public class Scaffold extends Module {
             BlockPos pos = rayCastUtil.rayCastedBlock(this.yaw, this.pitch).getBlockPos();
             EnumFacing face = rayCastUtil.rayCastedBlock(this.yaw, this.pitch).sideHit;
             Vec3 vector = rayCastUtil.rayCastedBlock(this.yaw, this.pitch).hitVec;
-
-            if (count == 8) {
-                mc.thePlayer.motionX = 0;
-                mc.thePlayer.motionZ = 0;
-                if (mc.thePlayer.onGround) mc.thePlayer.jump();
-                count = 0;
-            }
+            mc.gameSettings.keyBindSprint.pressed = false;
+            mc.thePlayer.setSprinting(false);
+            // mc.gameSettings.keyBindSneak.pressed = true;
             if (mc.theWorld.getBlockState(new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY - 1, mc.thePlayer.posZ)).getBlock() instanceof BlockAir && rayCastUtil.rayCastedBlock(this.yaw, this.pitch) != null) {
                 if (timeHelper.hasReached(randomUtil.getRandomLong(1, 2))) {
                     mc.thePlayer.swingItem();
                     double vecFix = randomUtil.getRandomDouble(0.2, 0.8);
                     mc.playerController.onPlayerRightClick(mc.thePlayer, mc.theWorld, mc.thePlayer.getCurrentEquippedItem(), pos, face, new Vec3(vector.xCoord + vecFix, vector.yCoord + vecFix, vector.zCoord + vecFix));
-                    count++;
                     timeHelper.reset();
                 }
             } else {
@@ -80,9 +75,36 @@ public class Scaffold extends Module {
 
     public float[] getRotation() {
         float pitch = mc.thePlayer.onGround ? 82 : 90;
-        float yaw = mc.thePlayer.rotationYaw + 180;
 
-        return new float[]{yaw, pitch};
+        boolean forward = mc.gameSettings.keyBindForward.isKeyDown();
+        boolean left = mc.gameSettings.keyBindLeft.isKeyDown();
+        boolean right = mc.gameSettings.keyBindRight.isKeyDown();
+        boolean back = mc.gameSettings.keyBindBack.isKeyDown();
+
+        float yaw = 0;
+
+        // Only one Key directions
+        if (forward && !left && !right && !back)
+            yaw = 180;
+        if (!forward && left && !right && !back)
+            yaw = 90;
+        if (!forward && !left && right && !back)
+            yaw = -90;
+        if (!forward && !left && !right && back)
+            yaw = 0;
+
+        // Multi Key directions
+        if (forward && left && !right && !back)
+            yaw = 135;
+        if (forward && !left && right && !back)
+            yaw = -135;
+
+        if (!forward && left && !right && back)
+            yaw = 45;
+        if (!forward && !left && right && back)
+            yaw = -45;
+
+        return new float[]{mc.thePlayer.rotationYaw + yaw, pitch};
     }
 
     @Override

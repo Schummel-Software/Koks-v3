@@ -41,6 +41,12 @@ public class ModuleManager {
         addModule(new BlockOverlay());
         addModule(new NoFall());
         addModule(new Speed());
+        addModule(new Fly());
+        addModule(new NameTags());
+        addModule(new NoFov());
+        addModule(new NoBob());
+        addModule(new NoHurtCam());
+        addModule(new CustomItem());
 
         modules.sort(Comparator.comparing(Module::getName));
     }

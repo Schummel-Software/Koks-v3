@@ -7,6 +7,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 
+import java.awt.*;
+
 /**
  * @author deleteboys | lmao | kroko
  * @created on 14.09.2020 : 12:41
@@ -31,7 +33,7 @@ public class DrawModule {
         this.currentModule = currentModule;
 
         Gui.drawRect(x, y, x + width, y + height, currentModule ? Koks.getKoks().clientColor.getRGB() : 0xBB000000);
-        fr.drawStringWithShadow(module.getName(), x + 3, y + height / 2 - fr.FONT_HEIGHT / 2 + 1, module.isToggled() ? Koks.getKoks().clientColor.getRGB() : 0xFFFFFFFF);
+        fr.drawStringWithShadow(module.getName(), x + 3, y + height / 2 - fr.FONT_HEIGHT / 2 + 1, module.isToggled() ? currentModule ? 0xFFFFFFFF : Koks.getKoks().clientColor.getRGB() : Color.gray.getRGB());
     }
 
     public void manageKeys(EventKeyPress eventKeyPress) {

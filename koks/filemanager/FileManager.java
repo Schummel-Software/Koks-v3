@@ -24,15 +24,15 @@ public class FileManager {
     public void writeAllFiles() {
         if(!DIR.exists())DIR.mkdirs();
 
-        for(Files files : files) {
-            if(!files.getFile().exists()) {
+        for(Files file : files) {
+            if(!file.getFile().exists()) {
                 try {
-                    files.getFile().createNewFile();
+                    file.getFile().createNewFile();
                 } catch (IOException ignored) {
                 }
             }
             try {
-                files.writeFile(new FileWriter(files.getFile()));
+                file.writeFile(new FileWriter(file.getFile()));
             } catch (IOException ignored) {
             }
         }
@@ -40,15 +40,15 @@ public class FileManager {
 
     public void readAllFiles() {
         if(DIR.exists()) {
-            for (Files files : files) {
-                if(!files.getFile().exists()) {
+            for (Files file : files) {
+                if(!file.getFile().exists()) {
                     try {
-                        files.getFile().createNewFile();
+                        file.getFile().createNewFile();
                     } catch (IOException ignored) {
                     }
                 }
                 try {
-                    files.readFile(new BufferedReader(new FileReader(files.getFile())));
+                    file.readFile(new BufferedReader(new FileReader(file.getFile())));
                 } catch (IOException ignored) {
                 }
             }

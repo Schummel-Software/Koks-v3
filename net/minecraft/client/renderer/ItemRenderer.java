@@ -1,5 +1,7 @@
 package net.minecraft.client.renderer;
 
+import koks.Koks;
+import koks.module.impl.render.CustomItem;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -275,7 +277,12 @@ public class ItemRenderer
      */
     private void transformFirstPersonItem(float equipProgress, float swingProgress)
     {
-        GlStateManager.translate(0.56F, -0.52F, -0.71999997F);
+        CustomItem customItem = (CustomItem) Koks.getKoks().moduleManager.getModule(CustomItem.class);
+        float addX = !customItem.isToggled() ? 0 : customItem.x.getCurrentValue();
+        float addY = !customItem.isToggled() ? 0 : customItem.y.getCurrentValue();
+        float addZ = !customItem.isToggled() ? 0 : customItem.z.getCurrentValue();
+        float scale = !customItem.isToggled() ? 0.4F : customItem.size.getCurrentValue();
+        GlStateManager.translate(0.56F + addX, -0.52F + addY, -0.71999997F + addZ);
         GlStateManager.translate(0.0F, equipProgress * -0.6F, 0.0F);
         GlStateManager.rotate(45.0F, 0.0F, 1.0F, 0.0F);
         float f = MathHelper.sin(swingProgress * swingProgress * (float)Math.PI);
@@ -283,7 +290,7 @@ public class ItemRenderer
         GlStateManager.rotate(f * -20.0F, 0.0F, 1.0F, 0.0F);
         GlStateManager.rotate(f1 * -20.0F, 0.0F, 0.0F, 1.0F);
         GlStateManager.rotate(f1 * -80.0F, 1.0F, 0.0F, 0.0F);
-        GlStateManager.scale(0.4F, 0.4F, 0.4F);
+        GlStateManager.scale(scale, scale, scale);
     }
 
     private void func_178098_a(float p_178098_1_, AbstractClientPlayer clientPlayer)
@@ -360,7 +367,7 @@ public class ItemRenderer
                         break;
 
                     case 4:
-                        this.transformFirstPersonItem(f, f1 * 0.3F);
+                        this.transformFirstPersonItem(f, 0.0F);
                         this.func_178103_d();
                         break;
 
