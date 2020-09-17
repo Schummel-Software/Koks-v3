@@ -32,7 +32,7 @@ public class Speed extends Module {
                     if (mc.thePlayer.onGround) {
                         mc.thePlayer.jump();
                     } else {
-                        movementUtil.setSpeed(0.65);
+                        movementUtil.setSpeed(0.7);
                     }
                     break;
             }

@@ -9,7 +9,9 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.AxisAlignedBB;
+import optifine.Config;
 import org.lwjgl.opengl.GL11;
+import shadersmod.client.Shaders;
 
 import java.awt.*;
 import java.util.HashMap;
@@ -21,7 +23,6 @@ import java.util.Map;
  */
 public class ESPUtil {
 
-    private final Map<Integer, Boolean> glCapMap = new HashMap<>();
     private final Minecraft mc = Minecraft.getMinecraft();
 
     public void drawCorners(double x, double y, double z, int xOffset, int yOffset, int length, int width) {
@@ -58,9 +59,18 @@ public class ESPUtil {
     }
 
     public void renderBox(AxisAlignedBB axisalignedbb) {
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        enableGlCap(GL11.GL_BLEND);
-        disableGlCap(GL11.GL_TEXTURE_2D, GL11.GL_DEPTH_TEST);
+        GlStateManager.enableBlend();
+        GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+        GlStateManager.color(0.0F, 0.0F, 0.0F, 0.4F);
+        GL11.glLineWidth(2.0F);
+        GlStateManager.disableTexture2D();
+
+        if (Config.isShaders())
+        {
+            Shaders.disableTexture2D();
+        }
+
+        GlStateManager.depthMask(false);
         GL11.glDepthMask(false);
 
         GL11.glLineWidth(1F);
@@ -70,8 +80,15 @@ public class ESPUtil {
         drawFilledBox(axisalignedbb);
 
         GlStateManager.resetColor();
-        GL11.glDepthMask(true);
-        resetCaps();
+        GlStateManager.depthMask(true);
+        GlStateManager.enableTexture2D();
+
+        if (Config.isShaders())
+        {
+            Shaders.enableTexture2D();
+        }
+
+        GlStateManager.disableBlend();
     }
 
     // Found in Render:renderOffsetAABB (269)
@@ -106,31 +123,6 @@ public class ESPUtil {
         worldrenderer.pos(boundingBox.maxX, boundingBox.minY, boundingBox.maxZ).endVertex();
         tessellator.draw();
         GlStateManager.enableTexture2D();
-    }
-
-    public void resetCaps() {
-        glCapMap.forEach(ESPUtil::setGlState);
-    }
-
-    public void enableGlCap(final int cap) {
-        setGlCap(cap, true);
-    }
-
-    public void disableGlCap(final int... caps) {
-        for (final int cap : caps)
-            setGlCap(cap, false);
-    }
-
-    public void setGlCap(final int cap, final boolean state) {
-        glCapMap.put(cap, GL11.glGetBoolean(cap));
-        setGlState(cap, state);
-    }
-
-    public static void setGlState(final int cap, final boolean state) {
-        if (state)
-            GL11.glEnable(cap);
-        else
-            GL11.glDisable(cap);
     }
 
 }

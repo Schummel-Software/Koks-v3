@@ -5,6 +5,7 @@ import koks.api.util.MovementUtil;
 import koks.event.Event;
 import koks.event.impl.EventUpdate;
 import koks.module.Module;
+import net.minecraft.network.play.client.C03PacketPlayer;
 
 /**
  * @author avox | lmao | kroko

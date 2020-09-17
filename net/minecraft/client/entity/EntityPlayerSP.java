@@ -177,15 +177,14 @@ public class EntityPlayerSP extends AbstractClientPlayer
      * Called to update the entity's position/logic.
      */
     public void onUpdate() {
-        EventUpdate eventUpdate = new EventUpdate();
-        Koks.getKoks().eventManager.onEvent(eventUpdate);
-
-        EventMotion eventMotion = new EventMotion(EventMotion.Type.PRE, this.rotationYaw, this.rotationPitch);
-        Koks.getKoks().eventManager.onEvent(eventMotion);
-
-        this.eventMotion = eventMotion;
-
         if (this.worldObj.isBlockLoaded(new BlockPos(this.posX, 0.0D, this.posZ))) {
+            EventUpdate eventUpdate = new EventUpdate();
+            Koks.getKoks().eventManager.onEvent(eventUpdate);
+
+            EventMotion eventMotion = new EventMotion(EventMotion.Type.PRE, this.rotationYaw, this.rotationPitch);
+            Koks.getKoks().eventManager.onEvent(eventMotion);
+            this.eventMotion = eventMotion;
+
             super.onUpdate();
 
             ClickGui clickGui = (ClickGui) Koks.getKoks().moduleManager.getModule(ClickGui.class);
