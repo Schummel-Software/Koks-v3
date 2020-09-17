@@ -47,6 +47,7 @@ public class ModuleManager {
         addModule(new NoBob());
         addModule(new NoHurtCam());
         addModule(new CustomItem());
+        addModule(new Step());
 
         modules.sort(Comparator.comparing(Module::getName));
     }
