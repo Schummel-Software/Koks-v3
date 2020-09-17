@@ -19,7 +19,6 @@ public class Velocity extends Module {
 
     public Velocity() {
         super("Velocity", "Reduces your knockback", Category.COMBAT);
-        registerSetting(mode);
     }
 
     @Override

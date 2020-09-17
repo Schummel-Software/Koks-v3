@@ -25,9 +25,6 @@ public class ChestStealer extends Module {
 
     public ChestStealer() {
         super("ChestStealer", "You steal the items from a chest", Category.PLAYER);
-
-        registerSetting(startDelay);
-        registerSetting(takeDelay);
     }
 
     @Override

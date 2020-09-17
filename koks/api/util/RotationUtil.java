@@ -36,7 +36,6 @@ public class RotationUtil {
                 }
             }
         }
-
         return nearestVector;
     }
 

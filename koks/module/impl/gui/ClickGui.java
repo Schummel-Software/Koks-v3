@@ -19,10 +19,6 @@ public class ClickGui extends Module {
     public ClickGui() {
         super("ClickGui", "Opens the ClickGUI", Category.GUI);
         setKey(Keyboard.KEY_RSHIFT);
-
-        registerSetting(red);
-        registerSetting(green);
-        registerSetting(blue);
     }
 
     @Override

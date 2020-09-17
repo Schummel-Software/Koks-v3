@@ -1,5 +1,6 @@
 package koks.api.settings;
 
+import koks.Koks;
 import koks.module.Module;
 
 /**
@@ -25,6 +26,7 @@ public class Setting {
         this.module = module;
 
         type = Type.CHECKBOX;
+        Koks.getKoks().settingsManager.registerSetting(this);
     }
 
     // ComboBox
@@ -35,6 +37,7 @@ public class Setting {
         this.module = module;
 
         type = Type.COMBOBOX;
+        Koks.getKoks().settingsManager.registerSetting(this);
     }
 
     // Slider
@@ -47,6 +50,7 @@ public class Setting {
         this.module = module;
 
         type = Type.SLIDER;
+        Koks.getKoks().settingsManager.registerSetting(this);
     }
 
     public enum Type {

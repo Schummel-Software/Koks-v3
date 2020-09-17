@@ -83,45 +83,6 @@ public class KillAura extends Module {
 
     public KillAura() {
         super("KillAura", "Is Legit", Category.COMBAT);
-
-        // TARGET SETTINGS
-        registerSetting(attackType);
-        registerSetting(preferType);
-        registerSetting(player);
-        registerSetting(animals);
-        registerSetting(mobs);
-
-        // BASIC ATTACK SETTINGS
-        registerSetting(hitRange);
-        registerSetting(preAim);
-        registerSetting(extendedAimRange);
-        registerSetting(cps);
-        registerSetting(hurtTime);
-        registerSetting(fov);
-        registerSetting(failChance);
-
-        // SPECIFY ROTATION SETTINGS
-        registerSetting(smoothRotations);
-        registerSetting(lockView);
-        registerSetting(centerWidth);
-        registerSetting(prediction);
-
-        // MOVEMENT SETTINGS
-        registerSetting(fixMovement);
-        registerSetting(stopSprinting);
-        registerSetting(usePlayerController);
-
-        // CUSTOM SETTINGS
-        registerSetting(noSwing);
-        registerSetting(noSwingType);
-        registerSetting(crackSize);
-
-        // ANTI BOT SETTINGS
-        registerSetting(healthNaNCheck);
-        registerSetting(nameCheck);
-        registerSetting(ignoreInvisible);
-        registerSetting(throughWalls);
-        registerSetting(soundCheck);
     }
 
     @Override

@@ -32,14 +32,6 @@ public class HUD extends Module {
 
     public HUD() {
         super("HUD", "Draws the HUD", Category.GUI);
-        registerSetting(waterMark);
-        registerSetting(arrayList);
-        registerSetting(showTags);
-        registerSetting(tabGUI);
-        registerSetting(x);
-        registerSetting(y);
-        registerSetting(width);
-        registerSetting(height);
         setToggled(true);
     }
 

@@ -17,8 +17,6 @@ public class BoatFly extends Module {
 
     public BoatFly() {
         super("BoatFly", "You can fly with the boat", Category.MOVEMENT);
-        registerSetting(AAC4Boost);
-        registerSetting(Mode);
     }
 
     public boolean ride;

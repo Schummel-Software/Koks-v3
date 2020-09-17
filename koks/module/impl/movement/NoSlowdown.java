@@ -15,8 +15,6 @@ public class NoSlowdown extends Module {
 
     public NoSlowdown() {
         super("NoSlowdown", "Prevents you from slowing down while using an item", Category.MOVEMENT);
-        registerSetting(speed);
-        registerSetting(sprint);
     }
 
     @Override

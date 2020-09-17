@@ -17,7 +17,6 @@ public class Jesus extends Module {
 
     public Jesus() {
         super("Jesus", "You can walk on water", Category.MOVEMENT);
-        registerSetting(mode);
     }
 
     @Override

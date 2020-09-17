@@ -15,7 +15,6 @@ public class Speed extends Module {
 
     public Speed() {
         super("Speed", "Speeeeedy", Category.MOVEMENT);
-        registerSetting(mode);
     }
 
     @Override

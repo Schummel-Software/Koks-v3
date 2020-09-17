@@ -17,10 +17,6 @@ public class Debug extends Module {
 
     public Debug() {
         super("Debug", "Test Module", Category.DEBUG);
-
-        registerSetting(testCheck);
-        registerSetting(testCombo);
-        registerSetting(testSlider);
     }
 
     public TimeHelper timeHelper = new TimeHelper();

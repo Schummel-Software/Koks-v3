@@ -17,7 +17,6 @@ public class NoCobweb extends Module {
 
     public NoCobweb() {
         super("NoCobweb", "You doesn't affect by cobweb", Category.MOVEMENT);
-        registerSetting(mode);
     }
 
     @Override

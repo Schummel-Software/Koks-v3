@@ -746,7 +746,6 @@ public class EntityRenderer implements IResourceManagerReloadListener
         else if (this.mc.gameSettings.thirdPersonView > 0)
         {
             double d3 = (double)(this.thirdPersonDistanceTemp + (this.thirdPersonDistance - this.thirdPersonDistanceTemp) * partialTicks);
-
             if (this.mc.gameSettings.debugCamEnable)
             {
                 GlStateManager.translate(0.0F, 0.0F, (float)(-d3));
@@ -781,7 +780,7 @@ public class EntityRenderer implements IResourceManagerReloadListener
 
                         if (d7 < d3)
                         {
-                            d3 = d7;
+//                            d3 = d7;
                         }
                     }
                 }

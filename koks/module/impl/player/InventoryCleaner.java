@@ -42,16 +42,6 @@ public class InventoryCleaner extends Module {
         super("InventoryCleaner", "Your inventory is clean", Category.PLAYER);
 
         trashItems = Arrays.asList(Items.feather, Items.dye, Items.paper, Items.saddle, Items.string, Items.banner, Items.fishing_rod, Items.boat);
-        registerSetting(openedInventory);
-        registerSetting(startDelay);
-        registerSetting(throwDelay);
-        registerSetting(preferSword);
-        registerSetting(keepTools);
-        registerSetting(swordSlot);
-        registerSetting(bowSlot);
-        registerSetting(pickSlot);
-        registerSetting(axeSlot);
-        registerSetting(shovelSlot);
     }
 
     @Override
