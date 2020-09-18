@@ -24,8 +24,9 @@ public class Speed extends Module {
         if (event instanceof EventUpdate) {
             switch (mode.getCurrentMode()) {
                 case "Legit":
-                    if (mc.thePlayer.onGround) mc.thePlayer.jump();
-                    mc.thePlayer.speedInAir = 0.02F;
+                    if (mc.thePlayer.onGround && mc.currentScreen == null) mc.thePlayer.jump();
+                    mc.thePlayer.speedInAir = 0.0202F;
+                    mc.thePlayer.setSprinting(true);
                     break;
                 case "MCCentral":
                     if (mc.thePlayer.onGround) {

@@ -15,9 +15,21 @@ public class Setting {
     private float currentValue, minValue, maxValue;
     private boolean toggled, onlyInt, visible = true;
 
+    private int key;
+
     private Module module;
 
     private Type type;
+
+    // KEY
+    public Setting(String name, int key, Module module) {
+        this.name = name;
+        this.key = key;
+        this.module = module;
+
+        type = Type.KEY;
+        Koks.getKoks().settingsManager.registerSetting(this);
+    }
 
     // CheckBox
     public Setting(String name, boolean toggled, Module module) {
@@ -54,7 +66,7 @@ public class Setting {
     }
 
     public enum Type {
-        CHECKBOX, COMBOBOX, SLIDER
+        CHECKBOX, COMBOBOX, SLIDER, KEY
     }
 
     public String getName() {
@@ -111,6 +123,14 @@ public class Setting {
 
     public void setToggled(boolean toggled) {
         this.toggled = toggled;
+    }
+
+    public int getKey() {
+        return key;
+    }
+
+    public void setKey(int key) {
+        this.key = key;
     }
 
     public boolean isOnlyInt() {

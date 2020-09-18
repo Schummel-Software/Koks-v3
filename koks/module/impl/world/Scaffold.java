@@ -54,7 +54,7 @@ public class Scaffold extends Module {
             Vec3 vector = rayCastUtil.rayCastedBlock(this.yaw, this.pitch).hitVec;
             mc.gameSettings.keyBindSprint.pressed = false;
             mc.thePlayer.setSprinting(false);
-            // mc.gameSettings.keyBindSneak.pressed = true;
+            mc.gameSettings.keyBindSneak.pressed = true;
             if (mc.theWorld.getBlockState(new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY - 1, mc.thePlayer.posZ)).getBlock() instanceof BlockAir && rayCastUtil.rayCastedBlock(this.yaw, this.pitch) != null) {
                 if (timeHelper.hasReached(randomUtil.getRandomLong(1, 2))) {
                     mc.thePlayer.swingItem();

@@ -3,6 +3,7 @@ package koks.gui.clickgui.elements;
 import koks.Koks;
 import koks.gui.clickgui.elements.settings.DrawCheckBox;
 import koks.gui.clickgui.elements.settings.DrawComboBox;
+import koks.gui.clickgui.elements.settings.DrawKey;
 import koks.gui.clickgui.elements.settings.DrawSlider;
 import koks.module.Module;
 import koks.api.settings.Setting;
@@ -37,6 +38,8 @@ public class DrawModule {
                     elements.add(new DrawComboBox(setting));
                 if (setting.getType() == Setting.Type.SLIDER)
                     elements.add(new DrawSlider(setting));
+                if (setting.getType() == Setting.Type.KEY)
+                    elements.add(new DrawKey(setting));
             }
         }
     }

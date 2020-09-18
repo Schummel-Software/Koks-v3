@@ -9,6 +9,7 @@ import koks.event.impl.EventMoveFlying;
 import koks.event.impl.EventUpdate;
 import koks.module.Module;
 import koks.api.settings.Setting;
+import koks.module.impl.world.Scaffold;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityArmorStand;
@@ -94,6 +95,7 @@ public class KillAura extends Module {
     @Override
     public void onEvent(Event event) {
         if (event instanceof EventUpdate) {
+           /* Koks.getKoks().moduleManager.getModule(Scaffold.class).setToggled(false);*/
             setInfo(entities.size() + "");
             failing = new Random().nextInt(100) < failChance.getCurrentValue();
 

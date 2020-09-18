@@ -2,6 +2,7 @@ package koks.module.impl.movement;
 
 import koks.api.settings.Setting;
 import koks.event.Event;
+import koks.event.impl.EventUpdate;
 import koks.module.Module;
 
 public class Step extends Module {
@@ -14,12 +15,12 @@ public class Step extends Module {
 
     @Override
     public void onEvent(Event event) {
-
+        if(event instanceof EventUpdate)getPlayer().stepHeight = stepHeight.getCurrentValue();
     }
 
     @Override
     public void onEnable() {
-        getPlayer().stepHeight = stepHeight.getCurrentValue();
+
     }
 
     @Override
