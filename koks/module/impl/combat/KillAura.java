@@ -1,5 +1,6 @@
 package koks.module.impl.combat;
 
+import koks.Koks;
 import koks.api.util.*;
 import koks.event.Event;
 import koks.event.impl.EventJump;
@@ -43,23 +44,17 @@ public class KillAura extends Module {
     public Setting mobs = new Setting("Mobs", false, this);
 
     // BASIC ATTACK SETTINGS
-    public Setting hitRange = new Setting("Hit Range", 3.4F, 3.0F, 6.0F, false, this);
-    public Setting preAim = new Setting("Pre Aim", true, this);
-    public Setting extendedAimRange = new Setting("Aim Range", 0.1F, 0.0F, 1.0F, false, this);
-    public Setting cps = new Setting("CPS", 7.0F, 5.0F, 20.0F, true, this);
+    public Setting hitRange = new Setting("Hit Range", 3.5F, 3.0F, 6.0F, false, this);
+    public Setting preAim = new Setting("Pre Aim", false, this);
+    public Setting extendedAimRange = new Setting("Aim Range", 0.5F, 0.0F, 1.0F, false, this);
+    public Setting cps = new Setting("CPS", 5.0F, 5.0F, 20.0F, true, this);
     public Setting hurtTime = new Setting("HurtTime", 10.0F, 0.0F, 10.0F, true, this);
     public Setting fov = new Setting("Field of View", 360.0F, 10.0F, 360.0F, true, this);
-    public Setting failChance = new Setting("Failing Chance", 7.0F, 0.0F, 20.0F, true, this);
+    public Setting failChance = new Setting("Failing Chance", 5.0F, 0.0F, 20.0F, true, this);
 
     // AUTO BLOCK SETTINGS
-    public Setting autoBlock = new Setting("AutoBlock", true, this);
+    public Setting autoBlock = new Setting("AutoBlock", false, this);
     public Setting blockMode = new Setting("BlockMode", new String[]{"On Attack", "Half", "Full"}, "On Attack", this);
-
-    // SPECIFY ROTATION SETTINGS
-    public Setting smoothRotations = new Setting("Smooth Rotations", false, this);
-    public Setting lockView = new Setting("Lock View", false, this);
-    public Setting centerWidth = new Setting("Center Width", 2.0F, 1.0F, 10.0F, true, this);
-    public Setting prediction = new Setting("Prediction", 0.5F, 0.0F, 0.75F, false, this);
 
     // MOVEMENT SETTINGS
     public Setting fixMovement = new Setting("Fix Movement", true, this);
@@ -69,18 +64,20 @@ public class KillAura extends Module {
     // CUSTOM SETTINGS
     public Setting noSwing = new Setting("NoSwing", false, this);
     public Setting noSwingType = new Setting("NoSwingType", new String[]{"Vanilla", "Packet", "ServerSide"}, "Packet", this);
-    public Setting crackSize = new Setting("Crack Size", 2.0F, 1.0F, 10.0F, true, this);
+    public Setting crackSize = new Setting("Crack Size", 5.0F, 1.0F, 10.0F, true, this);
 
     // ANTI BOT SETTINGS
     public Setting healthNaNCheck = new Setting("Health NaN Check", false, this);
     public Setting nameCheck = new Setting("Name Check", true, this);
     public Setting ignoreInvisible = new Setting("Ignore Invisible", true, this);
     public Setting throughWalls = new Setting("Through Walls", false, this);
-    public Setting soundCheck = new Setting("Sound Check", true, this);
+    public Setting soundCheck = new Setting("Sound Check", false, this);
 
     public ArrayList<Entity> entities = new ArrayList<>();
     public Entity finalEntity;
 
+    public Rotations rotations;
+    public final MovementUtil movementUtil = new MovementUtil();
     public final RotationUtil rotationUtil = new RotationUtil();
     public final RayCastUtil rayCastUtil = new RayCastUtil();
     public final RandomUtil randomUtil = new RandomUtil();
@@ -111,10 +108,10 @@ public class KillAura extends Module {
         if (event instanceof EventMotion) {
             if (((EventMotion) event).getType() == EventMotion.Type.PRE) {
                 if (finalEntity != null) {
-                    float[] rotations = rotationUtil.faceEntity(finalEntity, yaw, pitch, smoothRotations.isToggled());
+                    float[] rotations = rotationUtil.faceEntity(finalEntity, yaw, pitch, this.rotations.smooth.isToggled(), this.rotations.accuracy.getCurrentValue(), this.rotations.precision.getCurrentValue(), this.rotations.predictionMultiplier.getCurrentValue());
                     yaw = rotationUtil.updateRotation(mc.thePlayer.rotationYaw, rotations[0], fov.getCurrentValue());
                     pitch = rotations[1];
-                    if (lockView.isToggled()) {
+                    if (this.rotations.lockView.isToggled()) {
                         mc.thePlayer.rotationYaw = yaw;
                         mc.thePlayer.rotationPitch = pitch;
                     } else {
@@ -176,25 +173,25 @@ public class KillAura extends Module {
                 mc.thePlayer.sendQueue.addToSendQueue(new C02PacketUseEntity(rayCastEntity, C02PacketUseEntity.Action.ATTACK));
             }
 
-            if (noSwing.isToggled()) {
-                switch (noSwingType.getCurrentMode()) {
-                    case "Vanilla":
-                        break;
-                    case "Packet":
-                        mc.thePlayer.sendQueue.addToSendQueue(new C0APacketAnimation());
-                        break;
-                    case "ServerSide":
-                        mc.thePlayer.sendQueue.addToSendQueue(new S0BPacketAnimation());
-                        break;
-                }
-            } else {
-                mc.thePlayer.swingItem();
-            }
-
             if (switchCounter < entities.size())
                 switchCounter++;
             else
                 switchCounter = 0;
+        }
+
+        if (noSwing.isToggled()) {
+            switch (noSwingType.getCurrentMode()) {
+                case "Vanilla":
+                    break;
+                case "Packet":
+                    mc.thePlayer.sendQueue.addToSendQueue(new C0APacketAnimation());
+                    break;
+                case "ServerSide":
+                    mc.thePlayer.sendQueue.addToSendQueue(new S0BPacketAnimation());
+                    break;
+            }
+        } else {
+            mc.thePlayer.swingItem();
         }
     }
 
@@ -307,6 +304,7 @@ public class KillAura extends Module {
 
     @Override
     public void onEnable() {
+        rotations = (Rotations) Koks.getKoks().moduleManager.getModule(Rotations.class);
         finalEntity = null;
         entities.clear();
     }

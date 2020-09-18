@@ -4,6 +4,7 @@ import koks.api.settings.Setting;
 import koks.event.Event;
 import koks.event.impl.EventPacket;
 import koks.event.impl.EventUpdate;
+import koks.event.impl.EventVelocity;
 import koks.module.Module;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S12PacketEntityVelocity;
@@ -43,12 +44,9 @@ public class Velocity extends Module {
                 }
                 break;
             case "Intave":
-                if (event instanceof EventUpdate) {
-                    if (getHurtTime() == 10 && getPlayer().onGround) {
-                        getPlayer().jump();
-                    }
-                    if (getHurtTime() == 7 || getHurtTime() == 8) {
-                        pushPlayer(0.12);
+                if (event instanceof EventVelocity) {
+                    if (getHurtTime() == 2 || getHurtTime() == 3 || getHurtTime() == 6 || getHurtTime() == 8 || getHurtTime() == 9) {
+                        ((EventVelocity) event).setHorizontal(0);
                     }
                 }
                 break;

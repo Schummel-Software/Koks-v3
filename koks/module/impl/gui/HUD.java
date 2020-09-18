@@ -6,6 +6,7 @@ import koks.event.impl.EventKeyPress;
 import koks.event.impl.EventRender2D;
 import koks.module.Module;
 import koks.api.settings.Setting;
+import koks.module.impl.combat.KillAura;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
@@ -44,7 +45,11 @@ public class HUD extends Module {
                 drawWaterMark();
             if (arrayList.isToggled())
                 drawArrayList();
-
+            KillAura killAura = (KillAura) Koks.getKoks().moduleManager.getModule(KillAura.class);
+            killAura.extendedAimRange.setVisible(killAura.preAim.isToggled());
+            killAura.preferType.setVisible(!killAura.attackType.getCurrentMode().equals("Switch"));
+            killAura.noSwingType.setVisible(killAura.noSwing.isToggled());
+            killAura.blockMode.setVisible(killAura.autoBlock.isToggled());
         }
 
         if (event instanceof EventKeyPress) {

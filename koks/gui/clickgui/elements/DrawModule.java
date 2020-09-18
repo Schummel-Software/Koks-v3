@@ -50,6 +50,8 @@ public class DrawModule {
 
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         Gui.drawRect(x, y, x + width, y + height, 0xFF202020);
+        if (isHovered(mouseX, mouseY))
+            Gui.drawRect(x, y, x + width, y + height, 0xBB252525);
         Color textColor = module.isToggled() ? Koks.getKoks().clientColor : new Color(0xFFFFFFFF);
         if (!elements.isEmpty())
             fr.drawStringWithShadow(extended ? "-" : "+", x + width - 10, y + height / 2 - fr.FONT_HEIGHT / 2 + 1, 0xFFFFFFFF);

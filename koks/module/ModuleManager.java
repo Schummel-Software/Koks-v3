@@ -50,6 +50,7 @@ public class ModuleManager {
         addModule(new Step());
         addModule(new Phase());
         addModule(new SetBack());
+        addModule(new Rotations());
 
         modules.sort(Comparator.comparing(Module::getName));
     }
