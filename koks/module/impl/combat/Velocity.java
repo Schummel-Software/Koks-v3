@@ -48,7 +48,6 @@ public class Velocity extends Module {
                     if (getHurtTime() == 2 || getHurtTime() == 4 || getHurtTime() == 6 || getHurtTime() == 8) {
                         ((EventVelocity) event).setHorizontal(0);
                     }else if(getHurtTime() == 10) {
-                        ((EventVelocity) event).setHorizontal(0);
                         pushPlayer(0.1);
                     }
                 }

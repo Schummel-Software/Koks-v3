@@ -1,5 +1,6 @@
 package koks.module.impl.world;
 
+import koks.api.settings.Setting;
 import koks.api.util.RandomUtil;
 import koks.api.util.RayCastUtil;
 import koks.api.util.RotationUtil;
@@ -12,9 +13,11 @@ import koks.event.impl.EventUpdate;
 import koks.module.Module;
 import net.minecraft.block.BlockAir;
 import net.minecraft.init.Blocks;
+import net.minecraft.network.play.client.C0APacketAnimation;
 import net.minecraft.network.play.client.C0BPacketEntityAction;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 
 import java.util.Random;
@@ -32,6 +35,27 @@ public class Scaffold extends Module {
     public float yaw, pitch;
     public int count;
 
+    public Setting delay = new Setting("Delay", 0F, 0F, 300F, true, this);
+    public Setting motion = new Setting("Motion", 1F, 0F, 1F, false, this);
+
+    public Setting rayCast = new Setting("Raycast", true, this);
+    public Setting intave = new Setting("Intave", true, this);
+
+    public Setting pitchVal = new Setting("Pitch", 82F, 75F, 95F, true, this);
+
+    public Setting safeWalk = new Setting("SafeWalk", true, this);
+    public Setting sneak = new Setting("Sneak", false, this);
+    public Setting jumpFix = new Setting("JumpFix", false, this);
+
+    public Setting sprint = new Setting("Sprint", false, this);
+
+    public Setting noSwing = new Setting("NoSwing", false, this);
+    public Setting noSwingType = new Setting("NoSwing-Type", new String[] {"Vanilla", "Packet"},"Packet", this);
+
+
+
+
+
     public Scaffold() {
         super("Scaffold", "Place blocks in your world", Category.WORLD);
     }
@@ -39,7 +63,8 @@ public class Scaffold extends Module {
     @Override
     public void onEvent(Event event) {
         if (event instanceof EventSafeWalk) {
-            ((EventSafeWalk) event).setSafe(true);
+            if (safeWalk.isToggled())
+                ((EventSafeWalk) event).setSafe(true);
         }
         if (event instanceof EventMotion && ((EventMotion) event).getType() == EventMotion.Type.PRE) {
             float[] rotations = getRotation();
@@ -52,16 +77,31 @@ public class Scaffold extends Module {
             BlockPos pos = rayCastUtil.rayCastedBlock(this.yaw, this.pitch).getBlockPos();
             EnumFacing face = rayCastUtil.rayCastedBlock(this.yaw, this.pitch).sideHit;
             Vec3 vector = rayCastUtil.rayCastedBlock(this.yaw, this.pitch).hitVec;
-            mc.gameSettings.keyBindSprint.pressed = false;
-
-            mc.thePlayer.setSprinting(false);
-            if (mc.theWorld.getBlockState(new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY - 1, mc.thePlayer.posZ)).getBlock() instanceof BlockAir && rayCastUtil.rayCastedBlock(this.yaw, this.pitch) != null) {
-                if (timeHelper.hasReached(randomUtil.getRandomLong(1, 2))) {
-                    mc.thePlayer.swingItem();
-                    double vecFix = randomUtil.getRandomDouble(0.2, 0.8);
-                    mc.playerController.onPlayerRightClick(mc.thePlayer, mc.theWorld, mc.thePlayer.getCurrentEquippedItem(), pos, face, new Vec3(vector.xCoord + vecFix, vector.yCoord + vecFix, vector.zCoord + vecFix));
-                    mc.thePlayer.motionX *= 0.25;
-                    mc.thePlayer.motionZ *= 0.25;
+            mc.gameSettings.keyBindSprint.pressed = sprint.isToggled();
+            mc.gameSettings.keyBindSneak.pressed = sneak.isToggled();
+            mc.thePlayer.setSprinting(sprint.isToggled());
+            if (mc.theWorld.getBlockState(new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY - 1, mc.thePlayer.posZ)).getBlock() instanceof BlockAir && (!rayCast.isToggled() || rayCastUtil.rayCastedBlock(this.yaw, this.pitch) != null)) {
+                if (timeHelper.hasReached(randomUtil.getRandomLong((long) delay.getCurrentValue(), (long) delay.getCurrentValue() + 1))) {
+                    if(noSwing.isToggled()) {
+                        switch (noSwingType.getCurrentMode()) {
+                            case "Vanilla":
+                                break;
+                            case "Packet":
+                                getPlayer().sendQueue.addToSendQueue(new C0APacketAnimation());
+                                break;
+                        }
+                    }else {
+                        mc.thePlayer.swingItem();
+                    }
+                    if (intave.isToggled()) {
+                        MovingObjectPosition ray = rayCastUtil.rayCastedBlock(yaw, pitch);
+                        mc.playerController.onPlayerRightClick(getPlayer(), mc.theWorld, getPlayer().getCurrentEquippedItem(), ray.getBlockPos(), ray.sideHit, ray.hitVec);
+                    } else {
+                        double vecFix = randomUtil.getRandomDouble(0.2, 0.8);
+                        mc.playerController.onPlayerRightClick(mc.thePlayer, mc.theWorld, mc.thePlayer.getCurrentEquippedItem(), pos, face, new Vec3(vector.xCoord + vecFix, vector.yCoord + vecFix, vector.zCoord + vecFix));
+                    }
+                    mc.thePlayer.motionX *= motion.getCurrentValue();
+                    mc.thePlayer.motionZ *= motion.getCurrentValue();
                     timeHelper.reset();
                 }
             } else {
@@ -71,12 +111,13 @@ public class Scaffold extends Module {
         }
 
         if (event instanceof EventJump) {
-            ((EventJump) event).setYaw(yaw);
+            if (jumpFix.isToggled())
+                ((EventJump) event).setYaw(yaw);
         }
     }
 
     public float[] getRotation() {
-        float pitch = mc.thePlayer.onGround ? 82 : 90;
+        float pitch = mc.thePlayer.onGround ? pitchVal.getCurrentValue() : 90;
 
         boolean forward = mc.gameSettings.keyBindForward.isKeyDown();
         boolean left = mc.gameSettings.keyBindLeft.isKeyDown();

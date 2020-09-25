@@ -34,6 +34,7 @@ public class GodMode extends Module {
         }
 
         if (event instanceof EventUpdate) {
+            setInfo(mode.getCurrentMode());
             if (mode.getCurrentMode().equalsIgnoreCase("Intave Border")) {
                 if (!mc.thePlayer.isOutsideBorder()) {
                     if (mc.gameSettings.keyBindForward.pressed) {
