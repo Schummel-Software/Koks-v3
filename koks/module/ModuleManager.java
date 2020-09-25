@@ -32,6 +32,7 @@ public class ModuleManager {
         addModule(new InventoryCleaner());
         addModule(new AutoArmor());
         addModule(new GodMode());
+        addModule(new FastBow());
         addModule(new Jesus());
         addModule(new ESP());
         addModule(new NoCobweb());

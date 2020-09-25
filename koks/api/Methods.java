@@ -1,9 +1,12 @@
 package koks.api;
 
+import koks.Koks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.Timer;
 import net.minecraft.world.World;
 
@@ -17,6 +20,10 @@ public class Methods {
 
     public EntityPlayerSP getPlayer() {
         return mc.thePlayer;
+    }
+
+    public PlayerControllerMP getPlayerController() {
+        return mc.playerController;
     }
 
     public World getWorld() {
@@ -38,6 +45,16 @@ public class Methods {
     public double getDirection() {
         return Math.toRadians(getPlayer().rotationYaw);
     }
+
+    public void sendmsg(String msg, boolean prefix) {
+        mc.thePlayer.addChatMessage(new ChatComponentText((prefix ? Koks.getKoks().PREFIX : "") + msg));
+    }
+
+    public void sendError(String type, String solution) {
+        sendmsg("§c§lERROR §e" + type.toUpperCase() + "§7: §f" + solution, true);
+    }
+
+    public Koks getKoks(){return Koks.getKoks();}
 
     public void pushPlayer(double push) {
         double x = -Math.sin(getDirection());

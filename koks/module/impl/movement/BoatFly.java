@@ -29,8 +29,8 @@ public class BoatFly extends Module {
             else {
                 if(ride) {
                     Vec3 look = mc.thePlayer.getLookVec();
-                    mc.thePlayer.motionZ = look.zCoord * AAC4Boost.getCurrentValue();
-                    mc.thePlayer.motionX = look.xCoord * AAC4Boost.getCurrentValue();
+                    mc.thePlayer.motionZ = look.zCoord * (AAC4Boost.getCurrentValue());
+                    mc.thePlayer.motionX = look.xCoord * (AAC4Boost.getCurrentValue());
                     mc.thePlayer.motionY = 1;
                     ride = false;
                 }

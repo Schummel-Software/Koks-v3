@@ -13,7 +13,7 @@ import net.minecraft.util.BlockPos;
  */
 public class Jesus extends Module {
 
-    public Setting mode = new Setting("Mode",new String[] {"Intave"},"Intave",this);
+    public Setting mode = new Setting("Mode", new String[]{"Intave"}, "Intave", this);
 
     public Jesus() {
         super("Jesus", "You can walk on water", Category.MOVEMENT);
@@ -21,19 +21,24 @@ public class Jesus extends Module {
 
     @Override
     public void onEvent(Event event) {
-        if(event instanceof EventUpdate) {
+        if (event instanceof EventUpdate) {
             setInfo(mode.getCurrentMode());
-            switch(mode.getCurrentMode()) {
+            switch (mode.getCurrentMode()) {
                 case "Intave":
                     BlockPos bPos = new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ);
-                    if (mc.theWorld.getBlockState(bPos).getBlock() == Blocks.water || mc.theWorld.getBlockState(bPos).getBlock() == Blocks.flowing_water || mc.theWorld.getBlockState(bPos).getBlock() == Blocks.lava || mc.theWorld.getBlockState(bPos).getBlock() == Blocks.flowing_lava) {
-                        mc.gameSettings.keyBindJump.pressed = false;
-                        mc.thePlayer.motionY = 0.005;
 
-                        mc.thePlayer.onGround = true;
-                        mc.thePlayer.motionZ *= 0.9F;
-                        mc.thePlayer.motionX *= 0.9F;
-                        break;
+                    if (mc.theWorld.getBlockState(bPos).getBlock() == Blocks.water || mc.theWorld.getBlockState(bPos).getBlock() == Blocks.flowing_water || mc.theWorld.getBlockState(bPos).getBlock() == Blocks.lava || mc.theWorld.getBlockState(bPos).getBlock() == Blocks.flowing_lava) {
+                        if (mc.thePlayer.isInWater()) {
+                            mc.gameSettings.keyBindJump.pressed = false;
+                            mc.thePlayer.motionY = 0.005;
+
+                            mc.thePlayer.onGround = true;
+                            mc.thePlayer.motionZ *= 0.9F;
+                            mc.thePlayer.motionX *= 0.9F;
+                            break;
+                        } else {
+                            mc.thePlayer.motionY = 0;
+                        }
                     }
             }
         }

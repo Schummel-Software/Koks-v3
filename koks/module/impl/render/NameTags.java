@@ -43,8 +43,7 @@ public class NameTags extends Module {
                     float finalHealth = Float.isNaN(((EntityLivingBase) entity).getHealth()) ? -1 : Math.round(((EntityLivingBase) entity).getHealth() * 5);
                     String colorPrefix = finalHealth == -1 ? "" : (finalHealth >= 80 ? "§a" : finalHealth < 80 && finalHealth >= 60 ? "§e" : finalHealth < 60 && finalHealth >= 40 ? "§6" : finalHealth < 40 && finalHealth >= 20 ? "§c" : finalHealth < 20 ? "§4" : "§f");
                     String health = finalHealth == -1 ? "" : " " + colorPrefix + Math.round(finalHealth) + "%";
-
-                    String tagText = name + health;
+                    String tagText = name + " " + health;
 
                     GL11.glPushMatrix();
                     GL11.glTranslated(x, y + 2.1 - height, z);

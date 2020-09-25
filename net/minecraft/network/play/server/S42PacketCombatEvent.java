@@ -6,6 +6,7 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.INetHandlerPlayClient;
 import net.minecraft.util.CombatTracker;
+import org.lwjgl.Sys;
 
 public class S42PacketCombatEvent implements Packet<INetHandlerPlayClient>
 {

@@ -53,13 +53,15 @@ public class Scaffold extends Module {
             EnumFacing face = rayCastUtil.rayCastedBlock(this.yaw, this.pitch).sideHit;
             Vec3 vector = rayCastUtil.rayCastedBlock(this.yaw, this.pitch).hitVec;
             mc.gameSettings.keyBindSprint.pressed = false;
+
             mc.thePlayer.setSprinting(false);
-            mc.gameSettings.keyBindSneak.pressed = true;
             if (mc.theWorld.getBlockState(new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY - 1, mc.thePlayer.posZ)).getBlock() instanceof BlockAir && rayCastUtil.rayCastedBlock(this.yaw, this.pitch) != null) {
                 if (timeHelper.hasReached(randomUtil.getRandomLong(1, 2))) {
                     mc.thePlayer.swingItem();
                     double vecFix = randomUtil.getRandomDouble(0.2, 0.8);
                     mc.playerController.onPlayerRightClick(mc.thePlayer, mc.theWorld, mc.thePlayer.getCurrentEquippedItem(), pos, face, new Vec3(vector.xCoord + vecFix, vector.yCoord + vecFix, vector.zCoord + vecFix));
+                    mc.thePlayer.motionX *= 0.25;
+                    mc.thePlayer.motionZ *= 0.25;
                     timeHelper.reset();
                 }
             } else {

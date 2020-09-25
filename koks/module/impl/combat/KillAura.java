@@ -3,10 +3,7 @@ package koks.module.impl.combat;
 import koks.Koks;
 import koks.api.util.*;
 import koks.event.Event;
-import koks.event.impl.EventJump;
-import koks.event.impl.EventMotion;
-import koks.event.impl.EventMoveFlying;
-import koks.event.impl.EventUpdate;
+import koks.event.impl.*;
 import koks.module.Module;
 import koks.api.settings.Setting;
 import koks.module.impl.world.Scaffold;
@@ -18,10 +15,12 @@ import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemSword;
+import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.C02PacketUseEntity;
 import net.minecraft.network.play.client.C07PacketPlayerDigging;
 import net.minecraft.network.play.client.C0APacketAnimation;
-import net.minecraft.network.play.server.S0BPacketAnimation;
+import net.minecraft.network.play.client.C0BPacketEntityAction;
+import net.minecraft.network.play.server.*;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumFacing;
@@ -94,8 +93,10 @@ public class KillAura extends Module {
 
     @Override
     public void onEvent(Event event) {
+
         if (event instanceof EventUpdate) {
-           /* Koks.getKoks().moduleManager.getModule(Scaffold.class).setToggled(false);*/
+            /* Koks.getKoks().moduleManager.getModule(Scaffold.class).setToggled(false);*/
+
             setInfo(entities.size() + "");
             failing = new Random().nextInt(100) < failChance.getCurrentValue();
 
@@ -300,7 +301,7 @@ public class KillAura extends Module {
 
     public boolean checkedName(Entity entity) {
         if (!validEntityName(entity))
-                return false;
+            return false;
         return true;
     }
 

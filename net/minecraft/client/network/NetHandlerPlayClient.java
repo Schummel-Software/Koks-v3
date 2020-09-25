@@ -16,6 +16,7 @@ import java.util.Map.Entry;
 
 import koks.Koks;
 import koks.event.impl.EventHeadLook;
+import koks.event.impl.EventPacket;
 import koks.event.impl.EventVelocity;
 import net.minecraft.block.Block;
 import net.minecraft.client.ClientBrandRetriever;
@@ -830,6 +831,8 @@ public class NetHandlerPlayClient implements INetHandlerPlayClient
 
     public void addToSendQueue(Packet p_147297_1_)
     {
+        EventPacket eventPacket = new EventPacket(p_147297_1_, EventPacket.Type.SEND);
+        Koks.getKoks().eventManager.onEvent(eventPacket);
         this.netManager.sendPacket(p_147297_1_);
     }
 

@@ -21,7 +21,6 @@ public class SetBack extends Module {
 
     public SetBack() {
         super("SetBack", "Your respawn at the same position", Category.PLAYER);
-        registerSetting(mode);
     }
 
     public void aac301() {

@@ -18,12 +18,14 @@ public class Phase extends Module {
     }
 
     public void Hive() {
-        double motionX = -(Math.sin(Math.toRadians(mc.thePlayer.rotationYaw)) * 0.7);
-        double motionZ = Math.cos(Math.toRadians(mc.thePlayer.rotationYaw)) * 0.7;
-        mc.thePlayer.setPosition(mc.thePlayer.posX + motionX, mc.thePlayer.posY, mc.thePlayer.posZ + motionZ);
+        if(getPlayer().isCollidedHorizontally) {
+            double motionX = -(Math.sin(Math.toRadians(mc.thePlayer.rotationYaw)) * 0.7);
+            double motionZ = Math.cos(Math.toRadians(mc.thePlayer.rotationYaw)) * 0.7;
+            mc.thePlayer.setPosition(mc.thePlayer.posX + motionX, mc.thePlayer.posY, mc.thePlayer.posZ + motionZ);
 
-        mc.thePlayer.motionY = 0;
-        mc.thePlayer.onGround = true;
+            mc.thePlayer.motionY = 0;
+            mc.thePlayer.onGround = true;
+        }
     }
 
     @Override

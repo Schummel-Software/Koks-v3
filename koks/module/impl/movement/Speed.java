@@ -5,6 +5,7 @@ import koks.api.util.MovementUtil;
 import koks.event.Event;
 import koks.event.impl.EventUpdate;
 import koks.module.Module;
+import net.minecraft.network.play.client.C03PacketPlayer;
 
 /**
  * @author avox | lmao | kroko
@@ -24,8 +25,9 @@ public class Speed extends Module {
         if (event instanceof EventUpdate) {
             switch (mode.getCurrentMode()) {
                 case "Legit":
-                    if (mc.thePlayer.onGround && mc.currentScreen == null) mc.thePlayer.jump();
-                    mc.thePlayer.speedInAir = 0.0202F;
+                    if (mc.thePlayer.onGround) getPlayer().sendQueue.addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY + 0.1, mc.thePlayer.posZ, true));//0.42
+                    if(!mc.thePlayer.onGround) getPlayer().sendQueue.addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY - 0.1, mc.thePlayer.posZ, true));
+                    mc.thePlayer.onGround = true;
                     mc.thePlayer.setSprinting(true);
                     break;
                 case "MCCentral":

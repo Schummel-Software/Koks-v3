@@ -26,10 +26,9 @@ public class MovementUtil extends Methods {
     }
 
     public void setSpeed(double speed) {
-        if (isMoving()) {
+
             mc.thePlayer.motionX = -Math.sin(Math.toRadians(getDirection(mc.thePlayer.rotationYaw))) * speed;
             mc.thePlayer.motionZ = Math.cos(Math.toRadians(getDirection(mc.thePlayer.rotationYaw))) * speed;
-        }
     }
 
     public void moveFlying(EventMoveFlying eventMoveFlying, float yaw) {

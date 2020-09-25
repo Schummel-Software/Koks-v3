@@ -151,13 +151,14 @@ public class NetworkManager extends SimpleChannelInboundHandler<Packet>
 
     protected void channelRead0(ChannelHandlerContext p_channelRead0_1_, Packet p_channelRead0_2_) throws Exception
     {
+        EventPacket event = new EventPacket(p_channelRead0_2_, EventPacket.Type.RECEIVE);
+        Koks.getKoks().eventManager.onEvent(event);
+        if (event.isCanceled()) return;
         if (this.channel.isOpen())
         {
             try
             {
-                EventPacket event = new EventPacket(p_channelRead0_2_, EventPacket.Type.RECEIVE);
-                Koks.getKoks().eventManager.onEvent(event);
-                if (event.isCanceled()) return;
+
                 
                 p_channelRead0_2_.processPacket(this.packetListener);
             }

@@ -65,8 +65,10 @@ public class RotationUtil {
         float[] yawDiff = calculateDiff(currentYaw, yaw);
         float[] pitchDiff = calculateDiff(currentPitch, pitch);
         float[] fixed = fixedSensitivity(mc.gameSettings.mouseSensitivity, yawDiff[0], pitchDiff[0]);
+
         yawDiff[0] = fixed[0];
         pitchDiff[0] = fixed[1];
+
         if (yawDiff[1] == 1) {
             if (yaw > currentYaw) currentYaw -= yawDiff[0];
             else if (yaw < currentYaw) currentYaw += yawDiff[0];

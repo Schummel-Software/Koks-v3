@@ -1,12 +1,17 @@
 package koks.module.impl.movement;
 
+import koks.Koks;
 import koks.api.settings.Setting;
 import koks.api.util.MovementUtil;
+import koks.api.util.TimeHelper;
 import koks.event.Event;
 import koks.event.impl.EventPacket;
 import koks.event.impl.EventUpdate;
 import koks.module.Module;
+import koks.module.impl.debug.Debug;
 import net.minecraft.network.play.client.C03PacketPlayer;
+
+import java.sql.Time;
 
 /**
  * @author avox | lmao | kroko
@@ -17,6 +22,8 @@ public class Fly extends Module {
     public Setting aac3312boost = new Setting("AAC3.3.12-Boost", 9F, 1F, 10F, true, this);
     public Setting mode = new Setting("Mode", new String[]{"AAC3.3.12", "MCCentral", "CubeCraft"}, "AAC3.3.12", this);
     private final MovementUtil movementUtil = new MovementUtil();
+    public TimeHelper timeHelper = new TimeHelper();
+    public TimeHelper damageTime = new TimeHelper();
 
     public Fly() {
         super("Fly", "Flying around the world", Category.MOVEMENT);
@@ -44,10 +51,21 @@ public class Fly extends Module {
                 break;
             case "CubeCraft":
                 if (event instanceof EventUpdate) {
-                    mc.thePlayer.motionY = -0.0;
+                    mc.thePlayer.motionY = 0.0;
                     mc.timer.timerSpeed = 0.3F;
                     if (mc.thePlayer.ticksExisted % 2 == 0) {
                         mc.thePlayer.motionY -= 0.01;
+                    }
+
+                    if(damageTime.hasReached(1500)) {
+
+
+                        damageTime.reset();
+                    }
+
+                    if(timeHelper.hasReached(800)) {
+                        movementUtil.setSpeed(0.4);
+                        timeHelper.reset();
                     }
                 }
                 break;
@@ -56,12 +74,9 @@ public class Fly extends Module {
 
     @Override
     public void onEnable() {
-        double x = mc.thePlayer.posX;
-        double y = mc.thePlayer.posY;
-        double z = mc.thePlayer.posZ;
-        mc.thePlayer.sendQueue.addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(x, y - 4, z, false));
-        mc.thePlayer.sendQueue.addToSendQueue(new C03PacketPlayer(true));
-        mc.thePlayer.sendQueue.addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(x, y, z, false));
+        timeHelper.reset();
+        damageTime.reset();
+
     }
 
     @Override

@@ -13,7 +13,7 @@ import net.minecraft.util.BlockPos;
  */
 public class NoCobweb extends Module {
 
-    public Setting mode = new Setting("Mode", new String[] {"Intave"}, "Intave", this);
+    public Setting mode = new Setting("Mode", new String[]{"Intave"}, "Intave", this);
 
     public NoCobweb() {
         super("NoCobweb", "You doesn't affect by cobweb", Category.MOVEMENT);
@@ -26,12 +26,20 @@ public class NoCobweb extends Module {
             switch (mode.getCurrentMode()) {
                 case "Intave":
                     BlockPos bPos = new BlockPos(mc.thePlayer.getPosition());
-                    if (mc.theWorld.getBlockState(new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY - 0.1, mc.thePlayer.posZ)).getBlock() == Blocks.web) {
-                        mc.thePlayer.motionY = 0.06;
+                    if (!mc.thePlayer.isInWeb) {
+                        if (mc.theWorld.getBlockState(new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY - 0.1, mc.thePlayer.posZ)).getBlock() == Blocks.web) {
+
+                            mc.thePlayer.motionY = 0;
+                        }
+                    } else {
+                        mc.thePlayer.motionY = 0.26;
                     }
                     break;
             }
+
+
         }
+
     }
 
     @Override

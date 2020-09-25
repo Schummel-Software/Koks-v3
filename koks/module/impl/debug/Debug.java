@@ -1,9 +1,24 @@
 package koks.module.impl.debug;
 
+import koks.api.util.MovementUtil;
 import koks.api.util.TimeHelper;
 import koks.event.Event;
+import koks.event.impl.EventMotion;
+import koks.event.impl.EventPacket;
+import koks.event.impl.EventTick;
+import koks.event.impl.EventUpdate;
 import koks.module.Module;
 import koks.api.settings.Setting;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerCapabilities;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.client.*;
+import net.minecraft.network.play.server.*;
+import org.lwjgl.Sys;
+
+import java.util.UUID;
 
 /**
  * @author deleteboys | lmao | kroko
@@ -23,6 +38,54 @@ public class Debug extends Module {
 
     @Override
     public void onEvent(Event event) {
+        if (event instanceof EventUpdate) {
+           /* for(Entity entity : getWorld().loadedEntityList) {
+                if(entity.getDistanceSqToEntity(getPlayer()) < 8 && entity instanceof EntityPlayer) {
+                    if(((EntityPlayer) entity).hurtTime != 0 && entity != getPlayer()) {
+                        mc.thePlayer.sendQueue.addToSendQueue(new C);
+                    }
+                }
+           }*/
+            MovementUtil movementUtil = new MovementUtil();
+            if (getPlayer().onGround) {
+
+                mc.thePlayer.motionY = 0.21;
+            } else {
+                getPlayer().setSprinting(false);
+            }
+            if (timeHelper.hasReached(300)) {
+
+                if (getPlayer().onGround) {
+
+
+                    movementUtil.setSpeed(0.35);
+                    getPlayer().setSprinting(true);
+                    timeHelper.reset();
+
+                }
+
+
+            }
+        }
+
+        if (event instanceof EventPacket) {
+            if (((EventPacket) event).getType() == EventPacket.Type.SEND) {
+                Packet packet = ((EventPacket) event).getPacket();
+                if (!(packet instanceof C03PacketPlayer || packet instanceof C0APacketAnimation || packet instanceof C09PacketHeldItemChange || packet instanceof C0EPacketClickWindow))
+                    System.out.println(packet);
+            }
+        }
+
+            /*                        mc.thePlayer.sendQueue.addToSendQueue(new C16PacketClientStatus(C16PacketClientStatus.EnumState.PERFORM_RESPAWN));
+
+            if (event instanceof EventPacket && ((EventPacket) event).getType() == EventPacket.Type.RECEIVE) {
+             if(packet instanceof S06PacketUpdateHealth) {
+                S06PacketUpdateHealth s06PacketUpdateHealth = (S06PacketUpdateHealth) packet;
+
+                sendmsg("damage " + s06PacketUpdateHealth.getHealth(), true);
+            }*/
+
+
     }
 
 
