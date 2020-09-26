@@ -2,8 +2,14 @@ package koks.module.impl.debug;
 
 import koks.api.util.TimeHelper;
 import koks.event.Event;
+import koks.event.impl.EventKeyPress;
 import koks.event.impl.EventUpdate;
 import koks.module.Module;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.inventory.GuiChest;
+import net.minecraft.client.gui.inventory.GuiInventory;
+import net.minecraft.client.settings.KeyBinding;
+import org.lwjgl.input.Keyboard;
 
 /**
  * @author deleteboys | lmao | kroko
@@ -20,14 +26,6 @@ public class Test extends Module {
     @Override
     public void onEvent(Event event) {
         if (event instanceof EventUpdate) {
-            if (mc.thePlayer.moveForward != 0 && timeHelper.hasReached(150)) {
-                double x = -Math.sin(getDirection());
-                double z = Math.cos(getDirection());
-                mc.thePlayer.setPosition(mc.thePlayer.posX + x * 0.1, mc.thePlayer.posY, mc.thePlayer.posZ + z * 0.1);
-                if (mc.thePlayer.isOutsideBorder()) {
-                    mc.thePlayer.isDead = true;
-                }
-            }
         }
     }
 
@@ -38,7 +36,6 @@ public class Test extends Module {
 
     @Override
     public void onDisable() {
-        mc.thePlayer.isDead = false;
     }
 
 }

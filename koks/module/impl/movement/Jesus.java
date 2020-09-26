@@ -37,7 +37,10 @@ public class Jesus extends Module {
                             mc.thePlayer.motionX *= 0.9F;
                             break;
                         } else {
-                            mc.thePlayer.motionY = 0;
+                            if (!mc.thePlayer.isCollidedHorizontally)
+                                mc.thePlayer.motionY = 0;
+                            else
+                                mc.thePlayer.motionY = 0.02;
                         }
                     }
             }

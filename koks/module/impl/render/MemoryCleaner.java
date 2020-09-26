@@ -17,8 +17,10 @@ public class MemoryCleaner extends Module {
     @Override
     public void onEvent(Event event) {
         if(event instanceof EventUpdate) {
-            if(Runtime.getRuntime().totalMemory() >= (Runtime.getRuntime().maxMemory() - (Runtime.getRuntime().maxMemory() / 3))){
+            if(Runtime.getRuntime().totalMemory() >= ((Runtime.getRuntime().maxMemory() / 2))){
+                sendmsg("§aCleared Memory §7(§c" + Runtime.getRuntime().totalMemory() + "§7/§e" + Runtime.getRuntime().maxMemory() + "§7)", true);
                 System.gc();
+
             }
         }
     }

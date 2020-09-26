@@ -11,8 +11,12 @@ import koks.event.impl.EventMotion;
 import koks.event.impl.EventSafeWalk;
 import koks.event.impl.EventUpdate;
 import koks.module.Module;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemStack;
+import net.minecraft.network.play.client.C09PacketHeldItemChange;
 import net.minecraft.network.play.client.C0APacketAnimation;
 import net.minecraft.network.play.client.C0BPacketEntityAction;
 import net.minecraft.util.BlockPos;
@@ -20,6 +24,9 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -38,6 +45,8 @@ public class Scaffold extends Module {
     public Setting delay = new Setting("Delay", 0F, 0F, 300F, true, this);
     public Setting motion = new Setting("Motion", 1F, 0F, 1F, false, this);
 
+    public Setting silent = new Setting("Silent",true, this);
+
     public Setting rayCast = new Setting("Raycast", true, this);
     public Setting intave = new Setting("Intave", true, this);
 
@@ -52,12 +61,13 @@ public class Scaffold extends Module {
     public Setting noSwing = new Setting("NoSwing", false, this);
     public Setting noSwingType = new Setting("NoSwing-Type", new String[] {"Vanilla", "Packet"},"Packet", this);
 
-
+    public List<Block> blackList;
 
 
 
     public Scaffold() {
         super("Scaffold", "Place blocks in your world", Category.WORLD);
+        blackList = Arrays.asList(Blocks.crafting_table, Blocks.chest, Blocks.enchanting_table, Blocks.anvil, Blocks.sand, Blocks.gravel, Blocks.glass_pane, Blocks.stained_glass_pane, Blocks.ice, Blocks.packed_ice, Blocks.cobblestone_wall, Blocks.water, Blocks.lava, Blocks.web, Blocks.sapling, Blocks.rail, Blocks.golden_rail, Blocks.activator_rail, Blocks.detector_rail, Blocks.tnt, Blocks.red_flower, Blocks.yellow_flower, Blocks.flower_pot, Blocks.tallgrass, Blocks.red_mushroom, Blocks.brown_mushroom, Blocks.ladder, Blocks.torch, Blocks.stone_button, Blocks.wooden_button, Blocks.redstone_torch, Blocks.redstone_wire, Blocks.furnace, Blocks.cactus, Blocks.oak_fence, Blocks.acacia_fence, Blocks.nether_brick_fence, Blocks.birch_fence, Blocks.dark_oak_fence, Blocks.jungle_fence, Blocks.oak_fence, Blocks.acacia_fence_gate, Blocks.snow_layer, Blocks.trapdoor, Blocks.ender_chest, Blocks.beacon, Blocks.hopper, Blocks.daylight_detector, Blocks.daylight_detector_inverted, Blocks.carpet);
     }
 
     @Override
@@ -93,12 +103,26 @@ public class Scaffold extends Module {
                     }else {
                         mc.thePlayer.swingItem();
                     }
+                    ItemStack blockItem = null;
+                    if(silent.isToggled() && (getPlayer().getCurrentEquippedItem() == null || !(getPlayer().getCurrentEquippedItem().getItem() instanceof ItemBlock))) {
+                        for(int i = 0; i < 9; i++) {
+                            if(getPlayer().inventory.getStackInSlot(i) != null && getPlayer().inventory.getStackInSlot(i).getItem() instanceof ItemBlock) {
+                                ItemBlock itemBlock = (ItemBlock) mc.thePlayer.inventory.getStackInSlot(i).getItem();
+                                if (this.blackList.contains(itemBlock.getBlock()))
+                                    continue;
+                                getPlayer().sendQueue.addToSendQueue(new C09PacketHeldItemChange(i));
+                                blockItem = mc.thePlayer.inventory.getStackInSlot(i);
+                            }
+                        }
+                    }else{
+                        blockItem = mc.thePlayer.getCurrentEquippedItem();
+                    }
                     if (intave.isToggled()) {
                         MovingObjectPosition ray = rayCastUtil.rayCastedBlock(yaw, pitch);
-                        mc.playerController.onPlayerRightClick(getPlayer(), mc.theWorld, getPlayer().getCurrentEquippedItem(), ray.getBlockPos(), ray.sideHit, ray.hitVec);
+                        mc.playerController.onPlayerRightClick(getPlayer(), mc.theWorld, blockItem, ray.getBlockPos(), ray.sideHit, ray.hitVec);
                     } else {
                         double vecFix = randomUtil.getRandomDouble(0.2, 0.8);
-                        mc.playerController.onPlayerRightClick(mc.thePlayer, mc.theWorld, mc.thePlayer.getCurrentEquippedItem(), pos, face, new Vec3(vector.xCoord + vecFix, vector.yCoord + vecFix, vector.zCoord + vecFix));
+                        mc.playerController.onPlayerRightClick(mc.thePlayer, mc.theWorld, blockItem, pos, face, new Vec3(vector.xCoord + vecFix, vector.yCoord + vecFix, vector.zCoord + vecFix));
                     }
                     mc.thePlayer.motionX *= motion.getCurrentValue();
                     mc.thePlayer.motionZ *= motion.getCurrentValue();
@@ -158,6 +182,7 @@ public class Scaffold extends Module {
     @Override
     public void onDisable() {
         mc.gameSettings.keyBindSneak.pressed = false;
+        getPlayer().sendQueue.addToSendQueue(new C09PacketHeldItemChange(getPlayer().inventory.currentItem));
     }
 
 }

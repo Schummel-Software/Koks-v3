@@ -45,13 +45,14 @@ public class Velocity extends Module {
                 break;
             case "Intave":
                 if (event instanceof EventVelocity) {
-                    if (getHurtTime() == 2 || getHurtTime() == 4 || getHurtTime() == 6 || getHurtTime() == 8) {
-                        ((EventVelocity) event).setHorizontal(0);
-                    }else if(getHurtTime() == 10) {
-                        pushPlayer(0.1);
+                    if (getHurtTime() == 10 && getPlayer().onGround) {
+                        getPlayer().jump();
                     }
+                    if (getHurtTime() == 7 || getHurtTime() == 8) {
+                        pushPlayer(0.12);
+                    }
+                    break;
                 }
-                break;
         }
     }
 

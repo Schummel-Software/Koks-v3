@@ -54,6 +54,7 @@ public class ModuleManager {
         addModule(new SetBack());
         addModule(new VClip());
         addModule(new Rotations());
+        addModule(new InvMove());
 
         modules.sort(Comparator.comparing(Module::getName));
     }
