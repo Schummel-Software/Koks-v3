@@ -11,6 +11,7 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityChest;
+import net.minecraft.tileentity.TileEntityEnderChest;
 import net.minecraft.util.AxisAlignedBB;
 
 /**
@@ -106,7 +107,7 @@ public class ESP extends Module {
 
             if (chests.isToggled()) {
                 for (TileEntity e : mc.theWorld.loadedTileEntityList) {
-                    if (e instanceof TileEntityChest) {
+                    if (e instanceof TileEntityChest || e instanceof TileEntityEnderChest) {
                         mc.theWorld.getBlockState(e.getPos()).getBlock();
                         double x = (e.getPos().getX() - mc.getRenderManager().renderPosX);
                         double y = (e.getPos().getY() - mc.getRenderManager().renderPosY);

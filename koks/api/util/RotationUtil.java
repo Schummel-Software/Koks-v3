@@ -42,6 +42,7 @@ public class RotationUtil {
 
     public float[] faceEntity(Entity entity, float currentYaw, float currentPitch, boolean smooth, float accuracy, float precision, float predictionMultiplier) {
         Vec3 rotations = getBestVector(entity, accuracy, precision);
+
         double x = rotations.xCoord - mc.thePlayer.posX;
         double y = rotations.yCoord - (mc.thePlayer.posY + (double) mc.thePlayer.getEyeHeight());
         double z = rotations.zCoord - mc.thePlayer.posZ;
@@ -57,12 +58,19 @@ public class RotationUtil {
         double angle = MathHelper.sqrt_double(x * x + z * z);
         float yawAngle = (float) (MathHelper.func_181159_b(z + zDiff, x + xDiff) * 180.0D / Math.PI) - 90.0F;
         float pitchAngle = (float) (-(MathHelper.func_181159_b(y, angle) * 180.0D / Math.PI));
+        float finalPitch = pitchAngle >= 90 ? 90 : pitchAngle;
+
+        float f = mc.gameSettings.mouseSensitivity * 0.6F + 0.2F;
+        float f1 = f * f * f * 8.0F;
+
+        float f2 = (float) ((yawAngle - currentYaw) * f1);
+        float f3 = (float) ((finalPitch - currentPitch) * f1);
 
         float speed = (float) (40 * (distance / 2) + randomUtil.getRandomFloat(-10, 10));
-        float yaw = updateRotation(currentYaw, yawAngle, smooth ? speed : 360);
-        float pitch = updateRotation(currentPitch, pitchAngle, smooth ? speed : 360);
+        float yaw = updateRotation(currentYaw + f2, yawAngle, smooth ? speed : 360);
+        float pitch = updateRotation(currentPitch + f3, finalPitch, smooth ? speed : 360);
 
-        float[] yawDiff = calculateDiff(currentYaw, yaw);
+        /*float[] yawDiff = calculateDiff(currentYaw, yaw);
         float[] pitchDiff = calculateDiff(currentPitch, pitch);
         float[] fixed = fixedSensitivity(mc.gameSettings.mouseSensitivity, yawDiff[0], pitchDiff[0]);
 
@@ -82,9 +90,9 @@ public class RotationUtil {
         } else {
             if (pitch > currentPitch) currentPitch += pitchDiff[0];
             else if (pitch < currentPitch) currentPitch -= pitchDiff[0];
-        }
+        }*/
 
-        return new float[]{currentYaw, currentPitch};
+        return new float[]{yaw , pitch };
     }
 
     public float[] faceBlock(BlockPos pos, float currentYaw, float currentPitch, float speed) {
@@ -96,30 +104,17 @@ public class RotationUtil {
         float calcYaw = (float) (MathHelper.func_181159_b(z, x) * 180.0D / Math.PI) - 90.0F;
         float calcPitch = (float) -(MathHelper.func_181159_b(y, calculate) * 180.0D / Math.PI);
         float finalPitch = calcPitch >= 90 ? 90 : calcPitch;
-        float yaw = updateRotation(currentYaw, calcYaw, speed);
-        float pitch = updateRotation(currentPitch, finalPitch, speed);
 
-        float[] yawDiff = calculateDiff(currentYaw, yaw);
-        float[] pitchDiff = calculateDiff(currentPitch, pitch);
-        float[] fixed = fixedSensitivity(mc.gameSettings.mouseSensitivity, yawDiff[0], pitchDiff[0]);
-        yawDiff[0] = fixed[0];
-        pitchDiff[0] = fixed[1];
-        if (yawDiff[1] == 1) {
-            if (yaw > currentYaw) currentYaw -= yawDiff[0];
-            else if (yaw < currentYaw) currentYaw += yawDiff[0];
-        } else {
-            if (yaw > currentYaw) currentYaw += yawDiff[0];
-            else if (yaw < currentYaw) currentYaw -= yawDiff[0];
-        }
-        if (pitchDiff[1] == 1) {
-            if (pitch > currentPitch) currentPitch -= pitchDiff[0];
-            else if (pitch < currentPitch) currentPitch += pitchDiff[0];
-        } else {
-            if (pitch > currentPitch) currentPitch += pitchDiff[0];
-            else if (pitch < currentPitch) currentPitch -= pitchDiff[0];
-        }
+        float f = mc.gameSettings.mouseSensitivity * 0.6F + 0.2F;
+        float f1 = f * f * f * 8.0F;
 
-        return new float[]{currentYaw, currentPitch};
+        float f2 = (float) ((calcYaw - currentYaw) * f1);
+        float f3 = (float) ((finalPitch - currentPitch) * f1);
+
+        float yaw = updateRotation(currentYaw + f2, calcYaw, speed);
+        float pitch = updateRotation(currentPitch + f3, finalPitch, speed);
+
+        return new float[]{yaw, pitch};
     }
 
     public float[] calculateDiff(float v1, float v2) {

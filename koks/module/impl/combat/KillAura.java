@@ -40,7 +40,9 @@ public class KillAura extends Module {
     public Setting attackType = new Setting("Attack Type", new String[]{"Single", "Switch", "Hybrid"}, "Single", this);
     public Setting preferType = new Setting("Prefer", new String[]{"Health", "Distance"}, "Distance", this);
     public Setting player = new Setting("Player", true, this);
+    public Setting armorStands = new Setting("ArmorStands", false, this);
     public Setting animals = new Setting("Animals", false, this);
+    public Setting villager = new Setting("Villager", false, this);
     public Setting mobs = new Setting("Mobs", false, this);
 
     // BASIC ATTACK SETTINGS
@@ -84,7 +86,7 @@ public class KillAura extends Module {
     public final TimeHelper timeHelper = new TimeHelper();
 
     public int switchCounter;
-    public float yaw, pitch;
+    public float yaw, pitch, curYaw, curPitch;
     public boolean failing;
 
     public KillAura() {
@@ -111,9 +113,10 @@ public class KillAura extends Module {
         if (event instanceof EventMotion) {
             if (((EventMotion) event).getType() == EventMotion.Type.PRE) {
                 if (finalEntity != null) {
-                    float[] rotations = rotationUtil.faceEntity(finalEntity, yaw, pitch, this.rotations.smooth.isToggled(), this.rotations.accuracy.getCurrentValue(), this.rotations.precision.getCurrentValue(), this.rotations.predictionMultiplier.getCurrentValue());
+                    float[] rotations = rotationUtil.faceEntity(finalEntity, curYaw, curPitch, this.rotations.smooth.isToggled(), this.rotations.accuracy.getCurrentValue(), this.rotations.precision.getCurrentValue(), this.rotations.predictionMultiplier.getCurrentValue());
                     yaw = rotationUtil.updateRotation(mc.thePlayer.rotationYaw, rotations[0], fov.getCurrentValue());
                     pitch = rotations[1];
+
                     if (this.rotations.lockView.isToggled()) {
                         mc.thePlayer.rotationYaw = yaw;
                         mc.thePlayer.rotationPitch = pitch;
@@ -121,6 +124,9 @@ public class KillAura extends Module {
                         ((EventMotion) event).setYaw(yaw);
                         ((EventMotion) event).setPitch(pitch);
                     }
+                    curPitch = pitch;
+                    curYaw = yaw;
+
 
                     if (canBlock() && autoBlock.isToggled() && blockMode.getCurrentMode().equals("Full"))
                         mc.playerController.sendUseItem(mc.thePlayer, mc.theWorld, mc.thePlayer.getCurrentEquippedItem());
@@ -176,6 +182,7 @@ public class KillAura extends Module {
                 mc.thePlayer.sendQueue.addToSendQueue(new C02PacketUseEntity(rayCastEntity, C02PacketUseEntity.Action.ATTACK));
             }
 
+
             if (switchCounter < entities.size())
                 switchCounter++;
             else
@@ -196,6 +203,28 @@ public class KillAura extends Module {
         } else {
             mc.thePlayer.swingItem();
         }
+        System.out.println("----DEBUG----");
+        System.out.println("Name: " + finalEntity.getName());
+        System.out.println("Eye Height: " + finalEntity.getEyeHeight());
+        System.out.println("DistanceToPlayer: " + finalEntity.getDistanceToEntity(getPlayer()));
+        System.out.println("CanBePushed: " + finalEntity.canBePushed());
+        System.out.println("canAttackWithItem: " + finalEntity.canAttackWithItem());
+        System.out.println("EntityID: " + finalEntity.getEntityId());
+        System.out.println("LookVec: " + finalEntity.getLookVec());
+        System.out.println("UUID: " + finalEntity.getUniqueID());
+        System.out.println("Inventory Length: " + finalEntity.getInventory().length);
+        System.out.println("Position: " + finalEntity.getPosition());
+        System.out.println("onGround: " + finalEntity.onGround);
+        System.out.println("hurtResistantTime: " + finalEntity.hurtResistantTime);
+        System.out.println("MotionY: " + finalEntity.motionY);
+        System.out.println("isDead: " + finalEntity.isDead);
+        System.out.println("Health: " + ((EntityPlayer) finalEntity).getHealth());
+        System.out.println("MaxHealth: " + ((EntityPlayer) finalEntity).getMaxHealth());
+        System.out.println("Team: " + ((EntityPlayer) finalEntity).getTeam().getRegisteredName());
+        System.out.println("AIMoveSpeed: " + ((EntityPlayer) finalEntity).getAIMoveSpeed());
+        System.out.println("BedLocation: " + ((EntityPlayer) finalEntity).getBedLocation());
+        System.out.println("MaxFallHeight: " + ((EntityPlayer) finalEntity).getMaxFallHeight());
+        System.out.println("isValid: " + isValid(finalEntity));
     }
 
     boolean canBlock() {
@@ -273,13 +302,21 @@ public class KillAura extends Module {
     }
 
     public boolean isValid(Entity entity) {
+
+        boolean healthcheck = true;
+        int maxhealth = 22;
+
         if (entity == null)
             return false;
         if (!(entity instanceof EntityLivingBase))
             return false;
+        if (!armorStands.isToggled() && entity instanceof EntityArmorStand)
+            return false;
+        if (!villager.isToggled() && entity instanceof EntityVillager)
+            return false;
         if (!mobs.isToggled() && entity instanceof EntityMob)
             return false;
-        if (!animals.isToggled() && (entity instanceof EntityAnimal || entity instanceof EntityVillager || entity instanceof EntityArmorStand))
+        if (!animals.isToggled() && (entity instanceof EntityAnimal))
             return false;
         if (entity.getDistanceToEntity(mc.thePlayer) > hitRange.getCurrentValue() + (preAim.isToggled() ? extendedAimRange.getCurrentValue() : 0))
             return false;
@@ -296,6 +333,8 @@ public class KillAura extends Module {
             return false;
         if (!throughWalls.isToggled() && !mc.thePlayer.canEntityBeSeen(entity))
             return false;
+        if (healthcheck && entity instanceof EntityPlayer && ((EntityPlayer) entity).getMaxHealth() == 20 && entity.getDistanceToEntity(getPlayer()) == 1.1679053)
+            return false;
         return true;
     }
 
@@ -309,6 +348,8 @@ public class KillAura extends Module {
     public void onEnable() {
         rotations = (Rotations) Koks.getKoks().moduleManager.getModule(Rotations.class);
         finalEntity = null;
+        curYaw = getPlayer().rotationYaw;
+        curPitch = getPlayer().rotationPitch;
         entities.clear();
     }
 

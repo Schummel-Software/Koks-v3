@@ -49,7 +49,7 @@ public class Debug extends Module {
             MovementUtil movementUtil = new MovementUtil();
             if (getPlayer().onGround) {
 
-                mc.thePlayer.motionY = 0.21;
+                mc.thePlayer.motionY = 0.2;
             } else {
                 getPlayer().setSprinting(false);
             }
@@ -58,7 +58,7 @@ public class Debug extends Module {
                 if (getPlayer().onGround) {
 
 
-                    movementUtil.setSpeed(0.35);
+                    movementUtil.setSpeed(0.35, false);
                     getPlayer().setSprinting(true);
                     timeHelper.reset();
 

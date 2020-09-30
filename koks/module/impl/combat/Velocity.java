@@ -16,7 +16,7 @@ import net.minecraft.network.play.server.S27PacketExplosion;
  */
 public class Velocity extends Module {
 
-    public Setting mode = new Setting("Mode", new String[]{"Cancel", "Jump", "Intave"}, "Cancel", this);
+    public Setting mode = new Setting("Mode", new String[]{"Cancel", "Jump", "Intave", "AAC3", "AAC4"}, "Cancel", this);
 
     public Velocity() {
         super("Velocity", "Reduces your knockback", Category.COMBAT);
@@ -43,13 +43,35 @@ public class Velocity extends Module {
                     }
                 }
                 break;
+            case "AAC3":
+                if (event instanceof EventUpdate) {
+                    if (mc.thePlayer.hurtTime > 0) {
+                        mc.thePlayer.motionX *= 0.8;
+                        mc.thePlayer.motionZ *= 0.8;
+                        mc.thePlayer.motionY *= 1;
+                    }
+                }
+                break;
             case "Intave":
                 if (event instanceof EventVelocity) {
-                    if (getHurtTime() == 10 && getPlayer().onGround) {
-                        getPlayer().jump();
+                    if(mc.thePlayer.hurtTime > 0) {
+                        mc.thePlayer.motionX *= 0.99999;
+                        mc.thePlayer.motionY *= 0.99999;
+                        mc.thePlayer.motionZ *= 0.99999;
+                        mc.thePlayer.onGround = true;
                     }
-                    if (getHurtTime() == 7 || getHurtTime() == 8) {
-                        pushPlayer(0.12);
+                    if(getPlayer().ticksExisted == 7) {
+                        pushPlayer(0.1);
+                    }
+                }
+                break;
+            case "AAC4":
+                if (event instanceof EventVelocity) {
+                    if(getHurtTime() == 8 || getHurtTime() == 2) {
+                        ((EventVelocity) event).setHorizontal(0);
+                    }
+                    if(getHurtTime() == 5) {
+                        pushPlayer(0.2);
                     }
                     break;
                 }

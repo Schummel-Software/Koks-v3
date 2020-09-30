@@ -3,9 +3,12 @@ package koks.module.impl.movement;
 import koks.api.settings.Setting;
 import koks.api.util.TimeHelper;
 import koks.event.Event;
+import koks.event.impl.EventPacket;
 import koks.event.impl.EventUpdate;
 import koks.module.Module;
+import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.network.play.server.S2EPacketCloseWindow;
 import org.lwjgl.input.Keyboard;
 
 /**
@@ -20,13 +23,23 @@ public class InvMove extends Module {
     public Setting sprint = new Setting("Sprint", true, this);
     public Setting look = new Setting("Look", true, this);
 
+    public Setting cancelPacket = new Setting("CancelPacket", false, this);
+
     public InvMove() {
         super("InvMove", "You can walk in the inventory", Category.MOVEMENT);
     }
 
     @Override
     public void onEvent(Event event) {
+        if(event instanceof EventPacket) {
+            if(((EventPacket) event).getType() == EventPacket.Type.RECEIVE) {
+                if(((EventPacket) event).getPacket() instanceof S2EPacketCloseWindow && cancelPacket.isToggled()) {
+                    event.setCanceled(true);
+                }
+            }
+        }
         if (event instanceof EventUpdate) {
+            if(mc.currentScreen instanceof GuiChat)return;
             mc.gameSettings.keyBindForward.pressed = Keyboard.isKeyDown(mc.gameSettings.keyBindForward.getKeyCode());
             mc.gameSettings.keyBindBack.pressed = Keyboard.isKeyDown(mc.gameSettings.keyBindBack.getKeyCode());
             mc.gameSettings.keyBindLeft.pressed = Keyboard.isKeyDown(mc.gameSettings.keyBindLeft.getKeyCode());

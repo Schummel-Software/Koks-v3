@@ -4,9 +4,13 @@ import koks.Koks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
+import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.network.play.client.C03PacketPlayer;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Timer;
 import net.minecraft.world.World;
 
@@ -29,6 +33,14 @@ public class Methods {
     public World getWorld() {
         return mc.theWorld;
     }
+
+    public GameSettings getGameSettings() { return mc.gameSettings; }
+
+    public BlockPos getPosition() { return getPlayer().getPosition(); }
+
+    public double getX() { return getPlayer().posX; }
+    public double getY() { return getPlayer().posY; }
+    public double getZ() { return getPlayer().posZ; }
 
     public Timer getTimer() {
         return mc.timer;
@@ -61,6 +73,11 @@ public class Methods {
         double z = Math.cos(getDirection());
         mc.thePlayer.motionX = x * push;
         mc.thePlayer.motionZ = z * push;
+    }
+
+    public void setPosition(double x, double y, double z, boolean ground) {
+        changePosition(x,y,z);
+        getPlayer().sendQueue.addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(x,y,z, ground));
     }
 
     public void changePosition(double x, double y, double z) {

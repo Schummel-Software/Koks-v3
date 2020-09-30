@@ -37,7 +37,6 @@ public class TrailESP extends Module {
 
                 GL11.glBegin(GL11.GL_LINE_STRIP);
 
-
                 for (double[] pos : positions) {
                     GL11.glVertex3d(pos[0] - mc.getRenderManager().renderPosX, pos[1] - mc.getRenderManager().renderPosY, pos[2] - mc.getRenderManager().renderPosZ);
                 }

@@ -55,6 +55,8 @@ public class ModuleManager {
         addModule(new VClip());
         addModule(new Rotations());
         addModule(new InvMove());
+        addModule(new SuperHit());
+        addModule(new FakeRotations());
 
         modules.sort(Comparator.comparing(Module::getName));
     }

@@ -14,6 +14,7 @@ import java.util.List;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import joptsimple.OptionSpec;
+import koks.Koks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Session;
 
@@ -36,7 +37,7 @@ public class Main
         OptionSpec<Integer> optionspec6 = optionparser.accepts("proxyPort").withRequiredArg().defaultsTo("8080", new String[0]).<Integer>ofType(Integer.class);
         OptionSpec<String> optionspec7 = optionparser.accepts("proxyUser").withRequiredArg();
         OptionSpec<String> optionspec8 = optionparser.accepts("proxyPass").withRequiredArg();
-        OptionSpec<String> optionspec9 = optionparser.accepts("username").withRequiredArg().defaultsTo("Player" + Minecraft.getSystemTime() % 1000L, new String[0]);
+        OptionSpec<String> optionspec9 = optionparser.accepts("username").withRequiredArg().defaultsTo(Koks.getKoks().NAME + Minecraft.getSystemTime() % 1000L, new String[0]);
         OptionSpec<String> optionspec10 = optionparser.accepts("uuid").withRequiredArg();
         OptionSpec<String> optionspec11 = optionparser.accepts("accessToken").withRequiredArg().required();
         OptionSpec<String> optionspec12 = optionparser.accepts("version").withRequiredArg().required();

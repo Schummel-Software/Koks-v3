@@ -25,10 +25,11 @@ public class MovementUtil extends Methods {
         return Minecraft.getMinecraft().thePlayer.moveForward != 0 || Minecraft.getMinecraft().thePlayer.moveStrafing != 0;
     }
 
-    public void setSpeed(double speed) {
-
+    public void setSpeed(double speed, boolean movingCheck) {
+        if(!movingCheck || isMoving()) {
             mc.thePlayer.motionX = -Math.sin(Math.toRadians(getDirection(mc.thePlayer.rotationYaw))) * speed;
             mc.thePlayer.motionZ = Math.cos(Math.toRadians(getDirection(mc.thePlayer.rotationYaw))) * speed;
+        }
     }
 
     public void moveFlying(EventMoveFlying eventMoveFlying, float yaw) {

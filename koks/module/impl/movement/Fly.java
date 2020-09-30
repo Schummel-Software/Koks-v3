@@ -42,7 +42,7 @@ public class Fly extends Module {
             case "MCCentral":
                 if (event instanceof EventUpdate) {
                     mc.thePlayer.motionY = 0;
-                    movementUtil.setSpeed(0.8);
+                    movementUtil.setSpeed(0.8, true);
                     if (mc.gameSettings.keyBindJump.isKeyDown())
                         mc.thePlayer.motionY = 0.5;
                     if (mc.gameSettings.keyBindSneak.isKeyDown())
@@ -64,7 +64,7 @@ public class Fly extends Module {
                     }
 
                     if(timeHelper.hasReached(800)) {
-                        movementUtil.setSpeed(0.4);
+                        movementUtil.setSpeed(0.4, false);
                         timeHelper.reset();
                     }
                 }

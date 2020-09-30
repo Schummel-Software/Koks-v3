@@ -1,6 +1,8 @@
 package koks.module.impl.render;
 
+import koks.api.settings.Setting;
 import koks.event.Event;
+import koks.event.impl.EventFOV;
 import koks.module.Module;
 
 /**
@@ -9,13 +11,17 @@ import koks.module.Module;
  */
 public class NoFov extends Module {
 
+    public Setting fov = new Setting("FOV", 1F,0.001F, 2F,false,this);
+
     public NoFov() {
         super("NoFov", "No more Fov changed while sprinting", Category.RENDER);
     }
 
     @Override
     public void onEvent(Event event) {
-
+        if(event instanceof EventFOV) {
+            ((EventFOV) event).setFOV(fov.getCurrentValue());
+        }
     }
 
     @Override

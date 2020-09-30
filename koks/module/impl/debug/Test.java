@@ -5,10 +5,13 @@ import koks.event.Event;
 import koks.event.impl.EventKeyPress;
 import koks.event.impl.EventUpdate;
 import koks.module.Module;
+import net.minecraft.block.state.BlockState;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.init.Blocks;
+import net.minecraft.util.BlockPos;
 import org.lwjgl.input.Keyboard;
 
 /**
@@ -26,6 +29,10 @@ public class Test extends Module {
     @Override
     public void onEvent(Event event) {
         if (event instanceof EventUpdate) {
+            if (getWorld().getBlockState(new BlockPos(getX(), getY() - 1, getZ())).getBlock() == Blocks.air) {
+                if (getPlayer().onGround)
+                    getPlayer().jump();
+            }
         }
     }
 

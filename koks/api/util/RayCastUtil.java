@@ -112,6 +112,13 @@ public class RayCastUtil {
         return pointedEntity;
     }
 
+    public MovingObjectPosition rayCast(double reach) {
+        Vec3 positionEyes = mc.thePlayer.getPositionEyes(1.0F);
+        Vec3 lookVec = mc.thePlayer.getLookVec();
+        Vec3 ray = positionEyes.addVector(lookVec.xCoord * reach, lookVec.yCoord * reach, lookVec.zCoord * reach);
+        return mc.theWorld.rayTraceBlocks(positionEyes,ray,!mc.thePlayer.isInWater(), false ,false);
+    }
+
     public MovingObjectPosition rayCastedBlock(float yaw, float pitch) {
         float range = mc.playerController.getBlockReachDistance();
 

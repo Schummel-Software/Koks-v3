@@ -1,5 +1,7 @@
 package net.minecraft.client.multiplayer;
 
+import koks.Koks;
+import koks.event.impl.EventBlockReach;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -339,7 +341,9 @@ public class PlayerControllerMP
      */
     public float getBlockReachDistance()
     {
-        return this.currentGameType.isCreative() ? 5.0F : 4.5F;
+        EventBlockReach blockReach = new EventBlockReach(this.currentGameType.isCreative() ? 5.0F : 4.5F);
+        Koks.getKoks().eventManager.onEvent(blockReach);
+        return blockReach.getReach();
     }
 
     public void updateController()
