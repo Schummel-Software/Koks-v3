@@ -2,6 +2,7 @@ package koks.module.impl.movement;
 
 import koks.api.settings.Setting;
 import koks.event.Event;
+import koks.event.impl.EventUpdate;
 import koks.module.Module;
 
 /**
@@ -19,7 +20,9 @@ public class NoSlowdown extends Module {
 
     @Override
     public void onEvent(Event event) {
-
+        if(event instanceof EventUpdate) {
+            setInfo(speed.getCurrentValue() + "");
+        }
     }
 
     @Override

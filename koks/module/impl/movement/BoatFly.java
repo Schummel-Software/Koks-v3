@@ -24,7 +24,8 @@ public class BoatFly extends Module {
     @Override
     public void onEvent(Event event) {
         if(event instanceof EventUpdate) {
-            setInfo(Mode.getCurrentMode());
+            String extra = Mode.getCurrentMode().equalsIgnoreCase("AAC4") ? " [" + AAC4Boost.getCurrentValue() + "]" : "";
+            setInfo(Mode.getCurrentMode() + extra);
             if(mc.thePlayer.isRiding())ride = true;
             else {
                 if(ride) {

@@ -53,28 +53,23 @@ public class Velocity extends Module {
                 }
                 break;
             case "Intave":
-                if (event instanceof EventVelocity) {
-                    if(mc.thePlayer.hurtTime > 0) {
-                        mc.thePlayer.motionX *= 0.99999;
-                        mc.thePlayer.motionY *= 0.99999;
-                        mc.thePlayer.motionZ *= 0.99999;
-                        mc.thePlayer.onGround = true;
-                    }
-                    if(getPlayer().ticksExisted == 7) {
-                        pushPlayer(0.1);
+                if(event instanceof EventVelocity) {
+                    if(getHurtTime() == 7) {
+                        ((EventVelocity) event).setHorizontal(25);
+
+                    }else if(getHurtTime() > 4 && getHurtTime() < 6){
+                        ((EventVelocity) event).setHorizontal(20);
                     }
                 }
                 break;
             case "AAC4":
-                if (event instanceof EventVelocity) {
-                    if(getHurtTime() == 8 || getHurtTime() == 2) {
-                        ((EventVelocity) event).setHorizontal(0);
+                if(event instanceof EventVelocity) {
+                    if(getHurtTime() != 0) {
+                        ((EventVelocity) event).setHorizontal(93);
+                        ((EventVelocity) event).setVertical(86);
                     }
-                    if(getHurtTime() == 5) {
-                        pushPlayer(0.2);
-                    }
-                    break;
                 }
+                break;
         }
     }
 

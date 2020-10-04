@@ -25,6 +25,7 @@ public class FastBow extends Module {
     @Override
     public void onEvent(Event event) {
         if (event instanceof EventUpdate) {
+            setInfo(strength.getCurrentValue() + "");
             if (mc.thePlayer.isUsingItem() && mc.thePlayer.getCurrentEquippedItem().getItem() instanceof ItemBow) {
                 for (int i = 0; i < strength.getCurrentValue(); i++)
                     getPlayer().sendQueue.addToSendQueue(new C03PacketPlayer(false));

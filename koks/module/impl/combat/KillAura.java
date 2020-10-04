@@ -318,6 +318,8 @@ public class KillAura extends Module {
             return false;
         if (!animals.isToggled() && (entity instanceof EntityAnimal))
             return false;
+        if (!player.isToggled() && entity instanceof EntityPlayer)
+            return false;
         if (entity.getDistanceToEntity(mc.thePlayer) > hitRange.getCurrentValue() + (preAim.isToggled() ? extendedAimRange.getCurrentValue() : 0))
             return false;
         if (entity == mc.thePlayer)

@@ -3,9 +3,13 @@ package koks.module.impl.player;
 import koks.api.util.TimeHelper;
 import koks.event.Event;
 import koks.event.impl.EventHeadLook;
+import koks.event.impl.EventPacket;
 import koks.event.impl.EventUpdate;
 import koks.module.Module;
 import koks.api.settings.Setting;
+import net.minecraft.network.play.client.*;
+import net.minecraft.network.status.client.C01PacketPing;
+import net.minecraft.util.DamageSource;
 
 /**
  * @author deleteboys | lmao | kroko
@@ -35,6 +39,7 @@ public class GodMode extends Module {
 
         if (event instanceof EventUpdate) {
             setInfo(mode.getCurrentMode());
+
             if (mode.getCurrentMode().equalsIgnoreCase("Intave Border")) {
                 if (!mc.thePlayer.isOutsideBorder()) {
                     if (mc.gameSettings.keyBindForward.pressed) {

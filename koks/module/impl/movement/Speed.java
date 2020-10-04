@@ -23,6 +23,7 @@ public class Speed extends Module {
     @Override
     public void onEvent(Event event) {
         if (event instanceof EventUpdate) {
+            setInfo(mode.getCurrentMode());
             switch (mode.getCurrentMode()) {
                 case "Legit":
                     if (mc.thePlayer.onGround) getPlayer().sendQueue.addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY + 0.1, mc.thePlayer.posZ, true));//0.42

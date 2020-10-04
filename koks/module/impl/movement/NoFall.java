@@ -26,7 +26,7 @@ public class NoFall extends Module {
         super("NoFall", "Prevents you from getting falldamage", Category.MOVEMENT);
     }
 
-    public Setting mode = new Setting("Mode", new String[]{"Mineplex", "Intave"}, "Mineplex", this);
+    public Setting mode = new Setting("Mode", new String[]{"Mineplex", "Intave", "AAC4"}, "Mineplex", this);
 
     public TimeHelper timeHelper = new TimeHelper();
 
@@ -38,33 +38,40 @@ public class NoFall extends Module {
     }
 
     public void intave() {
-        if(getPlayer().fallDistance > 3.8F) {
-            getPlayer().capabilities.isFlying = true;
-            getPlayer().onGround = true;
-            getTimer().timerSpeed = 1.05F;
+        if (getPlayer().fallDistance > 3.8F) {
             if(timeHelper.hasReached(60)) {
-                getPlayer().onGround = true;
-            }else{
-                getPlayer().onGround = true;
-            }
-        }else{
-            if(getPlayer().fallDistance == 0){
-                getTimer().timerSpeed = 1.0F;
+                getPlayer().sendQueue.addToSendQueue(new C03PacketPlayer(true));
+                PlayerCapabilities capabilities = getPlayer().capabilities;
+                capabilities.isFlying = true;
+                getPlayer().sendQueue.addToSendQueue(new C13PacketPlayerAbilities(capabilities));
                 timeHelper.reset();
             }
-            getPlayer().capabilities.isFlying = false;
+        }
+    }
 
+    public void aac4() {
+        if (!getPlayer().onGround && getPlayer().fallDistance > 1.2 && getPlayer().ticksExisted % 3 == 2) {
+            getPlayer().motionY = 0;
+            getPlayer().sendQueue.addToSendQueue(new C03PacketPlayer(true));
+            getPlayer().fallDistance = 1;
         }
     }
 
     @Override
     public void onEvent(Event event) {
+        if (event instanceof EventUpdate) {
+            setInfo(mode.getCurrentMode());
+        }
         switch (mode.getCurrentMode()) {
             case "Mineplex":
                 if (event instanceof EventUpdate) {
                     mineplex();
                 }
                 break;
+            case "AAC4":
+                if (event instanceof EventUpdate) {
+                    aac4();
+                }
             case "Intave":
                 if (event instanceof EventUpdate) {
                     intave();

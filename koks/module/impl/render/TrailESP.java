@@ -51,7 +51,7 @@ public class TrailESP extends Module {
         }
 
         if(event instanceof EventUpdate) {
-
+            setInfo(length.getCurrentValue() + "");
             if(positions.size() > length.getCurrentValue()) {
                 int toMush = (int) (positions.size() - length.getCurrentValue());
                 for(int i = 0; i < toMush; i++) {

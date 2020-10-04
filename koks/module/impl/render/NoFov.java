@@ -3,6 +3,7 @@ package koks.module.impl.render;
 import koks.api.settings.Setting;
 import koks.event.Event;
 import koks.event.impl.EventFOV;
+import koks.event.impl.EventUpdate;
 import koks.module.Module;
 
 /**
@@ -19,6 +20,9 @@ public class NoFov extends Module {
 
     @Override
     public void onEvent(Event event) {
+        if(event instanceof EventUpdate) {
+            setInfo(fov.getCurrentValue() + "");
+        }
         if(event instanceof EventFOV) {
             ((EventFOV) event).setFOV(fov.getCurrentValue());
         }

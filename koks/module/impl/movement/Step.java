@@ -17,25 +17,18 @@ public class Step extends Module {
 
     @Override
     public void onEvent(Event event) {
+        if(event instanceof EventUpdate) {
+            String extra = mode.getCurrentMode().equalsIgnoreCase("Vanilla") ? " [" + stepHeight.getCurrentValue() + "]" : "";
+            setInfo(mode.getCurrentMode() + extra);
+        }
         switch (mode.getCurrentMode()) {
             case "Vanilla":
                 if (event instanceof EventUpdate) getPlayer().stepHeight = stepHeight.getCurrentValue();
                 break;
             case "Intave": {
                 if (event instanceof EventUpdate) {
-                   /* if(getPlayer().isCollidedHorizontally && !getPlayer().isOnLadder() && getPlayer().onGround && isMoving()) {
-                        getPlayer().jump();
-
-
-                    }else if(getPlayer().isCollidedHorizontaMlly && !getPlayer().onGround && isMoving()) {
-                        double x = -Math.sin(getDirection()) * 0.1;
-                        double z = Math.cos(getDirection()) * 0.1;
-                        getPlayer().motionZ = z;
-                        getPlayer().motionX = x;
-                        getPlayer().motionY %= 90;
-                    }*/
                     if (getPlayer().isCollidedHorizontally && !getPlayer().isOnLadder() && getPlayer().onGround && isMoving() && getPlayer().stepHeight != 1) {
-                        getPlayer().motionY = 0.3;
+                        getPlayer().motionY = 0.408;
                         getPlayer().onGround = false;
                         getPlayer().stepHeight = 1;
                     } else {
@@ -43,8 +36,6 @@ public class Step extends Module {
                         if(getPlayer().isCollidedHorizontally && !getPlayer().isOnLadder() && isMoving())
                             getPlayer().onGround = true;
                     }
-
-
                 }
             }
         }

@@ -31,6 +31,10 @@ public class Fly extends Module {
 
     @Override
     public void onEvent(Event event) {
+        if(event instanceof EventUpdate) {
+            String extra = mode.getCurrentMode().equalsIgnoreCase("AAC3.3.12") ? " [" + aac3312boost.getCurrentValue() + "]" : "";
+            setInfo(mode.getCurrentMode() + extra);
+        }
         switch (mode.getCurrentMode()) {
             case "AAC3.3.12":
                 if (event instanceof EventUpdate) {

@@ -1,8 +1,5 @@
 package net.minecraft.client;
 
-import club.minnced.discord.rpc.DiscordEventHandlers;
-import club.minnced.discord.rpc.DiscordRPC;
-import club.minnced.discord.rpc.DiscordRichPresence;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -195,7 +192,8 @@ import org.lwjgl.opengl.PixelFormat;
 import org.lwjgl.util.glu.GLU;
 
 public class Minecraft implements IThreadListener, IPlayerUsage {
-    public DiscordRPC discordAPI;
+   /* public DiscordRPC discordAPI = DiscordRPC.INSTANCE;
+    DiscordRichPresence presence = new DiscordRichPresence();*/
 
     public String discordDetail = "";
     public String discordState = "";
@@ -495,20 +493,6 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
      * Starts the game: initializes the canvas, the title, the settings, etcetera.
      */
     private void startGame() throws LWJGLException, IOException {
-        discordAPI = DiscordRPC.INSTANCE;
-        DiscordRichPresence presence = new DiscordRichPresence();
-        String applicationId = "754374125392232499";
-        String streamId = "_4cXgnWJY6MtnVFR52PdXqe8BYPf8IOX";
-
-        DiscordEventHandlers handlers = new DiscordEventHandlers();
-        handlers.ready = (user) -> System.out.println("Ready!");
-
-        discordAPI.Discord_Initialize(applicationId, handlers, true, streamId);
-
-        presence.startTimestamp = System.currentTimeMillis() / 1000;
-        presence.details = "Koks v" + Koks.getKoks().VERSION;
-        presence.state = "Starting...";
-        discordAPI.Discord_UpdatePresence(presence);
 
         this.gameSettings = new GameSettings(this, this.mcDataDir);
         this.defaultResourcePacks.add(this.mcDefaultResourcePack);
@@ -599,6 +583,19 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
         this.checkGLError("Post startup");
         this.ingameGUI = new GuiIngame(this);
         Koks.getKoks().startClient();
+
+        /*String applicationId = "754374125392232499";
+        String streamId = "";
+
+        DiscordEventHandlers handlers = new DiscordEventHandlers();
+        handlers.ready = (user) -> System.out.println("Ready!");
+
+        discordAPI.Discord_Initialize(applicationId, handlers, true, streamId);
+
+        presence.startTimestamp = System.currentTimeMillis() / 1000;
+        presence.details = "Koks v" + Koks.getKoks().VERSION;
+        presence.state = "Starting...";
+        discordAPI.Discord_UpdatePresence(presence);*/
 
         if (this.serverName != null) {
             this.displayGuiScreen(new GuiConnecting(new GuiMainMenu(), this, this.serverName, this.serverPort));

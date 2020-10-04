@@ -157,7 +157,7 @@ public class DamageSource
         return this.damageIsAbsolute;
     }
 
-    protected DamageSource(String damageTypeIn)
+    public DamageSource(String damageTypeIn)
     {
         this.damageType = damageTypeIn;
     }
