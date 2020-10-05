@@ -1,5 +1,6 @@
 package koks.module;
 
+import koks.Koks;
 import koks.module.impl.combat.*;
 import koks.module.impl.debug.*;
 import koks.module.impl.gui.*;
@@ -7,6 +8,7 @@ import koks.module.impl.movement.*;
 import koks.module.impl.player.*;
 import koks.module.impl.render.*;
 import koks.module.impl.world.Scaffold;
+import koks.purves.Role;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -57,8 +59,21 @@ public class ModuleManager {
         addModule(new InvMove());
         addModule(new SuperHit());
         addModule(new FakeRotations());
+        addModule(new NameProtect());
+        addModule(new CivBreak());
+       /* if(!Koks.getKoks().purvesManager.getUser().getRole().equals(Role.Developer)) {
+            removeCategory(Module.Category.DEBUG);
+        }*/
 
         modules.sort(Comparator.comparing(Module::getName));
+    }
+
+    public void removeCategory(Module.Category category){
+        for(Module module : getModules()) {
+            if(module.getCategory().equals(category)) {
+                modules.remove(module);
+            }
+        }
     }
 
     public void addModule(Module module) {

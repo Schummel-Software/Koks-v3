@@ -20,12 +20,12 @@ public class Phase extends Module {
         super("Phase", "You can walk through walls", Category.PLAYER);
     }
 
-    public void Hive() {
+    public void hive() {
         if (getPlayer().isCollidedHorizontally) {
             double motionX = -(Math.sin(Math.toRadians(mc.thePlayer.rotationYaw)) * 0.7);
             double motionZ = Math.cos(Math.toRadians(mc.thePlayer.rotationYaw)) * 0.7;
             mc.thePlayer.setPosition(mc.thePlayer.posX + motionX, mc.thePlayer.posY, mc.thePlayer.posZ + motionZ);
-
+            getPlayer().setSprinting(true);
             mc.thePlayer.motionY = 0;
             mc.thePlayer.onGround = true;
         }
@@ -48,7 +48,7 @@ public class Phase extends Module {
             setInfo(mode.getCurrentMode());
             switch (mode.getCurrentMode()) {
                 case "Hive":
-                    Hive();
+                    hive();
                     break;
                 case "Intave":
                     intave();

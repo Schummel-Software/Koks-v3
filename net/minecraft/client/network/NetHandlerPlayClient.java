@@ -833,6 +833,7 @@ public class NetHandlerPlayClient implements INetHandlerPlayClient
     {
         EventPacket eventPacket = new EventPacket(p_147297_1_, EventPacket.Type.SEND);
         Koks.getKoks().eventManager.onEvent(eventPacket);
+        if(eventPacket.isCanceled())return;
         this.netManager.sendPacket(p_147297_1_);
     }
 

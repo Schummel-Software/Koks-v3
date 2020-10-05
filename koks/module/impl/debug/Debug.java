@@ -16,6 +16,7 @@ import net.minecraft.entity.player.PlayerCapabilities;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.*;
 import net.minecraft.network.play.server.*;
+import net.minecraft.util.MovingObjectPosition;
 import org.lwjgl.Sys;
 
 import java.util.UUID;
@@ -36,17 +37,28 @@ public class Debug extends Module {
 
     public TimeHelper timeHelper = new TimeHelper();
 
+    // Hunger Balken sind flaggs
+
     @Override
     public void onEvent(Event event) {
+
         if (event instanceof EventUpdate) {
-           /* for(Entity entity : getWorld().loadedEntityList) {
+
+            if(mc.objectMouseOver.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
+                if(getGameSettings().keyBindAttack.pressed) {
+                    getPlayer().sendQueue.addToSendQueue(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.START_DESTROY_BLOCK, mc.objectMouseOver.getBlockPos(), mc.objectMouseOver.sideHit));
+                    getPlayer().sendQueue.addToSendQueue(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.STOP_DESTROY_BLOCK, mc.objectMouseOver.getBlockPos(), mc.objectMouseOver.sideHit));
+                }
+
+            }
+            /* for(Entity entity : getWorld().loadedEntityList) {
                 if(entity.getDistanceSqToEntity(getPlayer()) < 8 && entity instanceof EntityPlayer) {
                     if(((EntityPlayer) entity).hurtTime != 0 && entity != getPlayer()) {
                         mc.thePlayer.sendQueue.addToSendQueue(new C);
                     }
                 }
            }*/
-            MovementUtil movementUtil = new MovementUtil();
+            /*MovementUtil movementUtil = new MovementUtil();
             if (getPlayer().onGround) {
 
                 mc.thePlayer.motionY = 0.2;
@@ -65,18 +77,18 @@ public class Debug extends Module {
                 }
 
 
-            }
+            }*/
         }
 
-        if (event instanceof EventPacket) {
+        /* if (event instanceof EventPacket) {
             if (((EventPacket) event).getType() == EventPacket.Type.SEND) {
                 Packet packet = ((EventPacket) event).getPacket();
                 if (!(packet instanceof C03PacketPlayer || packet instanceof C0APacketAnimation || packet instanceof C09PacketHeldItemChange || packet instanceof C0EPacketClickWindow))
                     System.out.println(packet);
             }
-        }
+        }*/
 
-            /*                        mc.thePlayer.sendQueue.addToSendQueue(new C16PacketClientStatus(C16PacketClientStatus.EnumState.PERFORM_RESPAWN));
+        /*                        mc.thePlayer.sendQueue.addToSendQueue(new C16PacketClientStatus(C16PacketClientStatus.EnumState.PERFORM_RESPAWN));
 
             if (event instanceof EventPacket && ((EventPacket) event).getType() == EventPacket.Type.RECEIVE) {
              if(packet instanceof S06PacketUpdateHealth) {
@@ -84,8 +96,6 @@ public class Debug extends Module {
 
                 sendmsg("damage " + s06PacketUpdateHealth.getHealth(), true);
             }*/
-
-
     }
 
 

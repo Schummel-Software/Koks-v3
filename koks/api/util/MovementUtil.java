@@ -31,31 +31,4 @@ public class MovementUtil extends Methods {
             mc.thePlayer.motionZ = Math.cos(Math.toRadians(getDirection(mc.thePlayer.rotationYaw))) * speed;
         }
     }
-
-    public void moveFlying(EventMoveFlying eventMoveFlying, float yaw) {
-        float strafe = eventMoveFlying.getStrafe();
-        float forward = eventMoveFlying.getForward();
-        float friction = eventMoveFlying.getFriction();
-
-        float f = strafe * strafe + forward * forward;
-
-        if (f >= 1.0E-4F) {
-            f = MathHelper.sqrt_float(f);
-
-            if (f < 1.0F) {
-                f = 1.0F;
-            }
-
-            f = friction / f;
-            strafe = strafe * f;
-            forward = forward * f;
-
-            float f1 = MathHelper.sin(yaw * (float) Math.PI / 180.0F);
-            float f2 = MathHelper.cos(yaw * (float) Math.PI / 180.0F);
-
-            mc.thePlayer.motionX += strafe * f2 - forward * f1;
-            mc.thePlayer.motionZ += forward * f2 + strafe * f1;
-        }
-    }
-
 }

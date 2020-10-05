@@ -41,6 +41,7 @@ import koks.Koks;
 import koks.event.impl.EventKeyPress;
 import koks.event.impl.EventTick;
 import koks.module.Module;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.audio.MusicTicker;
@@ -192,8 +193,6 @@ import org.lwjgl.opengl.PixelFormat;
 import org.lwjgl.util.glu.GLU;
 
 public class Minecraft implements IThreadListener, IPlayerUsage {
-   /* public DiscordRPC discordAPI = DiscordRPC.INSTANCE;
-    DiscordRichPresence presence = new DiscordRichPresence();*/
 
     public String discordDetail = "";
     public String discordState = "";
@@ -440,8 +439,34 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
         Bootstrap.register();
     }
 
+    /*public DiscordRPC lib = DiscordRPC.INSTANCE;*/
+
     public void run() {
         this.running = true;
+
+        /*String applicationId = "754374125392232499";
+        String streamId = "";
+
+        DiscordEventHandlers handlers = new DiscordEventHandlers();
+        handlers.ready = (user) -> System.out.println("Ready!");
+        lib.Discord_Initialize(applicationId, handlers, true, streamId);
+        DiscordRichPresence presence = new DiscordRichPresence();
+
+        presence.startTimestamp = System.currentTimeMillis() / 1000;
+
+        presence.details = "Playing Minecraft 1.8.8";
+
+        lib.Discord_UpdatePresence(presence);
+
+        new Thread(() -> {
+            while (!Thread.currentThread().isInterrupted()) {
+                lib.Discord_RunCallbacks();
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException ignored) {
+                }
+            }
+        }, "RPC-Callback-Handler").start();*/
 
         try {
             this.startGame();
@@ -640,7 +665,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
 
     private void createDisplay() throws LWJGLException {
         Display.setResizable(true);
-        Display.setTitle("Minecraft 1.8.8");
+        Display.setTitle("Injecting...");
 
         try {
             Display.create((new PixelFormat()).withDepthBits(24));
@@ -680,11 +705,13 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
             InputStream inputstream1 = null;
 
             try {
-                inputstream = this.mcDefaultResourcePack.getInputStreamAssets(new ResourceLocation("icons/icon_16x16.png"));
-                inputstream1 = this.mcDefaultResourcePack.getInputStreamAssets(new ResourceLocation("icons/icon_32x32.png"));
+                inputstream = this.getClass().getResourceAsStream("icons/koks16x16.png");
+                inputstream1 = this.getClass().getResourceAsStream("icons/koks32x32.png");
 
                 if (inputstream != null && inputstream1 != null) {
                     Display.setIcon(new ByteBuffer[]{this.readImageToBuffer(inputstream), this.readImageToBuffer(inputstream1)});
+                }else{
+
                 }
             } catch (IOException ioexception) {
                 logger.error((String) "Couldn\'t set icon", (Throwable) ioexception);
@@ -1368,7 +1395,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
         }
     }
 
-    private void clickMouse() {
+    public void clickMouse() {
         if (this.leftClickCounter <= 0) {
             this.thePlayer.swingItem();
 

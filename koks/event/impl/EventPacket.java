@@ -10,7 +10,7 @@ import net.minecraft.network.Packet;
  */
 public class EventPacket extends Event {
 
-    private final Packet<? extends INetHandler> packet;
+    private Packet<? extends INetHandler> packet;
     private final Type type;
 
     public EventPacket(Packet<? extends INetHandler> packet, Type type) {
@@ -20,6 +20,10 @@ public class EventPacket extends Event {
 
     public Packet<? extends INetHandler> getPacket() {
         return packet;
+    }
+
+    public void setPacket(Packet<? extends INetHandler> packet) {
+        this.packet = packet;
     }
 
     public Type getType() {

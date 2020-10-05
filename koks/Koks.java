@@ -12,6 +12,9 @@ import koks.api.settings.SettingsManager;
 
 import java.awt.*;
 
+import koks.purves.PurvesManager;
+import koks.purves.Role;
+import koks.purves.User;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.opengl.Display;
 
@@ -25,7 +28,7 @@ public class Koks {
 
     public final String NAME = "Koks";
     public final String PREFIX = "§c" + NAME + " §7>> ";
-    public final String VERSION = "2.1.2";
+    public final String VERSION = "2.1.3";
     public final String[] AUTHORS = new String[]{"DasDirt", "Deleteboys","Kroko", "lmao", "Phantom"};
 
     static {
@@ -49,8 +52,10 @@ public class Koks {
     public FileManager fileManager;
     public TabGUI tabGUI;
     public ConfigSystem configSystem;
+    public PurvesManager purvesManager;
 
     public void startClient() {
+        purvesManager = new PurvesManager("Koks");
         settingsManager = new SettingsManager();
         moduleManager = new ModuleManager();
         eventManager = new EventManager();

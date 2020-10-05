@@ -7,6 +7,7 @@ import koks.event.impl.EventUpdate;
 import koks.event.impl.EventVelocity;
 import koks.module.Module;
 import net.minecraft.network.Packet;
+import net.minecraft.network.play.client.C03PacketPlayer;
 import net.minecraft.network.play.server.S12PacketEntityVelocity;
 import net.minecraft.network.play.server.S27PacketExplosion;
 
@@ -53,18 +54,17 @@ public class Velocity extends Module {
                 }
                 break;
             case "Intave":
-                if(event instanceof EventVelocity) {
-                    if(getHurtTime() == 7) {
-                        ((EventVelocity) event).setHorizontal(25);
-
-                    }else if(getHurtTime() > 4 && getHurtTime() < 6){
-                        ((EventVelocity) event).setHorizontal(20);
+                if (event instanceof EventVelocity) {
+                    if (getHurtTime() == 10) {
+                        getPlayer().setPosition(getX(), getY(), getZ());
+                    } else if (getHurtTime() == 9) {
+                        event.setCanceled(true);
                     }
                 }
                 break;
             case "AAC4":
-                if(event instanceof EventVelocity) {
-                    if(getHurtTime() != 0) {
+                if (event instanceof EventVelocity) {
+                    if (getHurtTime() != 0) {
                         ((EventVelocity) event).setHorizontal(93);
                         ((EventVelocity) event).setVertical(86);
                     }

@@ -59,9 +59,9 @@ public class RotationUtil {
         float yawAngle = (float) (MathHelper.func_181159_b(z + zDiff, x + xDiff) * 180.0D / Math.PI) - 90.0F;
         float pitchAngle = (float) (-(MathHelper.func_181159_b(y, angle) * 180.0D / Math.PI));
         float finalPitch = pitchAngle >= 90 ? 90 : pitchAngle;
-
-        float f = mc.gameSettings.mouseSensitivity * 0.6F + 0.2F;
-        float f1 = f * f * f * 8.0F;
+        //lmao thx
+        float f = mc.gameSettings.mouseSensitivity * 0.8F + 0.2F;
+        float f1 = f * f * f * 1.5F;
 
         float f2 = (float) ((yawAngle - currentYaw) * f1);
         float f3 = (float) ((finalPitch - currentPitch) * f1);
@@ -70,7 +70,10 @@ public class RotationUtil {
         float yaw = updateRotation(currentYaw + f2, yawAngle, smooth ? speed : 360);
         float pitch = updateRotation(currentPitch + f3, finalPitch, smooth ? speed : 360);
 
-        /*float[] yawDiff = calculateDiff(currentYaw, yaw);
+        yaw -= yaw % f1;
+        pitch -= pitch % f1;
+
+        /*  float[] yawDiff = calculateDiff(currentYaw, yaw);
         float[] pitchDiff = calculateDiff(currentPitch, pitch);
         float[] fixed = fixedSensitivity(mc.gameSettings.mouseSensitivity, yawDiff[0], pitchDiff[0]);
 
@@ -92,7 +95,7 @@ public class RotationUtil {
             else if (pitch < currentPitch) currentPitch -= pitchDiff[0];
         }*/
 
-        return new float[]{yaw , pitch };
+        return new float[]{yaw, pitch};
     }
 
     public float[] faceBlock(BlockPos pos, float currentYaw, float currentPitch, float speed) {

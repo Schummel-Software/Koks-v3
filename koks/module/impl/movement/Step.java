@@ -4,6 +4,7 @@ import koks.api.settings.Setting;
 import koks.event.Event;
 import koks.event.impl.EventUpdate;
 import koks.module.Module;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.play.client.C03PacketPlayer;
 
 public class Step extends Module {
@@ -21,6 +22,7 @@ public class Step extends Module {
             String extra = mode.getCurrentMode().equalsIgnoreCase("Vanilla") ? " [" + stepHeight.getCurrentValue() + "]" : "";
             setInfo(mode.getCurrentMode() + extra);
         }
+
         switch (mode.getCurrentMode()) {
             case "Vanilla":
                 if (event instanceof EventUpdate) getPlayer().stepHeight = stepHeight.getCurrentValue();

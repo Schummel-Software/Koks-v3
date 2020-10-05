@@ -72,6 +72,7 @@ public class KillAura extends Module {
     public Setting healthNaNCheck = new Setting("Health NaN Check", false, this);
     public Setting nameCheck = new Setting("Name Check", true, this);
     public Setting ignoreInvisible = new Setting("Ignore Invisible", true, this);
+    public Setting ignoreDeath = new Setting("IgnoreDeath", true, this);
     public Setting throughWalls = new Setting("Through Walls", false, this);
     public Setting soundCheck = new Setting("Sound Check", false, this);
 
@@ -124,17 +125,18 @@ public class KillAura extends Module {
                         ((EventMotion) event).setYaw(yaw);
                         ((EventMotion) event).setPitch(pitch);
                     }
+
                     curPitch = pitch;
                     curYaw = yaw;
-
 
                     if (canBlock() && autoBlock.isToggled() && blockMode.getCurrentMode().equals("Full"))
                         mc.playerController.sendUseItem(mc.thePlayer, mc.theWorld, mc.thePlayer.getCurrentEquippedItem());
 
                     long cps = (long) this.cps.getCurrentValue();
+                    System.out.println(cps);
                     cps = cps < 10 ? cps : cps + 5;
                     if (((EntityLivingBase) finalEntity).hurtTime <= hurtTime.getCurrentValue()) {
-                        if (timeHelper.hasReached(1000L / cps + (long) randomUtil.getRandomGaussian(20))) {
+                        if (timeHelper.hasReached((1000L / cps) + (long) randomUtil.getRandomGaussian(20))) {
                             attackEntity();
                             if (canBlock() && autoBlock.isToggled() && (blockMode.getCurrentMode().equals("On Attack") || blockMode.getCurrentMode().equals("Half")))
                                 mc.playerController.sendUseItem(mc.thePlayer, mc.theWorld, mc.thePlayer.getCurrentEquippedItem());
@@ -182,7 +184,7 @@ public class KillAura extends Module {
                 mc.thePlayer.sendQueue.addToSendQueue(new C02PacketUseEntity(rayCastEntity, C02PacketUseEntity.Action.ATTACK));
             }
 
-
+            switchCounter = 0;
             if (switchCounter < entities.size())
                 switchCounter++;
             else
@@ -203,7 +205,7 @@ public class KillAura extends Module {
         } else {
             mc.thePlayer.swingItem();
         }
-        System.out.println("----DEBUG----");
+      /*  System.out.println("----DEBUG----");
         System.out.println("Name: " + finalEntity.getName());
         System.out.println("Eye Height: " + finalEntity.getEyeHeight());
         System.out.println("DistanceToPlayer: " + finalEntity.getDistanceToEntity(getPlayer()));
@@ -224,7 +226,7 @@ public class KillAura extends Module {
         System.out.println("AIMoveSpeed: " + ((EntityPlayer) finalEntity).getAIMoveSpeed());
         System.out.println("BedLocation: " + ((EntityPlayer) finalEntity).getBedLocation());
         System.out.println("MaxFallHeight: " + ((EntityPlayer) finalEntity).getMaxFallHeight());
-        System.out.println("isValid: " + isValid(finalEntity));
+        System.out.println("isValid: " + isValid(finalEntity));*/
     }
 
     boolean canBlock() {
@@ -336,6 +338,8 @@ public class KillAura extends Module {
         if (!throughWalls.isToggled() && !mc.thePlayer.canEntityBeSeen(entity))
             return false;
         if (healthcheck && entity instanceof EntityPlayer && ((EntityPlayer) entity).getMaxHealth() == 20 && entity.getDistanceToEntity(getPlayer()) == 1.1679053)
+            return false;
+        if(entity.isDead && ignoreDeath.isToggled())
             return false;
         return true;
     }

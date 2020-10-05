@@ -29,10 +29,8 @@ public class Test extends Module {
     @Override
     public void onEvent(Event event) {
         if (event instanceof EventUpdate) {
-            if (getWorld().getBlockState(new BlockPos(getX(), getY() - 1, getZ())).getBlock() == Blocks.air) {
-                if (getPlayer().onGround)
-                    getPlayer().jump();
-            }
+            getPlayer().isInWeb = false;
+            getPlayer().inWater = false;
         }
     }
 
