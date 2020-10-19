@@ -3,6 +3,7 @@ package koks.config;
 import koks.Koks;
 import koks.module.Module;
 import koks.api.settings.Setting;
+import net.minecraft.client.Minecraft;
 
 import java.io.*;
 
@@ -12,17 +13,21 @@ import java.io.*;
  */
 public class ConfigSystem {
 
-    public void saveConfig(Config config) {
-        try{
-            FileWriter fileWriter = new FileWriter(config.getFile());
-            for(Module module : Koks.getKoks().moduleManager.getModules()) {
-                if(module.getCategory() != Module.Category.GUI || module.getCategory() != Module.Category.RENDER || module.getCategory() != Module.Category.DEBUG){
+    public void saveConfig(String config) {
+        try {
+            File dir = new File(Minecraft.getMinecraft().mcDataDir + "/Koks/Configs");
+            if (!dir.exists()) dir.mkdirs();
+            File file = new File(Minecraft.getMinecraft().mcDataDir + "/Koks/Configs/" + config + ".koks");
+            if (!file.exists()) file.createNewFile();
+            FileWriter fileWriter = new FileWriter(Minecraft.getMinecraft().mcDataDir + "/Koks/Configs/" + config + ".koks");
+            for (Module module : Koks.getKoks().moduleManager.getModules()) {
+                if (module.getCategory() != Module.Category.GUI && module.getCategory() != Module.Category.RENDER && module.getCategory() != Module.Category.DEBUG) {
                     fileWriter.write("Module:" + module.getName() + ":" + module.isToggled() + ":" + module.isBypass() + "\n");
                 }
             }
-            for(Setting setting : Koks.getKoks().settingsManager.getSettings()) {
+            for (Setting setting : Koks.getKoks().settingsManager.getSettings()) {
                 String arguments = "";
-                switch(setting.getType()) {
+                switch (setting.getType()) {
                     case SLIDER:
                         arguments = setting.getCurrentValue() + "";
                         break;
@@ -36,28 +41,28 @@ public class ConfigSystem {
                 fileWriter.write("Setting:" + setting.getModule().getName() + ":" + setting.getName() + ":" + arguments + "\n");
             }
             fileWriter.close();
-        }catch (IOException ex) {
+        } catch (IOException ex) {
             ex.printStackTrace();
         }
     }
 
-    public void loadConfig(Config config) {
+    public void loadConfig(String config) {
         try {
-            BufferedReader bufferedReader = new BufferedReader(new FileReader(config.getFile()));
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(Minecraft.getMinecraft().mcDataDir + "/Koks/Configs/" + config + ".koks"));
             String line;
             while ((line = bufferedReader.readLine()) != null) {
                 String[] args = line.split(":");
-                switch(args[0]) {
+                switch (args[0]) {
                     case "Module":
                         Module module = Koks.getKoks().moduleManager.getModule(args[1]);
-                        if(module == null)continue;
+                        if (module == null) continue;
                         module.setToggled(Boolean.parseBoolean(args[2]));
                         module.setBypass(Boolean.parseBoolean(args[3]));
                         break;
                     case "Setting":
                         module = Koks.getKoks().moduleManager.getModule(args[1]);
                         Setting setting = Koks.getKoks().settingsManager.getSetting(module, args[2]);
-                        switch(setting.getType()) {
+                        switch (setting.getType()) {
                             case SLIDER:
                                 setting.setCurrentValue(Float.parseFloat(args[3]));
                                 break;

@@ -5,6 +5,7 @@ import koks.event.Event;
 import koks.event.impl.EventTick;
 import koks.event.impl.EventUpdate;
 import koks.module.Module;
+import koks.module.ModuleInfo;
 import koks.module.impl.combat.KillAura;
 import koks.module.impl.world.Scaffold;
 
@@ -12,11 +13,9 @@ import koks.module.impl.world.Scaffold;
  * @author deleteboys | lmao | kroko
  * @created on 13.09.2020 : 20:10
  */
-public class Sprint extends Module {
 
-    public Sprint() {
-        super("Sprint", "Sprints automaticly", Category.MOVEMENT);
-    }
+@ModuleInfo(name = "Sprint", description = "Sprints automatically", category = Module.Category.MOVEMENT)
+public class Sprint extends Module {
 
     @Override
     public void onEvent(Event event) {

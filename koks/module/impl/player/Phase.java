@@ -5,20 +5,19 @@ import koks.event.Event;
 import koks.event.impl.EventUpdate;
 import koks.module.Module;
 import koks.api.settings.Setting;
+import koks.module.ModuleInfo;
 
 /**
  * @author deleteboys | lmao | kroko
  * @created on 14.09.2020 : 16:54
  */
+
+@ModuleInfo(name = "Phase", description = "You can walk through walls", category = Module.Category.PLAYER)
 public class Phase extends Module {
 
     public Setting mode = new Setting("Mode", new String[]{"Hive", "Intave"}, "Hive", this);
 
     public TimeHelper timeHelper = new TimeHelper();
-
-    public Phase() {
-        super("Phase", "You can walk through walls", Category.PLAYER);
-    }
 
     public void hive() {
         if (getPlayer().isCollidedHorizontally) {

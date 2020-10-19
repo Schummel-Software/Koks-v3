@@ -1,6 +1,7 @@
 package koks.gui.tabgui;
 
 import koks.Koks;
+import koks.api.util.RenderUtil;
 import koks.event.impl.EventKeyPress;
 import koks.module.Module;
 import net.minecraft.client.Minecraft;
@@ -19,9 +20,10 @@ public class DrawCategory {
     private final ArrayList<DrawModule> drawModules = new ArrayList<>();
     private final Minecraft mc = Minecraft.getMinecraft();
     private final FontRenderer fr = mc.fontRendererObj;
-    private int x, y, width, height, currentCategory, currentModule;
+    private int x, y, width, height, currentModule;
     private boolean extended;
     private Module.Category category;
+    private double animateCat;
 
     public DrawCategory(Module.Category category) {
         this.category = category;
@@ -33,15 +35,28 @@ public class DrawCategory {
         }
     }
 
+    private final RenderUtil renderUtil = new RenderUtil();
+
     public void drawScreen(int x, int y, int width, int height) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
 
-        Gui.drawRect(x, y, x + width, y + height, currentCategory == category.ordinal() ? Koks.getKoks().clientColor.getRGB() : 0xBB000000);
         fr.drawStringWithShadow(category.name().substring(0, 1).toUpperCase() + category.name().substring(1).toLowerCase(), x + 3, y + height / 2 - fr.FONT_HEIGHT / 2 + 1, 0xFFFFFFFF);
 
+        if(animateCat == 0)
+            animateCat =  y + currentModule * height;
+
+        if (extended) {
+            double shouldRender = y + currentModule * height;
+            if(animateCat < shouldRender)
+                animateCat+=0.5;
+            if(animateCat > shouldRender)
+                animateCat-=0.5;
+            renderUtil.drawRect(x + width, y, x + width * 2, y + height * drawModules.size(), 0xBB000000);
+            renderUtil.drawRect(x + width, animateCat, x + width * 2, animateCat + height, Koks.getKoks().clientColor.getRGB());
+        }
         int y2 = y;
         if (extended && Koks.getKoks().tabGUI.extendedCat == category) {
             for (DrawModule drawModule : drawModules) {
@@ -54,24 +69,17 @@ public class DrawCategory {
     public void manageKeys(EventKeyPress eventKeyPress) {
         int key = eventKeyPress.getKey();
 
-        if (!extended && Koks.getKoks().tabGUI.extendedCat == null) {
-            if (key == Keyboard.KEY_UP) {
-                if (currentCategory > 0) {
-                    currentCategory--;
-                }
-            } else if (key == Keyboard.KEY_DOWN) {
-                if (currentCategory < Module.Category.values().length - 1) {
-                    currentCategory++;
-                }
-            } else if (key == Keyboard.KEY_RIGHT && currentCategory == category.ordinal() && !drawModules.isEmpty()) {
-                extended = true;
-                Koks.getKoks().tabGUI.extendedCat = category;
-            }
-        } else if (extended) {
+
+        if (key == Keyboard.KEY_RIGHT && Koks.getKoks().tabGUI.currentCategory == category.ordinal() && !drawModules.isEmpty() && !extended) {
+            extended = true;
+            Koks.getKoks().tabGUI.extendedCat = category;
+        }
+
+        if (extended) {
             if (key == Keyboard.KEY_LEFT) {
                 extended = false;
                 Koks.getKoks().tabGUI.extendedCat = null;
-            } else if (key == Keyboard.KEY_RIGHT) {
+            } else if (key == Keyboard.KEY_RETURN) {
                 drawModules.get(currentModule).module.toggle();
             } else if (key == Keyboard.KEY_UP) {
                 if (currentModule > 0) {

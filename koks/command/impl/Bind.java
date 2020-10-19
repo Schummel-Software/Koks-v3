@@ -2,6 +2,7 @@ package koks.command.impl;
 
 import koks.Koks;
 import koks.command.Command;
+import koks.command.CommandInfo;
 import koks.module.Module;
 import org.lwjgl.input.Keyboard;
 
@@ -9,11 +10,9 @@ import org.lwjgl.input.Keyboard;
  * @author deleteboys | lmao | kroko
  * @created on 13.09.2020 : 03:52
  */
-public class Bind extends Command {
 
-    public Bind() {
-        super("bind");
-    }
+@CommandInfo(name = "bind")
+public class Bind extends Command {
 
     @Override
     public void execute(String[] args) {

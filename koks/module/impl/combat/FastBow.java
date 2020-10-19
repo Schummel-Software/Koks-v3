@@ -4,6 +4,7 @@ import koks.api.settings.Setting;
 import koks.event.Event;
 import koks.event.impl.EventUpdate;
 import koks.module.Module;
+import koks.module.ModuleInfo;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.item.ItemBow;
 import net.minecraft.network.play.client.*;
@@ -14,13 +15,11 @@ import net.minecraft.util.Vec3;
  * @author kroko
  * @created on 23.09.2020 : 16:37
  */
+
+@ModuleInfo(name = "FastBow", description = "You shoot arrows fast", category = Module.Category.COMBAT)
 public class FastBow extends Module {
 
     Setting strength = new Setting("Strength", 20F, 5F, 20F, true, this);
-
-    public FastBow() {
-        super("FastBow", "You shoot arrows fast", Category.COMBAT);
-    }
 
     @Override
     public void onEvent(Event event) {

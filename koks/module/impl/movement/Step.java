@@ -4,17 +4,15 @@ import koks.api.settings.Setting;
 import koks.event.Event;
 import koks.event.impl.EventUpdate;
 import koks.module.Module;
+import koks.module.ModuleInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.play.client.C03PacketPlayer;
 
+@ModuleInfo(name = "Step", description = "Goes up blocks automatically", category = Module.Category.MOVEMENT)
 public class Step extends Module {
 
     Setting mode = new Setting("Mode", new String[]{"Vanilla", "Intave"}, "Intave", this);
     final Setting stepHeight = new Setting("Step Height", 4, 1, 4, false, this);
-
-    public Step() {
-        super("Step", "Goes up blocks automatically", Category.MOVEMENT);
-    }
 
     @Override
     public void onEvent(Event event) {

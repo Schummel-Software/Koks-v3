@@ -5,28 +5,44 @@ import com.google.common.collect.Lists;
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Proxy;
 import java.net.URI;
-import java.util.Calendar;
-import java.util.Date;
+import java.nio.file.Files;
+import java.util.*;
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.mojang.authlib.Agent;
 import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
 import com.mojang.authlib.yggdrasil.YggdrasilUserAuthentication;
+import com.sun.webkit.dom.KeyboardEventImpl;
 import com.thealtening.api.response.Account;
 import com.thealtening.api.retriever.AsynchronousDataRetriever;
 import com.thealtening.api.retriever.BasicDataRetriever;
 import com.thealtening.auth.TheAlteningAuthentication;
 import com.thealtening.auth.service.AlteningServiceType;
+import javafx.scene.transform.Scale;
 import koks.Koks;
+import koks.api.util.GLSLSandboxShader;
+import koks.api.util.LoginUtil;
+import koks.api.util.RenderUtil;
+import koks.api.util.fonts.GlyphPageFontRenderer;
+import koks.filemanager.impl.AlteningToken;
+import koks.gui.GuiAltLogin;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.PositionedSoundRecord;
+import net.minecraft.client.audio.SoundCategory;
+import net.minecraft.client.audio.SoundEventAccessorComposite;
+import net.minecraft.client.audio.SoundHandler;
+import net.minecraft.client.gui.stream.GuiStreamOptions;
+import net.minecraft.client.gui.stream.GuiStreamUnavailable;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
@@ -34,135 +50,38 @@ import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.client.settings.GameSettings;
+import net.minecraft.client.stream.IStream;
 import net.minecraft.realms.RealmsBridge;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Session;
+import net.minecraft.util.*;
+import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.demo.DemoWorldServer;
 import net.minecraft.world.storage.ISaveFormat;
 import net.minecraft.world.storage.WorldInfo;
 import org.apache.commons.io.Charsets;
+import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.Sys;
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GLContext;
 import org.lwjgl.util.glu.Project;
 
+import javax.tools.Tool;
+
 public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
-    private static final AtomicInteger field_175373_f = new AtomicInteger(0);
-    private static final Logger logger = LogManager.getLogger();
-    private static final Random RANDOM = new Random();
 
-    /**
-     * Counts the number of screen updates.
-     */
-    private float updateCounter;
-
-    /**
-     * The splash message.
-     */
-    private String splashText;
-    private GuiButton buttonResetDemo;
-
-    /**
-     * Timer used to rotate the panorama, increases every tick.
-     */
-    private int panoramaTimer;
-
-    /**
-     * Texture allocated for the current viewport of the main menu's panorama background.
-     */
-    private DynamicTexture viewportTexture;
-    private boolean field_175375_v = true;
-
-    /**
-     * The Object object utilized as a thread lock when performing non thread-safe operations
-     */
-    private final Object threadLock = new Object();
-
-    /**
-     * OpenGL graphics card warning.
-     */
-    private String openGLWarning1;
-
-    /**
-     * OpenGL graphics card warning.
-     */
-    private String openGLWarning2;
-
-    /**
-     * Link to the Mojang Support about minimum requirements
-     */
-    private String openGLWarningLink;
-    private static final ResourceLocation splashTexts = new ResourceLocation("texts/splashes.txt");
-    private static final ResourceLocation minecraftTitleTextures = new ResourceLocation("textures/gui/title/minecraft.png");
-
-    /**
-     * An array of all the paths to the panorama pictures.
-     */
-    private static final ResourceLocation[] titlePanoramaPaths = new ResourceLocation[]{new ResourceLocation("textures/gui/title/background/panorama_0.png"), new ResourceLocation("textures/gui/title/background/panorama_1.png"), new ResourceLocation("textures/gui/title/background/panorama_2.png"), new ResourceLocation("textures/gui/title/background/panorama_3.png"), new ResourceLocation("textures/gui/title/background/panorama_4.png"), new ResourceLocation("textures/gui/title/background/panorama_5.png")};
-    public static final String field_96138_a = "Please click " + EnumChatFormatting.UNDERLINE + "here" + EnumChatFormatting.RESET + " for more information.";
-    private int field_92024_r;
-    private int field_92023_s;
-    private int field_92022_t;
-    private int field_92021_u;
-    private int field_92020_v;
-    private int field_92019_w;
-    private ResourceLocation backgroundTexture;
-
-    /**
-     * Minecraft Realms button.
-     */
-    private GuiButton realmsButton;
+    private GLSLSandboxShader shader;
 
     public GuiMainMenu() {
-        this.openGLWarning2 = field_96138_a;
-        this.splashText = "missingno";
-        BufferedReader bufferedreader = null;
-
         try {
-            List<String> list = Lists.<String>newArrayList();
-            bufferedreader = new BufferedReader(new InputStreamReader(Minecraft.getMinecraft().getResourceManager().getResource(splashTexts).getInputStream(), Charsets.UTF_8));
-            String s;
-
-            while ((s = bufferedreader.readLine()) != null) {
-                s = s.trim();
-
-                if (!s.isEmpty()) {
-                    list.add(s);
-                }
-            }
-
-            if (!list.isEmpty()) {
-                while (true) {
-                    this.splashText = (String) list.get(RANDOM.nextInt(list.size()));
-
-                    if (this.splashText.hashCode() != 125780783) {
-                        break;
-                    }
-                }
-            }
-        } catch (IOException var12) {
-            ;
-        } finally {
-            if (bufferedreader != null) {
-                try {
-                    bufferedreader.close();
-                } catch (IOException var11) {
-                    ;
-                }
-            }
-        }
-
-        this.updateCounter = RANDOM.nextFloat();
-        this.openGLWarning1 = "";
-
-        if (!GLContext.getCapabilities().OpenGL20 && !OpenGlHelper.areShadersSupported()) {
-            this.openGLWarning1 = I18n.format("title.oldgl1", new Object[0]);
-            this.openGLWarning2 = I18n.format("title.oldgl2", new Object[0]);
-            this.openGLWarningLink = "https://help.mojang.com/customer/portal/articles/325948?ref=game";
+            this.shader = new GLSLSandboxShader("/mainmenu.fsh");
+        } catch (IOException e) {
+            throw new IllegalStateException("Failed to load the Shader");
         }
     }
 
@@ -170,7 +89,6 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
      * Called from the main game loop to update the screen.
      */
     public void updateScreen() {
-        ++this.panoramaTimer;
     }
 
     /**
@@ -184,408 +102,838 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
      * Fired when a key is typed (except F11 which toggles full screen). This is the equivalent of
      * KeyListener.keyTyped(KeyEvent e). Args : character (character on the key), keyCode (lwjgl Keyboard key code)
      */
+
+    public boolean windowShowed = true;
+
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
+        if (keyCode == Keyboard.KEY_SPACE) {
+            Keyboard.enableRepeatEvents(false);
+            windowShowed = !windowShowed;
+        }
+        if (windowShowed) {
+
+            if (keyCode <= Keyboard.KEY_0 && keyCode >= Keyboard.KEY_1) {
+                int key = Integer.parseInt(Keyboard.getKeyName(keyCode));
+                if (key <= indexSize + 1 && key != 0) {
+                    currentIndex = key - 1;
+                    System.out.println(currentIndex);
+                    if (currentIndex == 5) {
+                        mc.shutdown();
+                    }
+                }
+            }
+
+            if (currentIndex == 3) {
+                Keyboard.enableRepeatEvents(true);
+                if (email.isFocused()) {
+                    email.textboxKeyTyped(typedChar, keyCode);
+                    if (keyCode == Keyboard.KEY_RETURN) {
+                        password.setFocused(true);
+                        email.setFocused(false);
+                    } else if (keyCode == Keyboard.KEY_DOWN) {
+                        password.setFocused(true);
+                        email.setFocused(false);
+                    } else if (keyCode == Keyboard.KEY_ESCAPE) {
+                        email.setFocused(false);
+                    }
+                } else if (password.isFocused()) {
+                    password.textboxKeyTyped(typedChar, keyCode);
+                    if (keyCode == Keyboard.KEY_RETURN) {
+                        for (GuiButton button : buttonList) {
+                            if (button.displayString.equalsIgnoreCase("Login"))
+                                actionPerformed(button);
+                        }
+                    } else if (keyCode == Keyboard.KEY_UP) {
+                        password.setFocused(false);
+                        email.setFocused(true);
+                    } else if (keyCode == Keyboard.KEY_ESCAPE) {
+                        password.setFocused(false);
+                    }
+                } else {
+                    if (keyCode == Keyboard.KEY_RETURN) {
+                        for (GuiButton button : buttonList) {
+                            if (button.displayString.equalsIgnoreCase("Login"))
+                                actionPerformed(button);
+                        }
+                    }
+                }
+            }
+        }
     }
 
-    /**
-     * Adds the buttons (and other controls) to the screen in question. Called when the GUI is displayed and when the
-     * window resizes, the buttonList is cleared beforehand.
-     */
+    public int yOptions;
+
+    private static final GameSettings.Options[] field_146440_f = new GameSettings.Options[]{GameSettings.Options.FOV};
+
     public void initGui() {
-        this.viewportTexture = new DynamicTexture(256, 256);
-        this.backgroundTexture = this.mc.getTextureManager().getDynamicTextureLocation("background", this.viewportTexture);
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(new Date());
 
-        if (calendar.get(2) + 1 == 12 && calendar.get(5) == 24) {
-            this.splashText = "Merry X-mas!";
-        } else if (calendar.get(2) + 1 == 1 && calendar.get(5) == 1) {
-            this.splashText = "Happy new year!";
-        } else if (calendar.get(2) + 1 == 10 && calendar.get(5) == 31) {
-            this.splashText = "OOoooOOOoooo! Spooky!";
+        ScaledResolution sr = new ScaledResolution(mc);
+
+        buttonList.add(new GuiButton(99, sr.getScaledWidth() / 2 - 50 / 2, sr.getScaledHeight() / 2 + 55, 50, 20, "Login"));
+
+        yOptions = 3;
+
+        int ix = 0;
+        for (GameSettings.Options gamesettings$options : field_146440_f) {
+            if (gamesettings$options.getEnumFloat()) {
+                this.buttonList.add(new GuiOptionSlider(gamesettings$options.returnEnumOrdinal(), this.width / 2 - 155 + ix % 2 * 160, this.height / yOptions + 12 + 24 * (ix >> 1), gamesettings$options));
+            } else {
+                GuiOptionButton guioptionbutton = new GuiOptionButton(gamesettings$options.returnEnumOrdinal(), this.width / 2 - 155 + ix % 2 * 160, this.height / yOptions - 12 + 24 * (ix >> 1), gamesettings$options, mc.gameSettings.getKeyBinding(gamesettings$options));
+                this.buttonList.add(guioptionbutton);
+            }
+
+            ++ix;
         }
 
-        int i = 24;
-        int j = this.height / 4 + 48;
+        this.buttonList.add(new GuiButton(110, this.width / 2 - 155, this.height / yOptions + 48 - 6, 150, 20, I18n.format("options.skinCustomisation", new Object[0])));
+        this.buttonList.add(new GuiButton(8675309, this.width / 2 + 5, this.height / yOptions + 48 - 6, 150, 20, "Super Secret Settings...") {
+            public void playPressSound(SoundHandler soundHandlerIn) {
+                SoundEventAccessorComposite soundeventaccessorcomposite = soundHandlerIn.getRandomSoundFromCategories(new SoundCategory[]{SoundCategory.ANIMALS, SoundCategory.BLOCKS, SoundCategory.MOBS, SoundCategory.PLAYERS, SoundCategory.WEATHER});
 
-        if (this.mc.isDemo()) {
-            this.addDemoButtons(j, 24);
-        } else {
-            this.addSingleplayerMultiplayerButtons(j, 24);
-        }
+                if (soundeventaccessorcomposite != null) {
+                    soundHandlerIn.playSound(PositionedSoundRecord.create(soundeventaccessorcomposite.getSoundEventLocation(), 0.5F));
+                }
+            }
+        });
 
-        this.buttonList.add(new GuiButton(0, this.width / 2 - 100, j + 72 + 12, 98, 20, I18n.format("menu.options", new Object[0])));
-        this.buttonList.add(new GuiButton(4, this.width / 2 + 2, j + 72 + 12, 98, 20, I18n.format("menu.quit", new Object[0])));
-        this.buttonList.add(new GuiButtonLanguage(5, this.width / 2 - 124, j + 72 + 12));
+        this.buttonList.add(new GuiButton(106, this.width / 2 - 155, this.height / yOptions + 72 - 6, 150, 20, I18n.format("options.sounds", new Object[0])));
+        this.buttonList.add(new GuiButton(107, this.width / 2 + 5, this.height / yOptions + 72 - 6, 150, 20, I18n.format("options.stream", new Object[0])));
+        this.buttonList.add(new GuiButton(101, this.width / 2 - 155, this.height / yOptions + 96 - 6, 150, 20, I18n.format("options.video", new Object[0])));
+        this.buttonList.add(new GuiButton(100, this.width / 2 + 5, this.height / yOptions + 96 - 6, 150, 20, I18n.format("options.controls", new Object[0])));
+        this.buttonList.add(new GuiButton(102, this.width / 2 - 155, this.height / yOptions + 120 - 6, 150, 20, I18n.format("options.language", new Object[0])));
+        this.buttonList.add(new GuiButton(103, this.width / 2 + 5, this.height / yOptions + 120 - 6, 150, 20, I18n.format("options.chat.title", new Object[0])));
+        this.buttonList.add(new GuiButton(105, this.width / 2 - 155, this.height / yOptions + 144 - 6, 150, 20, I18n.format("options.resourcepack", new Object[0])));
+        this.buttonList.add(new GuiButton(104, this.width / 2 + 5, this.height / yOptions + 144 - 6, 150, 20, I18n.format("options.snooper.view", new Object[0])));
+        this.buttonList.add(new GuiButton(200, this.width / 2 - 100, this.height / yOptions + 168, I18n.format("gui.done", new Object[0])));
 
-        synchronized (this.threadLock) {
-            this.field_92023_s = this.fontRendererObj.getStringWidth(this.openGLWarning1);
-            this.field_92024_r = this.fontRendererObj.getStringWidth(this.openGLWarning2);
-            int k = Math.max(this.field_92023_s, this.field_92024_r);
-            this.field_92022_t = (this.width - k) / 2;
-            this.field_92021_u = ((GuiButton) this.buttonList.get(0)).yPosition - 24;
-            this.field_92020_v = this.field_92022_t + k;
-            this.field_92019_w = this.field_92021_u + 24;
-        }
+        email = new GuiTextField(187, mc.fontRendererObj, sr.getScaledWidth() / 2 - 180 / 2, sr.getScaledHeight() / 3 + 25, 180, 20);
+        email.setFocused(false);
 
-        this.mc.func_181537_a(false);
-    }
-
-    /**
-     * Adds Singleplayer and Multiplayer buttons on Main Menu for players who have bought the game.
-     */
-    private void addSingleplayerMultiplayerButtons(int p_73969_1_, int p_73969_2_) {
-        this.buttonList.add(new GuiButton(1, this.width / 2 - 100, p_73969_1_, I18n.format("menu.singleplayer", new Object[0])));
-        this.buttonList.add(new GuiButton(2, this.width / 2 - 100, p_73969_1_ + p_73969_2_ * 1, I18n.format("menu.multiplayer", new Object[0])));
-        this.buttonList.add(this.realmsButton = new GuiButton(14, this.width / 2 - 100, p_73969_1_ + p_73969_2_ * 2, I18n.format(/*"menu.online"*/ "Alt Generate", new Object[0])));
-    }
-
-    /**
-     * Adds Demo buttons on Main Menu for players who are playing Demo.
-     */
-    private void addDemoButtons(int p_73972_1_, int p_73972_2_) {
-        this.buttonList.add(new GuiButton(11, this.width / 2 - 100, p_73972_1_, I18n.format("menu.playdemo", new Object[0])));
-        this.buttonList.add(this.buttonResetDemo = new GuiButton(12, this.width / 2 - 100, p_73972_1_ + p_73972_2_ * 1, I18n.format("menu.resetdemo", new Object[0])));
-        ISaveFormat isaveformat = this.mc.getSaveLoader();
-        WorldInfo worldinfo = isaveformat.getWorldInfo("Demo_World");
-
-        if (worldinfo == null) {
-            this.buttonResetDemo.enabled = false;
-        }
+        password = new GuiTextField(1337, mc.fontRendererObj, sr.getScaledWidth() / 2 - 180 / 2, sr.getScaledHeight() / 3 + (25 + 27), 180, 20);
+        password.setFocused(false);
     }
 
     /**
      * Called by the controls from the buttonList when activated. (Mouse pressed for buttons)
      */
     protected void actionPerformed(GuiButton button) throws IOException {
-        if (button.id == 0) {
-            this.mc.displayGuiScreen(new GuiOptions(this, this.mc.gameSettings));
-        }
 
-        if (button.id == 5) {
-            this.mc.displayGuiScreen(new GuiLanguage(this, this.mc.gameSettings, this.mc.getLanguageManager()));
-        }
+        if (windowShowed) {
+            switch (button.id) {
+                case 109:
+                    this.mc.displayGuiScreen(new GuiYesNo(this, (new ChatComponentTranslation("difficulty.lock.title", new Object[0])).getFormattedText(), (new ChatComponentTranslation("difficulty.lock.question", new Object[]{new ChatComponentTranslation(this.mc.theWorld.getWorldInfo().getDifficulty().getDifficultyResourceKey(), new Object[0])})).getFormattedText(), 109));
+                    break;
+                case 110:
+                    this.mc.gameSettings.saveOptions();
+                    this.mc.displayGuiScreen(new GuiCustomizeSkin(this));
+                    break;
+                case 8675309:
+                    this.mc.entityRenderer.activateNextShader();
+                    break;
+                case 101:
+                    this.mc.gameSettings.saveOptions();
+                    this.mc.displayGuiScreen(new GuiVideoSettings(this, mc.gameSettings));
+                    break;
+                case 100:
+                    this.mc.gameSettings.saveOptions();
+                    this.mc.displayGuiScreen(new GuiControls(this, mc.gameSettings));
+                    break;
+                case 102:
+                    this.mc.gameSettings.saveOptions();
+                    this.mc.displayGuiScreen(new GuiLanguage(this, mc.gameSettings, this.mc.getLanguageManager()));
+                    break;
+                case 103:
+                    this.mc.gameSettings.saveOptions();
+                    this.mc.displayGuiScreen(new ScreenChatOptions(this, mc.gameSettings));
+                    break;
+                case 104:
+                    this.mc.gameSettings.saveOptions();
+                    this.mc.displayGuiScreen(new GuiSnooper(this, mc.gameSettings));
+                    break;
+                case 200:
+                    this.mc.gameSettings.saveOptions();
+                    currentIndex = lastIndex;
+                    break;
+                case 105:
+                    this.mc.gameSettings.saveOptions();
+                    this.mc.displayGuiScreen(new GuiScreenResourcePacks(this));
+                    break;
+                case 106:
+                    this.mc.gameSettings.saveOptions();
+                    this.mc.displayGuiScreen(new GuiScreenOptionsSounds(this, mc.gameSettings));
+                    break;
+                case 107:
+                    this.mc.gameSettings.saveOptions();
+                    IStream istream = this.mc.getTwitchStream();
 
-        if (button.id == 1) {
-            this.mc.displayGuiScreen(new GuiSelectWorld(this));
-        }
+                    if (istream.func_152936_l() && istream.func_152928_D()) {
+                        this.mc.displayGuiScreen(new GuiStreamOptions(this, mc.gameSettings));
+                    } else {
+                        GuiStreamUnavailable.func_152321_a(this);
+                    }
+                    break;
+                case 99:
+                    if (!Koks.getKoks().alteningApiKey.equals("") && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+                        loginUtil.generate(Koks.getKoks().alteningApiKey);
+                    } else {
+                        if (password.getText().isEmpty() && email.getText().isEmpty()) {
+                            try {
+                                String clipboard = (String) Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor);
+                                String[] args = clipboard.split(":");
+                                if (args.length == 1) {
+                                    if (args[0].contains("@alt")) {
+                                        loginUtil.login(clipboard);
+                                    } else if (args[0].startsWith("api-")) {
+                                        Koks.getKoks().alteningApiKey = clipboard;
+                                        Koks.getKoks().fileManager.writeFile(AlteningToken.class);
+                                        loginUtil.status = "§aUpdated Altening API Token";
+                                    } else {
+                                        if (Koks.getKoks().alteningApiKey != null) {
+                                            loginUtil.generate(Koks.getKoks().alteningApiKey);
+                                        }
+                                    }
+                                } else if (args.length == 2) {
+                                    if (args[0].contains("@") && clipboard.contains(":")) {
+                                        loginUtil.login(args[0], args[1]);
+                                    }
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        } else if (!password.getText().isEmpty() && !email.getText().isEmpty()) {
+                            loginUtil.login(email.getText(), password.getText());
+                        } else if (!email.getText().isEmpty() && password.getText().isEmpty()) {
+                            if (email.getText().startsWith("api-")) {
+                                Koks.getKoks().alteningApiKey = email.getText();
+                                Koks.getKoks().fileManager.writeFile(AlteningToken.class);
+                                loginUtil.status = "§aUpdated Altening API Token";
+                            } else if (email.getText().contains("@alt.com")) {
+                                loginUtil.login(email.getText());
+                            }
 
-        if (button.id == 2) {
-            this.mc.displayGuiScreen(new GuiMultiplayer(this));
-        }
-
-        if (button.id == 14 && this.realmsButton.visible) {
-           /* try {
-                TheAlteningAuthentication theAlteningAuthentication = TheAlteningAuthentication.theAltening();
-                theAlteningAuthentication.updateService(AlteningServiceType.THEALTENING);
-                YggdrasilUserAuthentication service = (YggdrasilUserAuthentication) new YggdrasilAuthenticationService(Proxy.NO_PROXY, "").createUserAuthentication(Agent.MINECRAFT);
-                String clipboard = (String) Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor);
-                service.setUsername(clipboard);
-                service.setPassword(Koks.getKoks().NAME);
-
-                service.logIn();
-
-                mc.session = new Session(service.getSelectedProfile().getName(), service.getSelectedProfile().getId().toString(), service.getAuthenticatedToken(), "LEGACY");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }*/
-
-            /* try {
-                TheAlteningAuthentication theAlteningAuthentication = TheAlteningAuthentication.mojang();
-                String clipboard = (String) Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor);
-                String[] args = clipboard.split(":");
-                YggdrasilUserAuthentication service = (YggdrasilUserAuthentication) new YggdrasilAuthenticationService(Proxy.NO_PROXY, "").createUserAuthentication(Agent.MINECRAFT);
-                service.setUsername(args[0]);
-                service.setPassword(args[1]);
-                service.logIn();
-                theAlteningAuthentication.updateService(AlteningServiceType.MOJANG);
-                mc.session = new Session(service.getSelectedProfile().getName(), service.getSelectedProfile().getId().toString(), service.getAuthenticatedToken(), "LEGACY");
-                System.out.println("logged in");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }*/
-
-            try {
-                BasicDataRetriever basicDataRetriever = new BasicDataRetriever("api-zsxl-rv90-h599");
-                TheAlteningAuthentication theAlteningAuthentication = TheAlteningAuthentication.theAltening();
-                basicDataRetriever.updateKey("api-etki-qzrh-v6e8");
-                theAlteningAuthentication.updateService(AlteningServiceType.THEALTENING);
-                AsynchronousDataRetriever asynchronousDataRetriever = basicDataRetriever.toAsync();
-                Account account = asynchronousDataRetriever.getAccount();
-                YggdrasilUserAuthentication service = (YggdrasilUserAuthentication) new YggdrasilAuthenticationService(Proxy.NO_PROXY, "").createUserAuthentication(Agent.MINECRAFT);
-
-
-                service.setUsername(account.getToken());
-                service.setPassword(Koks.getKoks().NAME);
-
-                service.logIn();
-
-                mc.session = new Session(service.getSelectedProfile().getName(), service.getSelectedProfile().getId().toString(), service.getAuthenticatedToken(), "LEGACY");
-            } catch (Exception e) {
-                e.printStackTrace();
+                        }
+                    }
+                    break;
             }
-
-            /*this.switchToRealms();*/
-
-        }
-
-        if (button.id == 4) {
-            this.mc.shutdown();
-        }
-
-        if (button.id == 11) {
-            this.mc.launchIntegratedServer("Demo_World", "Demo_World", DemoWorldServer.demoWorldSettings);
-        }
-
-        if (button.id == 12) {
-            ISaveFormat isaveformat = this.mc.getSaveLoader();
-            WorldInfo worldinfo = isaveformat.getWorldInfo("Demo_World");
-
-            if (worldinfo != null) {
-                GuiYesNo guiyesno = GuiSelectWorld.func_152129_a(this, worldinfo.getWorldName(), 12);
-                this.mc.displayGuiScreen(guiyesno);
-            }
         }
     }
 
-    private void switchToRealms() {
-        RealmsBridge realmsbridge = new RealmsBridge();
-        realmsbridge.switchToRealms(this);
-    }
+    public GuiTextField email, password;
 
-    public void confirmClicked(boolean result, int id) {
-        if (result && id == 12) {
-            ISaveFormat isaveformat = this.mc.getSaveLoader();
-            isaveformat.flushCache();
-            isaveformat.deleteWorldDirectory("Demo_World");
-            this.mc.displayGuiScreen(this);
-        } else if (id == 13) {
-            if (result) {
-                try {
-                    Class<?> oclass = Class.forName("java.awt.Desktop");
-                    Object object = oclass.getMethod("getDesktop", new Class[0]).invoke((Object) null, new Object[0]);
-                    oclass.getMethod("browse", new Class[]{URI.class}).invoke(object, new Object[]{new URI(this.openGLWarningLink)});
-                } catch (Throwable throwable) {
-                    logger.error("Couldn\'t open link", throwable);
-                }
-            }
+    public int currentIndex = 0;
+    public int size = 40;
+    public int indexSize = 6;
+    public int wheight = 120;
+    public int wwidth = 200;
+    public int dicke = 5;
+    public int drawIndexSize = currentIndex;
+    public int lastIndex = 0;
 
-            this.mc.displayGuiScreen(this);
+    public GlyphPageFontRenderer fontRenderer = GlyphPageFontRenderer.create("Arial", 120, true, true, true);
+
+    public LoginUtil loginUtil = new LoginUtil();
+
+    public String getRightName(int right, boolean edit) {
+        switch (right) {
+            case 0:
+                return "New";
+            case 1:
+                return edit ? "Edit" : "Options";
+            case 2:
+                return "Delete";
         }
+        return "";
     }
 
-    /**
-     * Draws the main menu panorama
-     */
-    private void drawPanorama(int p_73970_1_, int p_73970_2_, float p_73970_3_) {
-        Tessellator tessellator = Tessellator.getInstance();
-        WorldRenderer worldrenderer = tessellator.getWorldRenderer();
-        GlStateManager.matrixMode(5889);
-        GlStateManager.pushMatrix();
-        GlStateManager.loadIdentity();
-        Project.gluPerspective(120.0F, 1.0F, 0.05F, 10.0F);
-        GlStateManager.matrixMode(5888);
-        GlStateManager.pushMatrix();
-        GlStateManager.loadIdentity();
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-        GlStateManager.rotate(180.0F, 1.0F, 0.0F, 0.0F);
-        GlStateManager.rotate(90.0F, 0.0F, 0.0F, 1.0F);
-        GlStateManager.enableBlend();
-        GlStateManager.disableAlpha();
-        GlStateManager.disableCull();
-        GlStateManager.depthMask(false);
-        GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
-        int i = 8;
-
-        for (int j = 0; j < i * i; ++j) {
-            GlStateManager.pushMatrix();
-            float f = ((float) (j % i) / (float) i - 0.5F) / 64.0F;
-            float f1 = ((float) (j / i) / (float) i - 0.5F) / 64.0F;
-            float f2 = 0.0F;
-            GlStateManager.translate(f, f1, f2);
-            GlStateManager.rotate(MathHelper.sin(((float) this.panoramaTimer + p_73970_3_) / 400.0F) * 25.0F + 20.0F, 1.0F, 0.0F, 0.0F);
-            GlStateManager.rotate(-((float) this.panoramaTimer + p_73970_3_) * 0.1F, 0.0F, 1.0F, 0.0F);
-
-            for (int k = 0; k < 6; ++k) {
-                GlStateManager.pushMatrix();
-
-                if (k == 1) {
-                    GlStateManager.rotate(90.0F, 0.0F, 1.0F, 0.0F);
-                }
-
-                if (k == 2) {
-                    GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
-                }
-
-                if (k == 3) {
-                    GlStateManager.rotate(-90.0F, 0.0F, 1.0F, 0.0F);
-                }
-
-                if (k == 4) {
-                    GlStateManager.rotate(90.0F, 1.0F, 0.0F, 0.0F);
-                }
-
-                if (k == 5) {
-                    GlStateManager.rotate(-90.0F, 1.0F, 0.0F, 0.0F);
-                }
-
-                this.mc.getTextureManager().bindTexture(titlePanoramaPaths[k]);
-                worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
-                int l = 255 / (j + 1);
-                float f3 = 0.0F;
-                worldrenderer.pos(-1.0D, -1.0D, 1.0D).tex(0.0D, 0.0D).color(255, 255, 255, l).endVertex();
-                worldrenderer.pos(1.0D, -1.0D, 1.0D).tex(1.0D, 0.0D).color(255, 255, 255, l).endVertex();
-                worldrenderer.pos(1.0D, 1.0D, 1.0D).tex(1.0D, 1.0D).color(255, 255, 255, l).endVertex();
-                worldrenderer.pos(-1.0D, 1.0D, 1.0D).tex(0.0D, 1.0D).color(255, 255, 255, l).endVertex();
-                tessellator.draw();
-                GlStateManager.popMatrix();
-            }
-
-            GlStateManager.popMatrix();
-            GlStateManager.colorMask(true, true, true, false);
+    public String getIndexName(int index) {
+        switch (index) {
+            case 0:
+                return "Home";
+            case 1:
+                return "Singleplayer";
+            case 2:
+                return "Multiplayer";
+            case 3:
+                return "Alts";
+            case 4:
+                return "Proxys";
+            case 5:
+                return "Settings";
+            case 6:
+                return "Exit";
         }
-
-        worldrenderer.setTranslation(0.0D, 0.0D, 0.0D);
-        GlStateManager.colorMask(true, true, true, true);
-        GlStateManager.matrixMode(5889);
-        GlStateManager.popMatrix();
-        GlStateManager.matrixMode(5888);
-        GlStateManager.popMatrix();
-        GlStateManager.depthMask(true);
-        GlStateManager.enableCull();
-        GlStateManager.enableDepth();
+        return "";
     }
 
-    /**
-     * Rotate and blurs the skybox view in the main menu
-     */
-    private void rotateAndBlurSkybox(float p_73968_1_) {
-        this.mc.getTextureManager().bindTexture(this.backgroundTexture);
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
-        GL11.glCopyTexSubImage2D(GL11.GL_TEXTURE_2D, 0, 0, 0, 0, 0, 256, 256);
-        GlStateManager.enableBlend();
-        GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
-        GlStateManager.colorMask(true, true, true, false);
-        Tessellator tessellator = Tessellator.getInstance();
-        WorldRenderer worldrenderer = tessellator.getWorldRenderer();
-        worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
-        GlStateManager.disableAlpha();
-        int i = 3;
-
-        for (int j = 0; j < i; ++j) {
-            float f = 1.0F / (float) (j + 1);
-            int k = this.width;
-            int l = this.height;
-            float f1 = (float) (j - i / 2) / 256.0F;
-            worldrenderer.pos((double) k, (double) l, (double) this.zLevel).tex((double) (0.0F + f1), 1.0D).color(1.0F, 1.0F, 1.0F, f).endVertex();
-            worldrenderer.pos((double) k, 0.0D, (double) this.zLevel).tex((double) (1.0F + f1), 1.0D).color(1.0F, 1.0F, 1.0F, f).endVertex();
-            worldrenderer.pos(0.0D, 0.0D, (double) this.zLevel).tex((double) (1.0F + f1), 0.0D).color(1.0F, 1.0F, 1.0F, f).endVertex();
-            worldrenderer.pos(0.0D, (double) l, (double) this.zLevel).tex((double) (0.0F + f1), 0.0D).color(1.0F, 1.0F, 1.0F, f).endVertex();
+    public String getOptionName(int option) {
+        switch (option) {
+            case 0:
+                return "Client Color";
+            case 1:
+                return "Background";
+            case 2:
+                return "Open Folder";
+            case 3:
+                return "Reset Client";
         }
-
-        tessellator.draw();
-        GlStateManager.enableAlpha();
-        GlStateManager.colorMask(true, true, true, true);
+        return "";
     }
 
-    /**
-     * Renders the skybox in the main menu
-     */
-    private void renderSkybox(int p_73971_1_, int p_73971_2_, float p_73971_3_) {
-        this.mc.getFramebuffer().unbindFramebuffer();
-        GlStateManager.viewport(0, 0, 256, 256);
-        this.drawPanorama(p_73971_1_, p_73971_2_, p_73971_3_);
-        this.rotateAndBlurSkybox(p_73971_3_);
-        this.rotateAndBlurSkybox(p_73971_3_);
-        this.rotateAndBlurSkybox(p_73971_3_);
-        this.rotateAndBlurSkybox(p_73971_3_);
-        this.rotateAndBlurSkybox(p_73971_3_);
-        this.rotateAndBlurSkybox(p_73971_3_);
-        this.rotateAndBlurSkybox(p_73971_3_);
-        this.mc.getFramebuffer().bindFramebuffer(true);
-        GlStateManager.viewport(0, 0, this.mc.displayWidth, this.mc.displayHeight);
-        float f = this.width > this.height ? 120.0F / (float) this.width : 120.0F / (float) this.height;
-        float f1 = (float) this.height * f / 256.0F;
-        float f2 = (float) this.width * f / 256.0F;
-        int i = this.width;
-        int j = this.height;
-        Tessellator tessellator = Tessellator.getInstance();
-        WorldRenderer worldrenderer = tessellator.getWorldRenderer();
-        worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
-        worldrenderer.pos(0.0D, (double) j, (double) this.zLevel).tex((double) (0.5F - f1), (double) (0.5F + f2)).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
-        worldrenderer.pos((double) i, (double) j, (double) this.zLevel).tex((double) (0.5F - f1), (double) (0.5F - f2)).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
-        worldrenderer.pos((double) i, 0.0D, (double) this.zLevel).tex((double) (0.5F + f1), (double) (0.5F - f2)).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
-        worldrenderer.pos(0.0D, 0.0D, (double) this.zLevel).tex((double) (0.5F + f1), (double) (0.5F + f2)).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
-        tessellator.draw();
-    }
+    public HashMap<Integer, Double> saveX = new HashMap<>();
+    public HashMap<Integer, Double> saveY = new HashMap<>();
 
-    /**
-     * Draws the screen and all the components in it. Args : mouseX, mouseY, renderPartialTicks
-     */
+    public boolean drag = false, dragOptions = false, dragColor = false;
+    public double x, y,dragX,dragY, dragOptionsX, dragOptionsY, optionsX, optionsY, colorX, colorY = 20, dragColorX, dragColorY;
+    public int scaleX;
+    public int scaleY;
+
+
+    public boolean showOptions, showColorPicker;
+
+    public int rightX, rightY;
+    public int rightWidth = 20, rightHeight = 30;
+    public boolean showRight;
+    public int rightOutline = 2;
+    public int rightOptions = 2;
+
+    public int optionSize = 4;
+
+    public float hue = 1;
+    int colorSize = 150;
+    int pixel = 60;
+
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-        GlStateManager.disableAlpha();
-        this.renderSkybox(mouseX, mouseY, partialTicks);
-        GlStateManager.enableAlpha();
-        Tessellator tessellator = Tessellator.getInstance();
-        WorldRenderer worldrenderer = tessellator.getWorldRenderer();
-        int i = 274;
-        int j = this.width / 2 - i / 2;
-        int k = 30;
-        this.drawGradientRect(0, 0, this.width, this.height, -2130706433, 16777215);
-        this.drawGradientRect(0, 0, this.width, this.height, 0, Integer.MIN_VALUE);
-        this.mc.getTextureManager().bindTexture(minecraftTitleTextures);
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        ScaledResolution sr = new ScaledResolution(mc);
 
-        if ((double) this.updateCounter < 1.0E-4D) {
-            this.drawTexturedModalRect(j + 0, k + 0, 0, 0, 99, 44);
-            this.drawTexturedModalRect(j + 99, k + 0, 129, 0, 27, 44);
-            this.drawTexturedModalRect(j + 99 + 26, k + 0, 126, 0, 3, 44);
-            this.drawTexturedModalRect(j + 99 + 26 + 3, k + 0, 99, 0, 26, 44);
-            this.drawTexturedModalRect(j + 155, k + 0, 0, 45, 155, 44);
-        } else {
-            this.drawTexturedModalRect(j + 0, k + 0, 0, 0, 155, 44);
-            this.drawTexturedModalRect(j + 155, k + 0, 0, 45, 155, 44);
+        for (GuiButton button : buttonList) {
+            if ((!saveY.containsKey(button.id) && !saveX.containsKey(button.id)) || (scaleY != sr.getScaledHeight() || scaleX != sr.getScaledWidth())) {
+
+                if (saveY.containsKey(button.id)) {
+                    saveY.remove(button.id);
+                    saveX.remove(button.id);
+                }
+
+                saveX.put(button.id, (double) button.xPosition);
+                saveY.put(button.id, (double) button.yPosition);
+
+                scaleX = sr.getScaledWidth();
+                scaleY = sr.getScaledHeight();
+            }
         }
 
-        GlStateManager.pushMatrix();
-        GlStateManager.translate((float) (this.width / 2 + 90), 70.0F, 0.0F);
-        GlStateManager.rotate(-20.0F, 0.0F, 0.0F, 1.0F);
-        float f = 1.8F - MathHelper.abs(MathHelper.sin((float) (Minecraft.getSystemTime() % 1000L) / 1000.0F * (float) Math.PI * 2.0F) * 0.1F);
-        f = f * 100.0F / (float) (this.fontRendererObj.getStringWidth(this.splashText) + 32);
-        GlStateManager.scale(f, f, f);
-        this.drawCenteredString(this.fontRendererObj, this.splashText, 0, -8, -256);
-        GlStateManager.popMatrix();
-        String s = "Minecraft 1.8.8";
+        if (drag) {
+            x = dragX + mouseX;
+            y = dragY + mouseY;
+        }
 
-        if (this.mc.isDemo()) {
-            s = s + " Demo";
+        if (dragOptions) {
+            optionsX = dragOptionsX + mouseX;
+            optionsY = dragOptionsY + mouseY;
+        }
+
+        if (dragColor) {
+            colorX = dragColorX + mouseX;
+            colorY = dragColorY + mouseY;
+        }
+
+        int x = (int) this.x;
+        int y = (int) this.y;
+
+        int optionsX = (int) this.optionsX;
+        int optionsY = (int) this.optionsY;
+
+
+        GlStateManager.enableAlpha();
+        GlStateManager.disableCull();
+
+        this.shader.useShader(this.width, this.height, mouseX, mouseY, (System.currentTimeMillis() - Koks.getKoks().initTime) / 1000F);
+
+
+        GL11.glBegin(GL11.GL_QUADS);
+
+        GL11.glVertex2f(-1f, -1f);
+        GL11.glVertex2f(-1f, 1f);
+        GL11.glVertex2f(1f, 1f);
+        GL11.glVertex2f(1f, -1f);
+
+        GL11.glEnd();
+
+        GL20.glUseProgram(0);
+
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
+        GL11.glEnable(GL11.GL_ALPHA_TEST);
+
+        Tessellator tessellator = Tessellator.getInstance();
+        WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+
+        String s = "§7Based on §rMinecraft 1.8.8 §8(§4\u00A9 Mojang AB§8)";
+
+        Color wColor = new Color(0x141214);
+        Color hoverColor = new Color(wColor.getRed(), wColor.getGreen(), wColor.getBlue(), 130);
+        Color outlineColor = new Color(0x393739);
+
+        if (showColorPicker) {
+            int xC = (int) (sr.getScaledWidth() / 2 + colorX);
+            int yC = (int) (sr.getScaledHeight() / 2+  colorY);
+
+            RenderUtil renderUtil = new RenderUtil();
+
+            drawRect(xC - 7, yC + colorSize / 360 - 10 - 15, xC + colorSize + 17, yC + (360 * colorSize) / 360 + 1 + 6, wColor.getRGB());
+            fontRendererObj.drawString("§lx", xC + colorSize + 17 - fontRendererObj.getStringWidth("§lx") - 2, yC + colorSize / 360 - 10 - 15 + fontRendererObj.FONT_HEIGHT / 2 - 2, Color.red.getRGB(), false);
+            for (int i = 0; i < 360; i++) {
+                renderUtil.drawRect(xC + colorSize + 5, yC + (i * colorSize) / 360, xC + colorSize + 10, yC + (i * colorSize) / 360 + 1, Color.HSBtoRGB(1.0F - i / 360.0F, 1, 1));
+
+                if (hue == 1.0F - i / 360.0F) {
+                    drawRect(xC + colorSize + 5, yC + (i * colorSize) / 360, xC + colorSize + 10, yC + (i * colorSize) / 360 + 1, wColor.getRGB());
+                }
+
+                if (Mouse.isButtonDown(0) && mouseX >= xC + colorSize + 5 && mouseX <= xC + colorSize + 10 && mouseY >= yC + (i * colorSize) / 360 && mouseY <= yC + (360 * colorSize) / 360 + 1) {
+                    hue = 1.0F - i / 360.0F;
+                }
+            }
+
+            for (int i = xC; i < xC + colorSize; i = (i + colorSize / pixel)) {
+                for (int j = yC; j < yC + colorSize; j = (j + colorSize / pixel)) {
+                    renderUtil.drawRect(i, j, i + colorSize / pixel + 1.0F, j + colorSize / pixel + 1.0F, Color.HSBtoRGB(hue, (float) (i - xC) / colorSize, 1.0F - (float) (j - yC) / colorSize));
+
+                    if (Mouse.isButtonDown(0) && !dragColor && mouseX >= i && mouseY >= j && mouseX <= i + colorSize / pixel + 1.0F && mouseY <= j + colorSize / pixel + 1.0F) {
+                        Koks.getKoks().clientColor = new Color(Color.HSBtoRGB(hue, (float) (i - xC) / colorSize, 1.0F - (float) (j - yC) / colorSize));
+                    }
+                }
+            }
+
+            for (int i = xC; i < xC + colorSize; i = (i + colorSize / pixel)) {
+                for (int j = yC; j < yC + colorSize; j = (j + colorSize / pixel)) {
+                    if (Koks.getKoks().clientColor.getRGB() == Color.HSBtoRGB(hue, (float) (i - xC) / colorSize, 1.0F - (float) (j - yC) / colorSize)) {
+                        renderUtil.drawOutlineRect(i, j, i + colorSize / pixel + 1.0F, j + colorSize / pixel + 1.0F, 1, outlineColor.getRGB(), wColor.getRGB());
+                    }
+                }
+            }
         }
 
         this.drawString(this.fontRendererObj, s, 2, this.height - 10, -1);
-        String s1 = "Copyright Mojang AB. Do not distribute!";
-        this.drawString(this.fontRendererObj, s1, this.width - this.fontRendererObj.getStringWidth(s1) - 2, this.height - 10, -1);
 
-        if (this.openGLWarning1 != null && this.openGLWarning1.length() > 0) {
-            drawRect(this.field_92022_t - 2, this.field_92021_u - 2, this.field_92020_v + 2, this.field_92019_w - 1, 1428160512);
-            this.drawString(this.fontRendererObj, this.openGLWarning1, this.field_92022_t, this.field_92021_u, -1);
-            this.drawString(this.fontRendererObj, this.openGLWarning2, (this.width - this.field_92024_r) / 2, ((GuiButton) this.buttonList.get(0)).yPosition - 12, -1);
+        StringBuilder author = new StringBuilder();
+        for (int ix = 0; ix < Koks.getKoks().AUTHORS.length; ix++) {
+            author.append(Koks.getKoks().AUTHORS[ix]).append(", ");
+        }
+
+        author = new StringBuilder(author.substring(0, author.length() - 2));
+
+        this.drawString(this.fontRendererObj, "§7Made by§8: §r" + author, 2, this.height - 20, -1);
+
+        this.drawString(this.fontRendererObj, "§7Version§8: §r" + Koks.getKoks().VERSION, 2, this.height - 30, -1);
+
+        if (showRight) {
+
+            rightWidth = 120;
+            rightHeight = 20;
+
+            rightOptions = 2;
+
+            for (int ix = 0; ix < rightOptions; ix++) {
+                drawRect(rightX - rightOutline, rightY + rightHeight * ix, rightX, rightY + rightHeight * (ix + 1), Koks.getKoks().clientColor.getRGB());
+                drawRect(rightX + rightWidth, rightY + rightHeight * ix, rightX + rightWidth + rightOutline, rightY + rightHeight * (ix + 1), Koks.getKoks().clientColor.getRGB());
+
+                boolean hover = mouseX >= rightX && mouseY >= rightY + rightHeight * ix && mouseX <= rightX + rightWidth && mouseY <= rightY - 1 + rightHeight * (ix + 1);
+
+                drawRect(rightX, rightY + rightHeight * ix, rightX + rightWidth, rightY + rightHeight * (ix + 1), hover ? outlineColor.darker().getRGB() : wColor.getRGB());
+
+                drawCenteredString(fontRendererObj, getRightName(ix, false), rightX + rightWidth / 2, rightY + rightHeight * ix + 6, hover ? Koks.getKoks().clientColor.getRGB() : -1);
+
+            }
+        }
+
+        if (windowShowed) {
+
+            drawRect(sr.getScaledWidth() / 2 + x - wwidth, sr.getScaledHeight() / 2 + y - wheight, sr.getScaledWidth() / 2 + x + wwidth, sr.getScaledHeight() / 2 + y + wheight, wColor.getRGB());
+
+            //LEFT
+            drawRect(sr.getScaledWidth() / 2 + x - wwidth - dicke, sr.getScaledHeight() / 2 + y - wheight, sr.getScaledWidth() / 2 + x - wwidth, sr.getScaledHeight() / 2 + y + wheight, outlineColor.getRGB());
+            //RIGHT
+            drawRect(sr.getScaledWidth() / 2 + x + wwidth, sr.getScaledHeight() / 2 + y - wheight, sr.getScaledWidth() / 2 + x + wwidth + dicke, sr.getScaledHeight() / 2 + y + wheight, outlineColor.getRGB());
+            //UP
+            drawRect(sr.getScaledWidth() / 2 + x - wwidth - dicke, sr.getScaledHeight() / 2 + y - wheight - dicke, sr.getScaledWidth() / 2 + x + wwidth + dicke, sr.getScaledHeight() / 2 + y - wheight, outlineColor.getRGB());
+            //DOWN
+            drawRect(sr.getScaledWidth() / 2 + x - wwidth - dicke, sr.getScaledHeight() / 2 + y + wheight, sr.getScaledWidth() / 2 + x + wwidth + dicke, sr.getScaledHeight() / 2 + y + wheight + dicke, outlineColor.getRGB());
+
+            //CHOOSE
+
+
+            drawIndexSize = indexSize;
+
+            if (currentIndex == 0) {
+                drawIndexSize = 0;
+            }
+
+            for (int index = 0; index <= drawIndexSize; index++) {
+                drawRect(sr.getScaledWidth() / 2 + x - wwidth + size * index, sr.getScaledHeight() / 2 + y - wheight - size, sr.getScaledWidth() / 2 + x - wwidth + size * index + size, sr.getScaledHeight() / 2 + y - wheight, currentIndex == index ? outlineColor.getRGB() : wColor.getRGB());
+                drawCenteredString(fontRendererObj, getIndexName(index), sr.getScaledWidth() / 2 + x - wwidth + size * index + fontRendererObj.getStringWidth(getIndexName(index)) / 2 + 20 / 2, sr.getScaledHeight() / 2 + y - wheight - size, Color.white.getRGB());
+            }
+            drawRect(sr.getScaledWidth() / 2 + x - wwidth, sr.getScaledHeight() / 2 + y - wheight - size - dicke, sr.getScaledWidth() / 2 + x - wwidth + size * drawIndexSize + size, sr.getScaledHeight() / 2 + y - wheight - size, outlineColor.getRGB());
+            drawRect(sr.getScaledWidth() / 2 + x - wwidth - dicke, sr.getScaledHeight() / 2 + y - wheight - size - dicke, sr.getScaledWidth() / 2 + x - wwidth, sr.getScaledHeight() / 2 + y - wheight, outlineColor.getRGB());
+            drawRect(sr.getScaledWidth() / 2 + x - wwidth + size * drawIndexSize + size, sr.getScaledHeight() / 2 + y - wheight - size - dicke, sr.getScaledWidth() / 2 + x - wwidth + size * drawIndexSize + size + dicke, sr.getScaledHeight() / 2 + y - wheight, outlineColor.getRGB());
+
+            if (currentIndex == 0) {
+                for (int index = 1; index <= indexSize; index++) {
+                    drawRect(sr.getScaledWidth() / 2 + x - wwidth / 2 + size * (index - 1), sr.getScaledHeight() / 2 + y + wheight - size, sr.getScaledWidth() / 2 + x - wwidth / 2 + size * (index - 1) + size, sr.getScaledHeight() / 2 + y + wheight, wColor.getRGB());
+                    drawCenteredString(fontRendererObj, getIndexName(index), sr.getScaledWidth() / 2 + x - wwidth / 2 + size * (index - 1) + fontRendererObj.getStringWidth(getIndexName(index)) / 2 + 20 / 2, sr.getScaledHeight() / 2 + y + wheight - size, Color.white.getRGB());
+                }
+            }
+
+            for (GuiButton button : this.buttonList) {
+
+                if ((button.id >= 100 && button.id <= 110) || button.id == 2 || button.id == 200 || button.id == 8675309) {
+                    button.visible = currentIndex == 4;
+                }
+
+                switch (button.id) {
+                    case 99:
+                        button.visible = currentIndex == 3;
+                        break;
+                }
+            }
+
+
+            if (drag) {
+                for (GuiButton button : buttonList) {
+
+                    double scaleFactorX = sr.getScaledWidth_double() / (double) Toolkit.getDefaultToolkit().getScreenSize().width;
+                    double scaleFactorY = sr.getScaledHeight_double() / (double) Toolkit.getDefaultToolkit().getScreenSize().height;
+
+                    int calcX = (int) (sr.getScaledWidth() / 2 - saveX.get(button.id));
+
+                    int posX = (int) ((sr.getScaledWidth() / 2 + x - calcX));
+
+                    int calcY = (int) (sr.getScaledHeight() / 2 - saveY.get(button.id));
+                    int posY = (int) (sr.getScaledHeight() / 2 + y - calcY);
+
+
+                    button.xPosition = posX;
+                    button.yPosition = posY;
+
+                }
+            }
+
+            if (!drag) {
+                for (GuiButton button : buttonList) {
+                    if (saveX.containsKey(button.id) && saveY.containsKey(button.id)) {
+
+                        double scaleFactorX = sr.getScaledWidth_double() / (double) Toolkit.getDefaultToolkit().getScreenSize().width;
+                        double scaleFactorY = sr.getScaledHeight_double() / (double) Toolkit.getDefaultToolkit().getScreenSize().height;
+
+                        int calcX = (int) (sr.getScaledWidth() / 2 - saveX.get(button.id));
+
+                        int posX = (int) ((sr.getScaledWidth() / 2 + x - calcX));
+
+                        int calcY = (int) (sr.getScaledHeight() / 2 - saveY.get(button.id));
+                        int posY = (int) (sr.getScaledHeight() / 2 + y - calcY);
+
+
+                        button.xPosition = posX;
+                        button.yPosition = posY;
+                    }
+
+
+                }
+            }
+
+            if (currentIndex == 0) {
+                wheight = 80;
+                /* GlyphPageFontRenderer fontRenderer = GlyphPageFontRenderer.create("Arial", 50, true ,true, true);
+            fontRenderer.drawString(Koks.getKoks().NAME,sr.getScaledWidth() / 2 - fontRenderer.getStringWidth("Welcome " + Koks.getKoks().purvesManager.getPrefix()) / 2, sr.getScaledHeight() / 2 - 10, Color.white.getRGB(), true);
+   */
+
+                double scale = 1.5;
+                float xPos = sr.getScaledWidth() / 2 + x - fontRenderer.getStringWidth(Koks.getKoks().NAME) / 2;
+                float yPos = sr.getScaledHeight() / 2 + y - fontRenderer.getFontHeight() - 10;
+
+                fontRenderer.drawString(Koks.getKoks().NAME, xPos, yPos, Color.white.getRGB(), true);
+                fontRendererObj.drawString("Welcome " + Koks.getKoks().purvesManager.getPrefix(), xPos + 2, sr.getScaledHeight() / 2 + y - 14, Color.gray.getRGB(), true);
+            } else {
+                wheight = 120;
+                switch (currentIndex) {
+                    case 1:
+                        //SINGLEPLAYER
+                        this.mc.displayGuiScreen(new GuiSelectWorld(this));
+                        currentIndex = 0;
+                        break;
+                    case 2:
+                        //MULTIPLAYER
+                        this.mc.displayGuiScreen(new GuiMultiplayer(this));
+                        currentIndex = 0;
+                        break;
+                    case 3:
+                        //ALTS
+
+                        email.drawTextBox();
+                        password.drawTextBox();
+                        email.xPosition = sr.getScaledWidth() / 2 + x - 180 / 2;
+                        email.yPosition = sr.getScaledHeight() / 3 + y + 25;
+                        password.xPosition = sr.getScaledWidth() / 2 + x - 180 / 2;
+                        password.yPosition = sr.getScaledHeight() / 3 + y + (25 + 27);
+
+                        drawString(fontRendererObj, loginUtil.status, 5, 5, new Color(0xAAAAAA).getRGB());
+
+                        if (email.getText().isEmpty()) {
+                            String email = "Email / TheAltening";
+                            drawString(fontRendererObj, email, sr.getScaledWidth() / 2 + x - fontRendererObj.getStringWidth(email) / 2, sr.getScaledHeight() / 3 + y + 31, Color.gray.getRGB());
+                        }
+
+                        if (password.getText().isEmpty()) {
+                            String password = "Password";
+                            drawString(fontRendererObj, password, sr.getScaledWidth() / 2 + x - fontRendererObj.getStringWidth(password) / 2, sr.getScaledHeight() / 3 + y + (25 + 27 + 6), Color.gray.getRGB());
+                        }
+
+                        break;
+                }
+            }
+        } else {
+            drag = false;
+            for (GuiButton button : buttonList) {
+                button.visible = false;
+            }
+        }
+
+        if (showOptions) {
+
+            drawRect(sr.getScaledWidth() / 2 + optionsX - optionWidth, sr.getScaledHeight() / 2 + optionsY - optionHeight, sr.getScaledWidth() / 2 + optionsX + optionWidth, sr.getScaledHeight() / 2 + optionsY, outlineColor.getRGB());
+            drawCenteredString(fontRendererObj, "§l§nOptions", sr.getScaledWidth() / 2 + optionsX, sr.getScaledHeight() / 2 + optionsY - optionHeight + 8, -1);
+
+            fontRendererObj.drawString("§lx", sr.getScaledWidth() / 2 + optionsX + optionWidth - fontRendererObj.getStringWidth("§lx") - 2, sr.getScaledHeight() / 2 + optionsY - optionHeight + 2, Color.red.getRGB(), false);
+
+            for (int ix = 0; ix < optionSize; ix++) {
+                boolean hover = mouseX > sr.getScaledWidth() / 2 + optionsX - optionWidth && mouseX < sr.getScaledWidth() / 2 + optionsX + optionWidth && mouseY > sr.getScaledHeight() / 2 + optionsY + optionHeight * ix && mouseY < sr.getScaledHeight() / 2 + optionsY + optionHeight * (ix + 1);
+                drawRect(sr.getScaledWidth() / 2 + optionsX - optionWidth, sr.getScaledHeight() / 2 + optionsY + optionHeight * ix, sr.getScaledWidth() / 2 + optionsX + optionWidth, sr.getScaledHeight() / 2 + optionsY + optionHeight * (ix + 1), hover ? outlineColor.darker().getRGB() : wColor.getRGB());
+                drawCenteredString(fontRendererObj, getOptionName(ix), sr.getScaledWidth() / 2 + optionsX, sr.getScaledHeight() / 2 + optionsY + optionHeight * ix + 8, hover ? Koks.getKoks().clientColor.getRGB() : -7829368);
+            }
         }
 
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
 
+    @Override
+    protected void mouseReleased(int mouseX, int mouseY, int state) {
+        drag = false;
+        dragOptions = false;
+        dragColor = false;
+        super.mouseReleased(mouseX, mouseY, state);
+    }
+
     /**
      * Called when the mouse is clicked. Args : mouseX, mouseY, clickedButton
      */
+
+    public boolean isHoverColorClose(int mouseX, int mouseY) {
+        ScaledResolution sr = new ScaledResolution(mc);
+        int x = (int) (sr.getScaledWidth() / 2 + colorX);
+        int y = (int) (sr.getScaledHeight() / 2 + colorY);
+        return mouseX >= x + colorSize + 17 - fontRendererObj.getStringWidth("§lx") - 2 && mouseX <= x + colorSize + 17 - fontRendererObj.getStringWidth("§lx") - 2 + fontRendererObj.getStringWidth("§lx") && mouseY >= y + colorSize / 360 - 10 - 15 + fontRendererObj.FONT_HEIGHT / 2 - 2 && mouseY <= y + colorSize / 360 - 10 - 15 + fontRendererObj.FONT_HEIGHT / 2 - 2 + fontRendererObj.FONT_HEIGHT;
+    }
+
+    public boolean isHoverColor(int mouseX, int mouseY) {
+        ScaledResolution sr = new ScaledResolution(mc);
+        int x = (int) (sr.getScaledWidth() / 2 + colorX);
+        int y = (int) (sr.getScaledHeight() / 2 + colorY);
+        return mouseX >= x - 7 && mouseX <= x + colorSize + 17 && mouseY >= y + colorSize / 360 - 25 && mouseY <= y + (360 * colorSize) / 360 + 7;
+    }
+
+    public boolean isHoverEmail(int mouseX, int mouseY) {
+        ScaledResolution sr = new ScaledResolution(mc);
+        if (mouseX >= sr.getScaledWidth() / 2 + x - 180 / 2 && mouseX <= sr.getScaledWidth() / 2 + x - 180 / 2 + email.getWidth() && mouseY >= sr.getScaledHeight() / 3 + y + 25 && mouseY <= sr.getScaledHeight() / 3 + y + 25 + 20)
+            return true;
+        return false;
+    }
+
+    public boolean isHoverPassword(int mouseX, int mouseY) {
+        ScaledResolution sr = new ScaledResolution(mc);
+        if (mouseX >= sr.getScaledWidth() / 2 + x - 180 / 2 && mouseX <= sr.getScaledWidth() / 2 + x - 180 / 2 + password.getWidth() && mouseY >= sr.getScaledHeight() / 3 + y + (25 + 27) && mouseY <= sr.getScaledHeight() / 3 + y + (25 + 27 + 20))
+            return true;
+        return false;
+    }
+
+    public boolean isHover(int mouseX, int mouseY) {
+        ScaledResolution sr = new ScaledResolution(mc);
+        if (mouseX >= sr.getScaledWidth() / 2 + x - wwidth - dicke && mouseX <= sr.getScaledWidth() / 2 + x + wwidth + dicke && mouseY >= sr.getScaledHeight() / 2 + y - wheight - dicke && mouseY <= sr.getScaledHeight() / 2 + y + wheight + dicke)
+            return true;
+        return false;
+    }
+
+    public boolean isHoverOptions(int mouseX, int mouseY) {
+        ScaledResolution sr = new ScaledResolution(mc);
+        return mouseX >= sr.getScaledWidth() / 2 + optionsX - optionWidth && mouseX <= sr.getScaledWidth() / 2 + optionsX + optionWidth && mouseY >= sr.getScaledHeight() / 2 + optionsY - optionHeight && mouseY <= sr.getScaledHeight() / 2 + optionsY + optionHeight * optionSize;
+    }
+
+    public boolean isHoverOptionClose(int mouseX, int mouseY) {
+        ScaledResolution sr = new ScaledResolution(mc);
+        return mouseX >= sr.getScaledWidth() / 2 + optionsX + optionWidth - fontRendererObj.getStringWidth("§lx") - 2 && mouseX <= sr.getScaledWidth() / 2 + optionsX + optionWidth && mouseY >= sr.getScaledHeight() / 2 + optionsY - optionHeight && mouseY <= sr.getScaledHeight() / 2 + optionsY - optionHeight + fontRendererObj.FONT_HEIGHT;
+    }
+
+
+    int optionWidth = 125;
+    int optionHeight = 25;
+
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
         super.mouseClicked(mouseX, mouseY, mouseButton);
 
-        synchronized (this.threadLock) {
-            if (this.openGLWarning1.length() > 0 && mouseX >= this.field_92022_t && mouseX <= this.field_92020_v && mouseY >= this.field_92021_u && mouseY <= this.field_92019_w) {
-                GuiConfirmOpenLink guiconfirmopenlink = new GuiConfirmOpenLink(this, this.openGLWarningLink, 13, true);
-                guiconfirmopenlink.disableSecurityWarning();
-                this.mc.displayGuiScreen(guiconfirmopenlink);
+        ScaledResolution sr = new ScaledResolution(mc);
+
+
+        int x = (int) this.x;
+        int y = (int) this.y;
+
+        if (mouseButton == 0) {
+
+            if (showOptions) {
+
+                boolean hoverDrag = mouseX > sr.getScaledWidth() / 2 + optionsX - optionWidth && mouseX < sr.getScaledWidth() / 2 + optionsX + optionWidth && mouseY > sr.getScaledHeight() / 2 + optionsY - height && mouseY < sr.getScaledHeight() / 2 + optionsY;
+
+                if (hoverDrag) {
+                    dragOptions = true;
+                    dragOptionsX = optionsX -mouseX;
+                    dragOptionsY = optionsY - mouseY;
+                }
+
+                if (isHoverOptionClose(mouseX, mouseY)) showOptions = false;
+
+                for (int ix = 0; ix < optionSize; ix++) {
+                    boolean hover = mouseX > sr.getScaledWidth() / 2 + optionsX - optionWidth && mouseX < sr.getScaledWidth() / 2 + optionsX + optionWidth && mouseY > sr.getScaledHeight() / 2 + optionsY + optionHeight * ix && mouseY < sr.getScaledHeight() / 2 + optionsY + optionHeight * (ix + 1);
+                    if (hover)
+                        switch (ix) {
+                            case 0: //CLIENTCOLOR
+                                showColorPicker = true;
+                                break;
+                            case 1: //BACKGROUND
+                                break;
+                            case 2: //FOLDER
+                                File file1 = new File(mc.mcDataDir + "/" + Koks.getKoks().NAME);
+                                String s = file1.getAbsolutePath();
+
+                                if (Util.getOSType() == Util.EnumOS.OSX) {
+                                    try {
+                                        Runtime.getRuntime().exec(new String[]{"/usr/bin/open", s});
+                                        return;
+                                    } catch (IOException ioexception1) {
+                                    }
+                                } else if (Util.getOSType() == Util.EnumOS.WINDOWS) {
+                                    String s1 = String.format("cmd.exe /C start \"Open file\" \"%s\"", new Object[]{s});
+
+                                    try {
+                                        Runtime.getRuntime().exec(s1);
+                                        return;
+                                    } catch (IOException ioexception) {
+                                    }
+                                }
+                                break;
+                            case 3: //RESET
+                                File file = new File(mc.mcDataDir + "/" + Koks.getKoks().NAME);
+                                if (file.exists())
+                                    try {
+                                        FileUtils.deleteDirectory(file);
+                                    } catch (Exception ignored) {
+                                    }
+                                if (!file.exists())
+                                    file.mkdirs();
+
+                                Koks.getKoks().fileManager.readAllFiles();
+                                Koks.getKoks().fileManager.writeAllFiles();
+                                break;
+                        }
+                }
+            }
+
+            if (showColorPicker) {
+                int xC = (int) (sr.getScaledWidth() / 2 + colorX);
+                int yC = (int) (sr.getScaledHeight() / 2+  colorY);
+
+                if (!isHoverColorClose(mouseX, mouseY) && mouseX >= xC - 7 && mouseX <= xC + colorSize + 17 && mouseY >= yC + colorSize / 360 - 25 && mouseY <= yC + colorSize / 360) {
+                    dragColor = true;
+                    dragColorX = colorX -mouseX;
+                    dragColorY = colorY - mouseY;
+                }else if(isHoverColorClose(mouseX,mouseY)) {
+                    showColorPicker = false;
+                }
+            }
+
+            if (showRight) {
+                for (int ix = 0; ix < rightOptions; ix++) {
+                    boolean hover = mouseX >= rightX && mouseY >= rightY + rightHeight * ix && mouseX <= rightX + rightWidth && mouseY <= rightY - 1 + rightHeight * (ix + 1);
+                    if (hover) {
+                        switch (ix) {
+                            case 1:
+                                showOptions = true;
+                                break;
+                        }
+                    }
+                }
+            }
+            
+            showRight = false;
+            if (windowShowed) {
+                if (isHover(mouseX, mouseY)) {
+                    if (!(showColorPicker && isHoverColor(mouseX, mouseY)))
+                        if (!(showOptions && isHoverOptions(mouseX, mouseY))) {
+                            if (!(currentIndex == 3 && isHoverEmail(mouseX, mouseY))) {
+                                if (!(currentIndex == 3 && isHoverPassword(mouseX, mouseY))) {
+                                    if (!(currentIndex == 0 && mouseX >= sr.getScaledWidth() / 2 + x - wwidth / 2 + size * (1 - 1) && mouseX <= sr.getScaledWidth() / 2 + x - wwidth / 2 + size * (indexSize - 1) + size && mouseY >= sr.getScaledHeight() / 2 + y + wheight - size && mouseY <= sr.getScaledHeight() / 2 + y + wheight)) {
+                                        drag = true;
+                                        dragX = x -mouseX;
+                                        dragY = y - mouseY;
+                                    }
+                                }
+                            }
+                        }
+                }
+
+                if (!drag) {
+
+                    switch (currentIndex) {
+                        case 3:
+                            if (mouseX >= sr.getScaledWidth() / 2 + x - 180 / 2 && mouseX <= sr.getScaledWidth() / 2 + x - 180 / 2 + email.getWidth() && mouseY >= sr.getScaledHeight() / 3 + y + 25 && mouseY <= sr.getScaledHeight() / 3 + y + 25 + 20) {
+                                email.setFocused(true);
+                                password.setFocused(false);
+                            } else if (mouseX >= sr.getScaledWidth() / 2 + x - 180 / 2 && mouseX <= sr.getScaledWidth() / 2 + x - 180 / 2 + password.getWidth() && mouseY >= sr.getScaledHeight() / 3 + y + (25 + 27) && mouseY <= sr.getScaledHeight() / 3 + y + (25 + 27 + 20)) {
+                                email.setFocused(false);
+                                password.setFocused(true);
+                            } else {
+                                email.setFocused(false);
+                                password.setFocused(false);
+                            }
+                            break;
+                    }
+
+                    lastIndex = currentIndex;
+
+                    if (currentIndex == 0) {
+                        for (int index = 1; index <= indexSize; index++)
+                            if (mouseX >= sr.getScaledWidth() / 2 + x - wwidth / 2 + size * (index - 1) && mouseX <= sr.getScaledWidth() / 2 + x - wwidth / 2 + size * (index - 1) + size && mouseY >= sr.getScaledHeight() / 2 + y + wheight - size && mouseY <= sr.getScaledHeight() / 2 + y + wheight) {
+                                currentIndex = index;
+                            }
+                    }
+
+                    for (int index = 0; index <= drawIndexSize; index++) {
+                        if (mouseX >= sr.getScaledWidth() / 2 + x - wwidth + size * index && mouseX <= sr.getScaledWidth() / 2 + x - wwidth + size * index + size && mouseY >= sr.getScaledHeight() / 2 + y - wheight - size && mouseY <= sr.getScaledHeight() / 2 + y - wheight) {
+                            currentIndex = index;
+                        }
+                    }
+
+                    //0: HOME 1: SinglePlayer 2: MultiPlayer 3: ALTS 4: Language 5: Options 6: Shutdown
+
+                    switch (currentIndex) {
+                        case 6:
+                            currentIndex = lastIndex;
+                            this.mc.shutdown();
+                            break;
+                    }
+                }
+            }
+        } else if (mouseButton == 1) {
+            if ((!windowShowed || !(mouseX >= sr.getScaledWidth() / 2 + x - wwidth - dicke && mouseX <= sr.getScaledWidth() / 2 + x + wwidth + dicke && mouseY >= sr.getScaledHeight() / 2 + y - wheight - dicke - size && mouseY <= sr.getScaledHeight() / 2 + y + wheight + dicke))) {
+                rightX = mouseX + rightOutline;
+                rightY = mouseY;
+                showRight = true;
             }
         }
     }

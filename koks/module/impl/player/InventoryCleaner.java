@@ -7,6 +7,7 @@ import koks.event.Event;
 import koks.event.impl.EventUpdate;
 import koks.module.Module;
 import koks.api.settings.Setting;
+import koks.module.ModuleInfo;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -20,6 +21,8 @@ import java.util.List;
  * @author deleteboys | lmao | kroko
  * @created on 14.09.2020 : 16:38
  */
+
+@ModuleInfo(name = "InvCleaner", description = "Its sort your inventory for you", category = Module.Category.PLAYER)
 public class InventoryCleaner extends Module {
 
     public List<Item> trashItems;
@@ -39,8 +42,6 @@ public class InventoryCleaner extends Module {
     private final TimeHelper throwTimer = new TimeHelper();
 
     public InventoryCleaner() {
-        super("InventoryCleaner", "Your inventory is clean", Category.PLAYER);
-
         trashItems = Arrays.asList(Items.feather, Items.dye, Items.paper, Items.saddle, Items.string, Items.banner, Items.fishing_rod, Items.boat);
     }
 

@@ -2,8 +2,12 @@ package koks.module;
 
 import koks.Koks;
 import koks.api.Methods;
+import koks.api.settings.SettingInfo;
 import koks.event.Event;
 import koks.api.settings.Setting;
+import koks.module.impl.player.SendPublic;
+
+import java.lang.reflect.Field;
 
 /**
  * @author deleteboys | lmao | kroko
@@ -11,17 +15,29 @@ import koks.api.settings.Setting;
  */
 public abstract class Module extends Methods {
 
-    private String name,description, info = "";
+    private String name, description, info = "";
     private int key;
     private double animation;
     private Category category;
-    private boolean toggled,bypass;
+    private boolean toggled, bypass;
 
-    public Module(String name, String description, Category category) {
-        this.name = name;
-        this.description = description;
-        this.category = category;
-        this.bypass = false;
+    public Module() {
+        ModuleInfo moduleInfo = getClass().getAnnotation(ModuleInfo.class);
+        this.category = moduleInfo.category();
+        this.name = moduleInfo.name();
+        this.description = moduleInfo.description();
+
+        /* for(Field field : getClass().getDeclaredFields()) {
+            try{
+                SettingInfo settingInfo = field.getAnnotation(SettingInfo.class);
+                switch (field.getType()) {
+                    case Float.class:
+                        registerSetting(new Setting(settingInfo.name(), field.getFloat()));
+                        break;
+                }
+            }catch (Exception ignore) {
+            }
+        }*/
     }
 
     public boolean isBypass() {
@@ -38,17 +54,25 @@ public abstract class Module extends Methods {
 
     public void toggle() {
         this.toggled = !this.toggled;
-        if(!this.toggled) {
+        if (!this.toggled) {
             animation = 0;
             onDisable();
         } else {
             animation = 0;
             onEnable();
         }
+
+        try {
+            if (Koks.getKoks().moduleManager.getModule(SendPublic.class).isToggled()) {
+                String toggle = toggled ? "Enabled" : "Disabled";
+                getPlayer().sendChatMessage(toggle + " " + this.getName());
+            }
+        }catch (Exception ignored) {
+        }
     }
 
     public void setToggled(boolean toggled) {
-        if(this.toggled) {
+        if (this.toggled) {
             animation = 0;
             onDisable();
         } else {
@@ -56,10 +80,21 @@ public abstract class Module extends Methods {
             onEnable();
         }
         this.toggled = toggled;
+
+        try {
+            if (Koks.getKoks().moduleManager.getModule(SendPublic.class).isToggled()) {
+                String toggle = toggled ? "Enabled" : "Disabled";
+                getPlayer().sendChatMessage(toggle + " " + this.getName());
+            }
+        }catch (Exception ignored) {
+        }
+
     }
 
     public abstract void onEvent(Event event);
+
     public abstract void onEnable();
+
     public abstract void onDisable();
 
     public void registerSetting(Setting setting) {
@@ -118,7 +153,7 @@ public abstract class Module extends Methods {
         return name + (showTags ? colorCode + info : "");
     }
 
-    public enum Category{
+    public enum Category {
         COMBAT, MOVEMENT, RENDER, GUI, UTILITIES, PLAYER, DEBUG, WORLD
     }
 }

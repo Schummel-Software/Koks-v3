@@ -7,6 +7,7 @@ import koks.event.impl.EventMotion;
 import koks.event.impl.EventRender3D;
 import koks.module.Module;
 import koks.api.settings.Setting;
+import koks.module.ModuleInfo;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
@@ -15,14 +16,12 @@ import java.util.ArrayList;
  * @author deleteboys | lmao | kroko
  * @created on 13.09.2020 : 06:07
  */
+
+@ModuleInfo(name = "TrailESP", description = "Its render your positions in to a line", category = Module.Category.RENDER)
 public class TrailESP extends Module {
 
     public Setting length = new Setting("Length", 50, 5, 1000, true, this);
     public Setting inFirstPerson = new Setting("Show In FirstPerson", true, this);
-
-    public TrailESP() {
-        super("TrailESP", "Its render your positions in to a line", Category.RENDER);
-    }
 
     public ArrayList<double[]> positions = new ArrayList<>();
 

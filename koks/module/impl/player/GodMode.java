@@ -7,6 +7,7 @@ import koks.event.impl.EventPacket;
 import koks.event.impl.EventUpdate;
 import koks.module.Module;
 import koks.api.settings.Setting;
+import koks.module.ModuleInfo;
 import net.minecraft.network.play.client.*;
 import net.minecraft.network.status.client.C01PacketPing;
 import net.minecraft.util.DamageSource;
@@ -15,13 +16,11 @@ import net.minecraft.util.DamageSource;
  * @author deleteboys | lmao | kroko
  * @created on 14.09.2020 : 15:29
  */
+
+@ModuleInfo(name = "GodMode", description = "You cant take any damage", category = Module.Category.PLAYER)
 public class GodMode extends Module {
 
     public Setting mode = new Setting("Mode", new String[]{"Intave Border"}, "Intave Border", this);
-
-    public GodMode() {
-        super("GodMode", "You cant take any damage", Category.PLAYER);
-    }
 
     public TimeHelper timeHelper = new TimeHelper();
 

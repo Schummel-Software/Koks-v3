@@ -2,17 +2,16 @@ package koks.command.impl;
 
 import koks.Koks;
 import koks.command.Command;
+import koks.command.CommandInfo;
 import koks.module.Module;
 
 /**
  * @author deleteboys | lmao | kroko
  * @created on 12.09.2020 : 20:57
  */
-public class Toggle extends Command {
 
-    public Toggle() {
-        super("toggle", "t");
-    }
+@CommandInfo(name = "toggle", alias = "t")
+public class Toggle extends Command {
 
     @Override
     public void execute(String[] args) {

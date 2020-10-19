@@ -8,6 +8,7 @@ import koks.event.Event;
 import koks.event.impl.EventPacket;
 import koks.event.impl.EventUpdate;
 import koks.module.Module;
+import koks.module.ModuleInfo;
 import koks.module.impl.debug.Debug;
 import net.minecraft.network.play.client.C03PacketPlayer;
 
@@ -17,6 +18,8 @@ import java.sql.Time;
  * @author avox | lmao | kroko
  * @created on 15.09.2020 : 20:55
  */
+
+@ModuleInfo(name = "Fly", description = "Flying around the world", category = Module.Category.MOVEMENT)
 public class Fly extends Module {
 
     public Setting aac3312boost = new Setting("AAC3.3.12-Boost", 9F, 1F, 10F, true, this);
@@ -25,13 +28,9 @@ public class Fly extends Module {
     public TimeHelper timeHelper = new TimeHelper();
     public TimeHelper damageTime = new TimeHelper();
 
-    public Fly() {
-        super("Fly", "Flying around the world", Category.MOVEMENT);
-    }
-
     @Override
     public void onEvent(Event event) {
-        if(event instanceof EventUpdate) {
+        if (event instanceof EventUpdate) {
             String extra = mode.getCurrentMode().equalsIgnoreCase("AAC3.3.12") ? " [" + aac3312boost.getCurrentValue() + "]" : "";
             setInfo(mode.getCurrentMode() + extra);
         }
@@ -46,7 +45,8 @@ public class Fly extends Module {
             case "MCCentral":
                 if (event instanceof EventUpdate) {
                     mc.thePlayer.motionY = 0;
-                    movementUtil.setSpeed(0.8, true);
+                    if (isMoving())
+                        movementUtil.setSpeed(0.8, true);
                     if (mc.gameSettings.keyBindJump.isKeyDown())
                         mc.thePlayer.motionY = 0.5;
                     if (mc.gameSettings.keyBindSneak.isKeyDown())
@@ -61,13 +61,13 @@ public class Fly extends Module {
                         mc.thePlayer.motionY -= 0.01;
                     }
 
-                    if(damageTime.hasReached(1500)) {
+                    if (damageTime.hasReached(1500)) {
 
 
                         damageTime.reset();
                     }
 
-                    if(timeHelper.hasReached(800)) {
+                    if (timeHelper.hasReached(800)) {
                         movementUtil.setSpeed(0.4, false);
                         timeHelper.reset();
                     }

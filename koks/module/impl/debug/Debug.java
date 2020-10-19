@@ -9,8 +9,10 @@ import koks.event.impl.EventTick;
 import koks.event.impl.EventUpdate;
 import koks.module.Module;
 import koks.api.settings.Setting;
+import koks.module.ModuleInfo;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.PlayerCapabilities;
 import net.minecraft.network.Packet;
@@ -25,15 +27,13 @@ import java.util.UUID;
  * @author deleteboys | lmao | kroko
  * @created on 12.09.2020 : 20:46
  */
+
+@ModuleInfo(name = "Debug", description = "Test Module", category = Module.Category.DEBUG)
 public class Debug extends Module {
 
     public Setting testCheck = new Setting("Check", true, this);
     public Setting testCombo = new Setting("Combo", new String[]{"M1", "M2"}, "M1", this);
     public Setting testSlider = new Setting("Slider", 10, 5, 20, false, this);
-
-    public Debug() {
-        super("Debug", "Test Module", Category.DEBUG);
-    }
 
     public TimeHelper timeHelper = new TimeHelper();
 
@@ -42,15 +42,14 @@ public class Debug extends Module {
     @Override
     public void onEvent(Event event) {
 
+        if(event instanceof EventTick) {
+
+        }
+
         if (event instanceof EventUpdate) {
 
-            if(mc.objectMouseOver.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
-                if(getGameSettings().keyBindAttack.pressed) {
-                    getPlayer().sendQueue.addToSendQueue(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.START_DESTROY_BLOCK, mc.objectMouseOver.getBlockPos(), mc.objectMouseOver.sideHit));
-                    getPlayer().sendQueue.addToSendQueue(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.STOP_DESTROY_BLOCK, mc.objectMouseOver.getBlockPos(), mc.objectMouseOver.sideHit));
-                }
+            /*getPlayer().isInWeb = false;*/
 
-            }
             /* for(Entity entity : getWorld().loadedEntityList) {
                 if(entity.getDistanceSqToEntity(getPlayer()) < 8 && entity instanceof EntityPlayer) {
                     if(((EntityPlayer) entity).hurtTime != 0 && entity != getPlayer()) {

@@ -178,18 +178,15 @@ public class EntityPlayerSP extends AbstractClientPlayer
      */
     public void onUpdate() {
         if (this.worldObj.isBlockLoaded(new BlockPos(this.posX, 0.0D, this.posZ))) {
-
             EventUpdate eventUpdate = new EventUpdate();
             Koks.getKoks().eventManager.onEvent(eventUpdate);
 
             EventMotion eventMotion = new EventMotion(EventMotion.Type.PRE, this.rotationYaw, this.rotationPitch);
             Koks.getKoks().eventManager.onEvent(eventMotion);
             this.eventMotion = eventMotion;
-
             super.onUpdate();
 
             ClickGui clickGui = (ClickGui) Koks.getKoks().moduleManager.getModule(ClickGui.class);
-            Koks.getKoks().clientColor = new Color((int) clickGui.red.getCurrentValue(), (int) clickGui.green.getCurrentValue(), (int) clickGui.blue.getCurrentValue(), 255);
 
             if (this.isRiding()) {
                 this.sendQueue.addToSendQueue(new C03PacketPlayer.C05PacketPlayerLook(this.rotationYaw, this.rotationPitch, this.onGround));

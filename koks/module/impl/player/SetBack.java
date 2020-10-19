@@ -4,6 +4,7 @@ import koks.event.Event;
 import koks.event.impl.EventUpdate;
 import koks.module.Module;
 import koks.api.settings.Setting;
+import koks.module.ModuleInfo;
 import net.minecraft.client.gui.GuiGameOver;
 import net.minecraft.network.play.client.C03PacketPlayer;
 
@@ -13,15 +14,13 @@ import java.util.Random;
  * @author deleteboys | lmao | kroko
  * @created on 14.09.2020 : 16:52
  */
+
+@ModuleInfo(name = "SetBack", description = "Your respawn at the same position", category = Module.Category.PLAYER)
 public class SetBack extends Module {
 
     public double deathX, deathY, deathZ;
 
     public Setting mode = new Setting("Mode", new String[]{"Intave", "AAC3.0.1"},"Intave", this);
-
-    public SetBack() {
-        super("SetBack", "Your respawn at the same position", Category.PLAYER);
-    }
 
     public void aac301() {
         Random rnd = new Random();

@@ -13,13 +13,10 @@ public abstract class Command extends Methods {
 
     public String name,alias;
 
-    public Command(String name, String alias) {
-        this.name = name;
-        this.alias = alias;
-    }
-
-    public Command(String name) {
-        this.name = name;
+    public Command() {
+        CommandInfo commandInfo = getClass().getAnnotation(CommandInfo.class);
+        this.name = commandInfo.name();
+        this.alias = commandInfo.alias().equals("") ? this.name : commandInfo.alias();
     }
 
     public abstract void execute(String[] args);

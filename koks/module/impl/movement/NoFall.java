@@ -5,6 +5,7 @@ import koks.api.util.TimeHelper;
 import koks.event.Event;
 import koks.event.impl.EventUpdate;
 import koks.module.Module;
+import koks.module.ModuleInfo;
 import net.minecraft.block.BlockAir;
 import net.minecraft.entity.player.PlayerCapabilities;
 import net.minecraft.init.Items;
@@ -20,12 +21,10 @@ import net.minecraft.util.BlockPos;
  * @author avox | lmao | kroko
  * @created on 15.09.2020 : 18:13
  */
+
+@ModuleInfo(name = "NoFall", description = "Prevents you from getting fall damage", category = Module.Category.MOVEMENT)
 public class NoFall extends Module {
-
-    public NoFall() {
-        super("NoFall", "Prevents you from getting falldamage", Category.MOVEMENT);
-    }
-
+    
     public Setting mode = new Setting("Mode", new String[]{"Mineplex", "Intave", "AAC4"}, "Mineplex", this);
 
     public TimeHelper timeHelper = new TimeHelper();
@@ -38,14 +37,9 @@ public class NoFall extends Module {
     }
 
     public void intave() {
-        if (getPlayer().fallDistance > 3.8F) {
-            if(timeHelper.hasReached(60)) {
-                getPlayer().sendQueue.addToSendQueue(new C03PacketPlayer(true));
-                PlayerCapabilities capabilities = getPlayer().capabilities;
-                capabilities.isFlying = true;
-                getPlayer().sendQueue.addToSendQueue(new C13PacketPlayerAbilities(capabilities));
-                timeHelper.reset();
-            }
+        if (getPlayer().fallDistance > 2F) {
+            getPlayer().onGround = true;
+            getPlayer().capabilities.isFlying = true;
         }
     }
 

@@ -4,6 +4,7 @@ import koks.event.Event;
 import koks.event.impl.EventUpdate;
 import koks.module.Module;
 import koks.api.settings.Setting;
+import koks.module.ModuleInfo;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.BlockPos;
 
@@ -11,13 +12,11 @@ import net.minecraft.util.BlockPos;
  * @author deleteboys | lmao | kroko
  * @created on 14.09.2020 : 16:56
  */
+
+@ModuleInfo(name = "NoCobweb", description = "You doesnt't affect by cobweb", category = Module.Category.MOVEMENT)
 public class NoCobweb extends Module {
 
     public Setting mode = new Setting("Mode", new String[]{"Intave"}, "Intave", this);
-
-    public NoCobweb() {
-        super("NoCobweb", "You doesn't affect by cobweb", Category.MOVEMENT);
-    }
 
     @Override
     public void onEvent(Event event) {

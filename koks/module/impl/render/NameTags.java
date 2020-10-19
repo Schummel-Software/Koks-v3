@@ -1,8 +1,10 @@
 package koks.module.impl.render;
 
+import koks.Koks;
 import koks.event.Event;
 import koks.event.impl.EventRender3D;
 import koks.module.Module;
+import koks.module.ModuleInfo;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
@@ -14,11 +16,9 @@ import org.lwjgl.opengl.GL11;
  * @author avox | lmao | kroko
  * @created on 15.09.2020 : 21:40
  */
-public class NameTags extends Module {
 
-    public NameTags() {
-        super("NameTags", "Better NameTags", Category.RENDER);
-    }
+@ModuleInfo(name = "NameTags", description = "Its show the name tags from other players", category = Module.Category.RENDER)
+public class NameTags extends Module {
 
     @Override
     public void onEvent(Event event) {
@@ -39,10 +39,11 @@ public class NameTags extends Module {
 
                     double height = (defaultScale + scale) * 75;
 
-                    String name = entity.getDisplayName().getUnformattedText();
+                    boolean isFriend = Koks.getKoks().friendManager.isFriend(entity.getName());
+                    String name = (isFriend ? "§bFriend §7| " : "") + entity.getName();
                     float finalHealth = Float.isNaN(((EntityLivingBase) entity).getHealth()) ? -1 : Math.round(((EntityLivingBase) entity).getHealth() * 5);
                     String colorPrefix = finalHealth == -1 ? "" : (finalHealth >= 80 ? "§a" : finalHealth < 80 && finalHealth >= 60 ? "§e" : finalHealth < 60 && finalHealth >= 40 ? "§6" : finalHealth < 40 && finalHealth >= 20 ? "§c" : finalHealth < 20 ? "§4" : "§f");
-                    String health = finalHealth == -1 ? " NaN" : " " + colorPrefix + Math.round(finalHealth) + "%";
+                    String health = finalHealth == -1 ? " §cNaN" : " " + colorPrefix + Math.round(finalHealth) + "%";
                     String tagText = name + " " + health;
 
                     GL11.glPushMatrix();

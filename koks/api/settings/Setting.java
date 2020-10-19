@@ -9,7 +9,7 @@ import koks.module.Module;
  */
 public class Setting {
 
-    private String name, currentMode;
+    private String name, currentMode, currentTyped;
     private String[] modes;
 
     private float currentValue, minValue, maxValue;
@@ -20,6 +20,16 @@ public class Setting {
     private Module module;
 
     private Type type;
+
+    // TYPED
+    public Setting(String name, String typed, Module module) {
+        this.name = name;
+        this.currentTyped = typed;
+        this.module = module;
+
+        type = Type.TYPE;
+        Koks.getKoks().settingsManager.registerSetting(this);
+    }
 
     // KEY
     public Setting(String name, int key, Module module) {
@@ -66,7 +76,7 @@ public class Setting {
     }
 
     public enum Type {
-        CHECKBOX, COMBOBOX, SLIDER, KEY
+        CHECKBOX, COMBOBOX, SLIDER, KEY, TYPE;
     }
 
     public String getName() {
@@ -161,8 +171,11 @@ public class Setting {
         return type;
     }
 
-    public void setType(Type type) {
-        this.type = type;
+    public String getTyped() {
+        return currentTyped;
     }
 
+    public void setTyped(String currentTyped) {
+        this.currentTyped = currentTyped;
+    }
 }

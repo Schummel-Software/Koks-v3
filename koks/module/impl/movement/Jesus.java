@@ -4,6 +4,7 @@ import koks.event.Event;
 import koks.event.impl.EventUpdate;
 import koks.module.Module;
 import koks.api.settings.Setting;
+import koks.module.ModuleInfo;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.BlockPos;
 
@@ -11,13 +12,11 @@ import net.minecraft.util.BlockPos;
  * @author deleteboys | lmao | kroko
  * @created on 14.09.2020 : 16:38
  */
+
+@ModuleInfo(name = "Jesus", description = "You can walk on water", category = Module.Category.MOVEMENT)
 public class Jesus extends Module {
 
     public Setting mode = new Setting("Mode", new String[]{"Intave"}, "Intave", this);
-
-    public Jesus() {
-        super("Jesus", "You can walk on water", Category.MOVEMENT);
-    }
 
     @Override
     public void onEvent(Event event) {

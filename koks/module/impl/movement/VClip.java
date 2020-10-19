@@ -5,6 +5,7 @@ import koks.event.Event;
 import koks.event.impl.EventKeyPress;
 import koks.event.impl.EventUpdate;
 import koks.module.Module;
+import koks.module.ModuleInfo;
 import net.minecraft.network.play.client.C03PacketPlayer;
 import org.lwjgl.input.Keyboard;
 
@@ -12,6 +13,8 @@ import org.lwjgl.input.Keyboard;
  * @author deleteboys | lmao | kroko
  * @created on 17.09.2020 : 18:39
  */
+
+@ModuleInfo(name = "VClip", description = "You can teleport through grounds", category = Module.Category.MOVEMENT)
 public class VClip extends Module {
 
     Setting upKey = new Setting("Up Key", Keyboard.KEY_UP, this);
@@ -20,10 +23,6 @@ public class VClip extends Module {
     Setting downKey = new Setting("Down Key", Keyboard.KEY_DOWN, this);
     Setting downHeight = new Setting("Down Height", -5, -5, -1, true, this);
     Setting stuck = new Setting("Stuck", true, this);
-
-    public VClip() {
-        super("VClip", "You can teleport through grounds", Category.MOVEMENT);
-    }
 
     @Override
     public void onEvent(Event event) {

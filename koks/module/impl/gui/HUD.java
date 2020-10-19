@@ -1,11 +1,15 @@
 package koks.module.impl.gui;
 
 import koks.Koks;
+import koks.api.util.fonts.GlyphPage;
+import koks.api.util.fonts.GlyphPageFontRenderer;
 import koks.event.Event;
 import koks.event.impl.EventKeyPress;
 import koks.event.impl.EventRender2D;
+import koks.event.impl.EventTick;
 import koks.module.Module;
 import koks.api.settings.Setting;
+import koks.module.ModuleInfo;
 import koks.module.impl.combat.KillAura;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
@@ -19,10 +23,15 @@ import java.util.Comparator;
  * @author deleteboys | lmao | kroko
  * @created on 13.09.2020 : 10:20
  */
+
+@ModuleInfo(name = "HUD", description = "Draws the HUD", category = Module.Category.GUI)
 public class HUD extends Module {
 
     public final FontRenderer fr = mc.fontRendererObj;
+    public Setting clientName = new Setting("Name", Koks.getKoks().NAME, this);
+    public Setting substring = new Setting("Substring", 2, 2, 4, true, this);
     public Setting waterMark = new Setting("Watermark", true, this);
+    public Setting waterMarkFont = new Setting("Font", "NONE", this);
     public Setting arrayList = new Setting("ArrayList", true, this);
     public Setting showTags = new Setting("Show Tags", true, this);
     public Setting tabGUI = new Setting("TabGUI", true, this);
@@ -32,21 +41,30 @@ public class HUD extends Module {
     public Setting height = new Setting("height", 13, 10, 20, true, this);
 
     public HUD() {
-        super("HUD", "Draws the HUD", Category.GUI);
         setToggled(true);
     }
 
     @Override
     public void onEvent(Event event) {
+
+        if(event instanceof EventTick) {
+            
+            if(clientName.getTyped().length() < substring.getCurrentValue())
+                clientName.setTyped(Koks.getKoks().NAME.substring(0, (int) substring.getCurrentValue()));
+
+            if (!clientName.getTyped().substring(0, (int) (substring.getCurrentValue())).startsWith(Koks.getKoks().NAME.substring(0, (int) (substring.getCurrentValue()))))
+                clientName.setTyped(Koks.getKoks().NAME.substring(0, (int) substring.getCurrentValue()) + clientName.getTyped().substring((int) substring.getCurrentValue()));
+
+        }
+
         if (event instanceof EventRender2D) {
             if (tabGUI.isToggled())
-                Koks.getKoks().tabGUI.drawScreen((int)x.getCurrentValue(), (int)y.getCurrentValue(), (int)width.getCurrentValue(), (int)height.getCurrentValue());
+                Koks.getKoks().tabGUI.drawScreen((int) x.getCurrentValue(), (int) y.getCurrentValue(), (int) width.getCurrentValue(), (int) height.getCurrentValue());
             if (waterMark.isToggled())
                 drawWaterMark();
             if (arrayList.isToggled())
                 drawArrayList();
             KillAura killAura = (KillAura) Koks.getKoks().moduleManager.getModule(KillAura.class);
-            killAura.extendedAimRange.setVisible(killAura.preAim.isToggled());
             killAura.preferType.setVisible(!killAura.attackType.getCurrentMode().equals("Switch"));
             killAura.noSwingType.setVisible(killAura.noSwing.isToggled());
             killAura.blockMode.setVisible(killAura.autoBlock.isToggled());
@@ -58,14 +76,26 @@ public class HUD extends Module {
         }
     }
 
+    public GlyphPageFontRenderer waterFont;
+
     public void drawWaterMark() {
         GL11.glPushMatrix();
         double scale = 2.5;
         GL11.glScaled(scale, scale, scale);
-        fr.drawStringWithShadow(Koks.getKoks().NAME, 3, 3, Koks.getKoks().clientColor.getRGB());
+
+        if (waterMarkFont.getTyped().equalsIgnoreCase("NONE")) {
+            fr.drawStringWithShadow(clientName.getTyped(), 3, 3, Koks.getKoks().clientColor.getRGB());
+        } else {
+            waterFont = GlyphPageFontRenderer.create(waterMarkFont.getTyped(), 50, true, true, true);
+            console.log(waterFont.getFontHeight());
+            waterFont.drawString(Koks.getKoks().NAME, 3, 3, Koks.getKoks().clientColor.getRGB(), true);
+        }
         GL11.glPopMatrix();
 
-        fr.drawStringWithShadow("v" + Koks.getKoks().VERSION, 68, 18, Color.LIGHT_GRAY.getRGB());
+        float x = waterMarkFont.getTyped().equalsIgnoreCase("NONE") ? (float) (fr.getStringWidth(clientName.getTyped()) * scale) : waterFont.getStringWidth(clientName.getTyped());
+
+        ScaledResolution sr = new ScaledResolution(mc);
+        fr.drawStringWithShadow("v" + Koks.getKoks().VERSION, x + 10, 18, Color.LIGHT_GRAY.getRGB());
     }
 
     public void drawArrayList() {

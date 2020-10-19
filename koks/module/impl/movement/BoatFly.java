@@ -4,20 +4,19 @@ import koks.event.Event;
 import koks.event.impl.EventUpdate;
 import koks.module.Module;
 import koks.api.settings.Setting;
+import koks.module.ModuleInfo;
 import net.minecraft.util.Vec3;
 
 /**
  * @author deleteboys | lmao | kroko
  * @created on 13.09.2020 : 05:41
  */
+
+@ModuleInfo(name = "BoatFly", description = "You can fly with the boat", category = Module.Category.MOVEMENT)
 public class BoatFly extends Module {
 
     public Setting Mode = new Setting("Mode", new String[] {"AAC4"}, "AAC4", this);
     public Setting AAC4Boost = new Setting("AAC4-Boost", 8F, 1F, 10F,true, this);
-
-    public BoatFly() {
-        super("BoatFly", "You can fly with the boat", Category.MOVEMENT);
-    }
 
     public boolean ride;
 

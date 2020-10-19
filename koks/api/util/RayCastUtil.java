@@ -2,14 +2,25 @@ package koks.api.util;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
+import koks.Koks;
+import koks.event.impl.EventMouseOver;
+import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItemFrame;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.*;
+import net.minecraft.world.World;
 import optifine.Reflector;
+import org.lwjgl.Sys;
 
 import java.util.List;
+import java.util.Random;
 
 /**
  * @author deleteboys | lmao | kroko
@@ -21,25 +32,23 @@ public class RayCastUtil {
     private Entity pointedEntity;
 
     public Entity rayCastedEntity(double range, float yaw, float pitch) {
-        Entity entity = mc.getRenderViewEntity();
+        Entity entity = this.mc.getRenderViewEntity();
 
-        if (entity != null && mc.theWorld != null) {
-            mc.pointedEntity = null;
-            double d0 = range;
-            MovingObjectPosition objectMouseOver = entity.rayTrace(d0, 1.0F);
-            double d1 = range;
-            Vec3 vec3 = mc.thePlayer.getPositionEyes(1.0F);
+        if (entity != null && this.mc.theWorld != null) {
+            this.mc.mcProfiler.startSection("pick");
+            this.mc.pointedEntity = null;
+            double d0 = (double) this.mc.playerController.getBlockReachDistance();
+            this.mc.objectMouseOver = entity.rayTrace(d0, 1F);
+
+            Vec3 vec3 = entity.getPositionEyes(1F);
             boolean flag = false;
+            boolean flag1 = true;
 
-            if (mc.playerController.extendedReach()) {
-                d0 = 6.0D;
-                d1 = 6.0D;
-            } else if (d0 > range) {
-                flag = true;
-            }
+            d0 = range;
+            double d1 = d0;
 
-            if (objectMouseOver != null) {
-                d1 = objectMouseOver.hitVec.distanceTo(vec3);
+            if (this.mc.objectMouseOver != null) {
+                d1 = this.mc.objectMouseOver.hitVec.distanceTo(vec3);
             }
 
             float yawCos = MathHelper.cos(-yaw * 0.017453292F - (float) Math.PI);
@@ -49,25 +58,22 @@ public class RayCastUtil {
 
             Vec3 vec31 = new Vec3(yawSin * pitchCos, pitchSin, yawCos * pitchCos);
             Vec3 vec32 = vec3.addVector(vec31.xCoord * d0, vec31.yCoord * d0, vec31.zCoord * d0);
-            pointedEntity = null;
+
+            this.pointedEntity = null;
             Vec3 vec33 = null;
             float f = 1.0F;
-            List<Entity> list = mc.theWorld.getEntitiesInAABBexcluding(entity, entity.getEntityBoundingBox().addCoord(vec31.xCoord * d0, vec31.yCoord * d0, vec31.zCoord * d0).expand((double) f, (double) f, (double) f), Predicates.and(EntitySelectors.NOT_SPECTATING, new Predicate<Entity>() {
-                public boolean apply(Entity p_apply_1_) {
-                    return p_apply_1_.canBeCollidedWith();
-                }
-            }));
+            List list = this.mc.theWorld.getEntitiesInAABBexcluding(entity, entity.getEntityBoundingBox().addCoord(vec31.xCoord * d0, vec31.yCoord * d0, vec31.zCoord * d0).expand((double) f, (double) f, (double) f), Predicates.and(EntitySelectors.NOT_SPECTATING, Entity::canBeCollidedWith));
             double d2 = d1;
 
-            for (int j = 0; j < list.size(); ++j) {
-                Entity entity1 = list.get(j);
+            for (int i = 0; i < list.size(); ++i) {
+                Entity entity1 = (Entity) list.get(i);
                 float f1 = entity1.getCollisionBorderSize();
-                AxisAlignedBB axisalignedbb = entity1.getEntityBoundingBox().expand(f1, f1, f1);
+                AxisAlignedBB axisalignedbb = entity1.getEntityBoundingBox().expand((double) f1, (double) f1, (double) f1);
                 MovingObjectPosition movingobjectposition = axisalignedbb.calculateIntercept(vec3, vec32);
 
                 if (axisalignedbb.isVecInside(vec3)) {
                     if (d2 >= 0.0D) {
-                        pointedEntity = entity1;
+                        this.pointedEntity = entity1;
                         vec33 = movingobjectposition == null ? vec3 : movingobjectposition.hitVec;
                         d2 = 0.0D;
                     }
@@ -75,20 +81,19 @@ public class RayCastUtil {
                     double d3 = vec3.distanceTo(movingobjectposition.hitVec);
 
                     if (d3 < d2 || d2 == 0.0D) {
-                        boolean flag1 = false;
+                        boolean flag2 = false;
 
-                        if (Reflector.ForgeEntity_canRiderInteract.exists())
-                        {
-                            flag1 = Reflector.callBoolean(entity1, Reflector.ForgeEntity_canRiderInteract, new Object[0]);
+                        if (Reflector.ForgeEntity_canRiderInteract.exists()) {
+                            flag2 = Reflector.callBoolean(entity1, Reflector.ForgeEntity_canRiderInteract, new Object[0]);
                         }
 
-                        if (!flag1 && entity1 == entity.ridingEntity) {
+                        if (entity1 == entity.ridingEntity && !flag2) {
                             if (d2 == 0.0D) {
-                                pointedEntity = entity1;
+                                this.pointedEntity = entity1;
                                 vec33 = movingobjectposition.hitVec;
                             }
                         } else {
-                            pointedEntity = entity1;
+                            this.pointedEntity = entity1;
                             vec33 = movingobjectposition.hitVec;
                             d2 = d3;
                         }
@@ -96,18 +101,20 @@ public class RayCastUtil {
                 }
             }
 
-            if (pointedEntity != null && flag && vec3.distanceTo(vec33) > range) {
-                pointedEntity = null;
-                mc.objectMouseOver = new MovingObjectPosition(MovingObjectPosition.MovingObjectType.MISS, vec33, null, new BlockPos(vec33));
+            if (this.pointedEntity != null && flag && vec3.distanceTo(vec33) > 3.0D) {
+                this.pointedEntity = null;
+                this.mc.objectMouseOver = new MovingObjectPosition(MovingObjectPosition.MovingObjectType.MISS, vec33, (EnumFacing) null, new BlockPos(vec33));
             }
 
-            if (pointedEntity != null && (d2 < d1 || mc.objectMouseOver == null)) {
-                mc.objectMouseOver = new MovingObjectPosition(pointedEntity, vec33);
+            if (this.pointedEntity != null && (d2 < d1 || this.mc.objectMouseOver == null)) {
+                this.mc.objectMouseOver = new MovingObjectPosition(this.pointedEntity, vec33);
 
-                if (pointedEntity instanceof EntityLivingBase || pointedEntity instanceof EntityItemFrame) {
-                    mc.pointedEntity = pointedEntity;
+                if (this.pointedEntity instanceof EntityLivingBase || this.pointedEntity instanceof EntityItemFrame) {
+                    this.mc.pointedEntity = this.pointedEntity;
                 }
             }
+
+            this.mc.mcProfiler.endSection();
         }
         return pointedEntity;
     }
@@ -116,27 +123,91 @@ public class RayCastUtil {
         Vec3 positionEyes = mc.thePlayer.getPositionEyes(1.0F);
         Vec3 lookVec = mc.thePlayer.getLookVec();
         Vec3 ray = positionEyes.addVector(lookVec.xCoord * reach, lookVec.yCoord * reach, lookVec.zCoord * reach);
-        return mc.theWorld.rayTraceBlocks(positionEyes,ray,!mc.thePlayer.isInWater(), false ,false);
+        return mc.theWorld.rayTraceBlocks(positionEyes, ray, !mc.thePlayer.isInWater(), false, false);
     }
 
-    public MovingObjectPosition rayCastedBlock(float yaw, float pitch) {
+    public Vec3 getLook(float yaw, float pitch) {
+        return Entity.getVectorForRotation(pitch, yaw);
+    }
+
+    public boolean isRayCastBlock(BlockPos bp, MovingObjectPosition ray) {
+        return ray.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK && bp.equals(ray.getBlockPos());
+    }
+
+    public Object[] getPlacingPosition(BlockPos pos, int expansion) {
+        BlockPos blockPos = pos;
+        EnumFacing facing = EnumFacing.UP;
+
+        if (pos.add(0, 0, expansion).getBlock() != Blocks.air) {
+            blockPos = pos.add(0, 0, expansion);
+            facing = EnumFacing.NORTH;
+        }
+        if (pos.add(0, 0, -expansion).getBlock() != Blocks.air) {
+            blockPos = pos.add(0, 0, -expansion);
+            facing = EnumFacing.SOUTH;
+        }
+        if (pos.add(expansion, 0, 0).getBlock() != Blocks.air) {
+            blockPos = pos.add(expansion, 0, 0);
+            facing = EnumFacing.WEST;
+        }
+        if (pos.add(-expansion, 0, 0).getBlock() != Blocks.air) {
+            blockPos = pos.add(-expansion, 0, 0);
+            facing = EnumFacing.EAST;
+        }
+        if (pos.add(0, -expansion, 0).getBlock() != Blocks.air) {
+            blockPos = pos.add(0, -expansion, 0);
+            facing = EnumFacing.UP;
+        }
+        return new Object[] { blockPos, facing, new Vec3(0, 0, 0) };
+    }
+
+    public Vec3 blockDataToVec3(BlockPos paramBlockPos, EnumFacing paramEnumFacing) {
+        RandomUtil randomUtil = new RandomUtil();
+        double x = paramBlockPos.getX() + 0.5D;
+        double y = paramBlockPos.getY() + 0.5D;
+        double z = paramBlockPos.getZ() + 0.5D;
+        x += paramEnumFacing.getFrontOffsetX() / 2.0D;
+        y += paramEnumFacing.getFrontOffsetZ() / 2.0D;
+        z += paramEnumFacing.getFrontOffsetY() / 2.0D;
+        if (paramEnumFacing == EnumFacing.UP || paramEnumFacing == EnumFacing.DOWN) {
+            x += randomUtil.getRandomDouble(-0.3, 0.3);
+            z += randomUtil.getRandomDouble(-0.3, 0.3);
+        }
+        else {
+            y += randomUtil.getRandomDouble(0.49, 0.5);
+        }
+        if (paramEnumFacing == EnumFacing.WEST || paramEnumFacing == EnumFacing.EAST) {
+            z += randomUtil.getRandomDouble(-0.3, 0.3);
+        }
+        if (paramEnumFacing == EnumFacing.SOUTH || paramEnumFacing == EnumFacing.NORTH) {
+            x += randomUtil.getRandomDouble(-0.3, 0.3);
+        }
+        return new Vec3(x, y, z);
+    }
+
+    public MovingObjectPosition rayCastedBlock(float yaw, float pitch, ItemStack silentItem, boolean intave) {
         float range = mc.playerController.getBlockReachDistance();
 
-        float cosYaw = MathHelper.cos(-yaw * 0.017453292F - (float) Math.PI);
-        float sinYaw = MathHelper.sin(-yaw * 0.017453292F - (float) Math.PI);
-        float cosPitch = -MathHelper.cos(-pitch * 0.017453292F);
-        float sinPitch = MathHelper.sin(-pitch * 0.017453292F);
+        Vec3 vec31 = getLook(yaw, pitch);
 
         Vec3 vec3 = mc.thePlayer.getPositionEyes(1.0F);
-        Vec3 vec31 = new Vec3(sinYaw * cosPitch, sinPitch, cosYaw * cosPitch);
         Vec3 vec32 = vec3.addVector(vec31.xCoord * range, vec31.yCoord * range, vec31.zCoord * range);
 
-        MovingObjectPosition ray = mc.theWorld.rayTraceBlocks(vec3, vec32, false);
+
+        MovingObjectPosition ray = mc.theWorld.rayTraceBlocks(vec3, vec32, false, false, false);
+        ItemBlock itemblock = (ItemBlock) silentItem.getItem();
 
         if (ray.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
             return ray;
-
         return null;
+    }
+
+    public boolean onEdge() {
+        BlockPos localBlockPos1 = new BlockPos(mc.thePlayer.posX - 0.024D, mc.thePlayer.posY - 0.5D, mc.thePlayer.posZ - 0.024D);
+        BlockPos localBlockPos2 = new BlockPos(mc.thePlayer.posX - 0.024D, mc.thePlayer.posY - 0.5D, mc.thePlayer.posZ + 0.024D);
+        BlockPos localBlockPos3 = new BlockPos(mc.thePlayer.posX + 0.024D, mc.thePlayer.posY - 0.5D, mc.thePlayer.posZ + 0.024D);
+        BlockPos localBlockPos4 = new BlockPos(mc.thePlayer.posX + 0.024D, mc.thePlayer.posY - 0.5D, mc.thePlayer.posZ - 0.024D);
+        return (mc.thePlayer.worldObj.getBlockState(localBlockPos1).getBlock() == Blocks.air) && (mc.thePlayer.worldObj.getBlockState(localBlockPos2).getBlock() == Blocks.air) && (mc.thePlayer.worldObj.getBlockState(localBlockPos3).getBlock() == Blocks.air) && (mc.thePlayer.worldObj.getBlockState(localBlockPos4).getBlock() == Blocks.air);
     }
 
 }

@@ -6,6 +6,7 @@ import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
+import org.lwjgl.opengl.GL11;
 
 public class Gui
 {
@@ -130,6 +131,15 @@ public class Gui
     public void drawString(FontRenderer fontRendererIn, String text, int x, int y, int color)
     {
         fontRendererIn.drawStringWithShadow(text, (float)x, (float)y, color);
+    }
+
+    public void drawString(FontRenderer fontRendererIn, String text, int x, int y, float size, int color)
+    {
+        GL11.glPushMatrix();
+        GL11.glScaled(size, size, size);
+        fontRendererIn.drawStringWithShadow(text, (float)x, (float)y, color);
+        GL11.glScaled(-size, -size, -size);
+        GL11.glPopMatrix();
     }
 
     /**

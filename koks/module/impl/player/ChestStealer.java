@@ -7,6 +7,7 @@ import koks.event.Event;
 import koks.event.impl.EventUpdate;
 import koks.module.Module;
 import koks.api.settings.Setting;
+import koks.module.ModuleInfo;
 import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.inventory.ContainerChest;
 
@@ -14,6 +15,8 @@ import net.minecraft.inventory.ContainerChest;
  * @author deleteboys | lmao | kroko
  * @created on 14.09.2020 : 16:37
  */
+
+@ModuleInfo(name = "ChestStealer", description = "You steal the items from a chest", category = Module.Category.PLAYER)
 public class ChestStealer extends Module {
 
     public Setting startDelay = new Setting("Start Delay", 100.0F, 0.0F, 500.0F, true, this);
@@ -22,10 +25,6 @@ public class ChestStealer extends Module {
     private final TimeHelper startTimer = new TimeHelper();
     private final TimeHelper throwTimer = new TimeHelper();
     private InventoryCleaner inventoryCleaner;
-
-    public ChestStealer() {
-        super("ChestStealer", "You steal the items from a chest", Category.PLAYER);
-    }
 
     @Override
     public void onEvent(Event event) {

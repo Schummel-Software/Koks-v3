@@ -17,6 +17,7 @@ import koks.event.EventManager;
 import koks.event.impl.EventFOV;
 import koks.event.impl.EventMouseOver;
 import koks.event.impl.EventRender3D;
+import koks.module.impl.render.CameraClip;
 import koks.module.impl.render.NoBob;
 import koks.module.impl.render.NoFov;
 import koks.module.impl.render.NoHurtCam;
@@ -576,6 +577,8 @@ public class EntityRenderer implements IResourceManagerReloadListener {
     /**
      * Changes the field of view of the player depending on if they are underwater or not
      */
+    public float zoomAnimation = 1.0F;
+
     private float getFOVModifier(float partialTicks, boolean p_78481_2_) {
         if (this.debugView) {
             return 90.0F;
@@ -605,15 +608,25 @@ public class EntityRenderer implements IResourceManagerReloadListener {
                 }
 
                 if (Config.zoomMode) {
-                    f /= 4.0F;
+                    if (zoomAnimation < 4.0F) {
+                        zoomAnimation += 0.015F;
+                    }
+                    /*f /= 4.0F;*/
                 }
-            } else if (Config.zoomMode) {
-                Config.zoomMode = false;
-                this.mc.gameSettings.smoothCamera = false;
-                this.mouseFilterXAxis = new MouseFilter();
-                this.mouseFilterYAxis = new MouseFilter();
-                this.mc.renderGlobal.displayListEntitiesDirty = true;
+            } else {
+                if (zoomAnimation > 1.0F) {
+                    zoomAnimation -= 0.015F;
+                }
+                if (Config.zoomMode) {
+                    Config.zoomMode = false;
+                    this.mc.gameSettings.smoothCamera = false;
+                    this.mouseFilterXAxis = new MouseFilter();
+                    this.mouseFilterYAxis = new MouseFilter();
+                    this.mc.renderGlobal.displayListEntitiesDirty = true;
+                }
             }
+
+            f /= zoomAnimation;
 
             if (entity instanceof EntityLivingBase && ((EntityLivingBase) entity).getHealth() <= 0.0F) {
                 float f1 = (float) ((EntityLivingBase) entity).deathTime + partialTicks;
@@ -732,7 +745,8 @@ public class EntityRenderer implements IResourceManagerReloadListener {
                         double d7 = movingobjectposition.hitVec.distanceTo(new Vec3(d0, d1, d2));
 
                         if (d7 < d3) {
-//                            d3 = d7;
+                            if (!Koks.getKoks().moduleManager.getModule(CameraClip.class).isToggled())
+                                d3 = d7;
                         }
                     }
                 }

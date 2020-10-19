@@ -4,12 +4,15 @@ import koks.Koks;
 import koks.event.Event;
 import koks.module.Module;
 import koks.api.settings.Setting;
+import koks.module.ModuleInfo;
 import org.lwjgl.input.Keyboard;
 
 /**
  * @author deleteboys | lmao | kroko
  * @created on 13.09.2020 : 00:18
  */
+
+@ModuleInfo(name = "ClickGUI", description = "Opens the ClickGUI", category = Module.Category.GUI)
 public class ClickGui extends Module {
 
     public Setting red = new Setting("Red", 0, 0, 255, true, this);
@@ -17,7 +20,6 @@ public class ClickGui extends Module {
     public Setting blue = new Setting("Blue", 255, 0, 255, true, this);
 
     public ClickGui() {
-        super("ClickGui", "Opens the ClickGUI", Category.GUI);
         setKey(Keyboard.KEY_RSHIFT);
     }
 

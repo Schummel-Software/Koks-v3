@@ -1,5 +1,7 @@
 package net.minecraft.util;
 
+import org.lwjgl.input.Keyboard;
+
 public class ChatAllowedCharacters
 {
     /**

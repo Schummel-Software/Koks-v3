@@ -6,6 +6,7 @@ import koks.event.Event;
 import koks.event.impl.EventUpdate;
 import koks.module.Module;
 import koks.api.settings.Setting;
+import koks.module.ModuleInfo;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -20,6 +21,8 @@ import java.util.List;
  * @author deleteboys | lmao | kroko
  * @created on 14.09.2020 : 16:37
  */
+
+@ModuleInfo(name = "AutoArmor", description = "You put the armor automatically on", category = Module.Category.PLAYER)
 public class AutoArmor extends Module {
 
     private final List<ItemArmor> helmet;
@@ -36,8 +39,6 @@ public class AutoArmor extends Module {
     private final TimeHelper throwTimer = new TimeHelper();
 
     public AutoArmor() {
-        super("AutoArmor", "You put the armor automaticaly on", Category.PLAYER);
-
         helmet = Arrays.asList(Items.leather_helmet, Items.golden_helmet, Items.chainmail_helmet, Items.iron_helmet, Items.diamond_helmet);
         chest = Arrays.asList(Items.leather_chestplate, Items.golden_chestplate, Items.chainmail_chestplate, Items.iron_chestplate, Items.diamond_chestplate);
         legging = Arrays.asList(Items.leather_leggings, Items.golden_leggings, Items.chainmail_leggings, Items.iron_leggings, Items.diamond_leggings);

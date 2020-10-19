@@ -197,6 +197,8 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
     public String discordDetail = "";
     public String discordState = "";
 
+    public long bgShaderInitTime = System.currentTimeMillis();
+
     private static final Logger logger = LogManager.getLogger();
     private static final ResourceLocation locationMojangPng = new ResourceLocation("textures/gui/title/mojang.png");
     public static final boolean isRunningOnMac = Util.getOSType() == Util.EnumOS.OSX;
@@ -323,7 +325,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
     /**
      * When you place a block, it's set to 6, decremented once per tick, when it's 0, you can place another block.
      */
-    private int rightClickDelayTimer;
+    public int rightClickDelayTimer;
     private String serverName;
     private int serverPort;
 
@@ -1453,7 +1455,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
 
                         break;
 
-                    case BLOCK:
+                    case BLOCK: //SCAFFOLD
                         BlockPos blockpos = this.objectMouseOver.getBlockPos();
 
                         if (this.theWorld.getBlockState(blockpos).getBlock().getMaterial() != Material.air) {
@@ -1569,6 +1571,8 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
     public void runTick() throws IOException {
         EventTick eventTick = new EventTick();
         Koks.getKoks().eventManager.onEvent(eventTick);
+
+        bgShaderInitTime = System.currentTimeMillis();
 
         if (this.rightClickDelayTimer > 0) {
             --this.rightClickDelayTimer;

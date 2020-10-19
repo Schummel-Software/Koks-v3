@@ -1,15 +1,13 @@
 package koks.gui.clickgui.elements;
 
 import koks.Koks;
-import koks.gui.clickgui.elements.settings.DrawCheckBox;
-import koks.gui.clickgui.elements.settings.DrawComboBox;
-import koks.gui.clickgui.elements.settings.DrawKey;
-import koks.gui.clickgui.elements.settings.DrawSlider;
+import koks.gui.clickgui.elements.settings.*;
 import koks.module.Module;
 import koks.api.settings.Setting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
+import org.lwjgl.input.Keyboard;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -40,6 +38,8 @@ public class DrawModule {
                     elements.add(new DrawSlider(setting));
                 if (setting.getType() == Setting.Type.KEY)
                     elements.add(new DrawKey(setting));
+                if (setting.getType() == Setting.Type.TYPE)
+                    elements.add(new DrawType(setting));
             }
         }
     }
@@ -55,6 +55,10 @@ public class DrawModule {
         Gui.drawRect(x, y, x + width, y + height, 0xFF202020);
         if (isHovered(mouseX, mouseY))
             Gui.drawRect(x, y, x + width, y + height, 0xBB252525);
+        if (module.isBypass()) {
+            Gui.drawRect(x, y, x + 2, y + height, Koks.getKoks().clientColor.getRGB());
+            Gui.drawRect(x + width - 2, y, x + width, y + height, Koks.getKoks().clientColor.getRGB());
+        }
         Color textColor = module.isToggled() ? Koks.getKoks().clientColor : new Color(0xFFFFFFFF);
         if (!elements.isEmpty())
             fr.drawStringWithShadow(extended ? "-" : "+", x + width - 10, y + height / 2 - fr.FONT_HEIGHT / 2 + 1, 0xFFFFFFFF);
@@ -83,6 +87,15 @@ public class DrawModule {
                     }
                 }
             }
+
+            if (element.setting.getType() == Setting.Type.TYPE) {
+                String typed = element.setting.getTyped();
+                int offset = 50;
+                if (settingWidth < fr.getStringWidth(typed) + offset) {
+                    settingWidth = fr.getStringWidth(typed) + offset;
+                }
+            }
+
             if (element.setting.getType() == Setting.Type.SLIDER) {
                 String string = settingName + "00.00";
                 int offset = 15;
@@ -122,7 +135,11 @@ public class DrawModule {
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) {
         if (isHovered(mouseX, mouseY)) {
             if (mouseButton == 0) {
-                module.toggle();
+                if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+                    module.toggle();
+                }else{
+                    module.setBypass(!module.isBypass());
+                }
             }
 
             if (mouseButton == 1) {

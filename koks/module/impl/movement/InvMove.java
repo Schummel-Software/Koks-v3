@@ -6,6 +6,7 @@ import koks.event.Event;
 import koks.event.impl.EventPacket;
 import koks.event.impl.EventUpdate;
 import koks.module.Module;
+import koks.module.ModuleInfo;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.network.play.server.S2EPacketCloseWindow;
@@ -15,6 +16,8 @@ import org.lwjgl.input.Keyboard;
  * @author kroko
  * @created on 26.09.2020 : 03:01
  */
+
+@ModuleInfo(name = "InvMove", description = "You can walk in the inventory", category = Module.Category.MOVEMENT)
 public class InvMove extends Module {
 
     private final TimeHelper timeHelper = new TimeHelper();
@@ -24,10 +27,6 @@ public class InvMove extends Module {
     public Setting look = new Setting("Look", true, this);
 
     public Setting cancelPacket = new Setting("CancelPacket", false, this);
-
-    public InvMove() {
-        super("InvMove", "You can walk in the inventory", Category.MOVEMENT);
-    }
 
     @Override
     public void onEvent(Event event) {
