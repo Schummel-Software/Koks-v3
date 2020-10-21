@@ -712,7 +712,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
 
                 if (inputstream != null && inputstream1 != null) {
                     Display.setIcon(new ByteBuffer[]{this.readImageToBuffer(inputstream), this.readImageToBuffer(inputstream1)});
-                }else{
+                } else {
 
                 }
             } catch (IOException ioexception) {
@@ -1435,8 +1435,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
 
     /**
      * Called when user clicked he's mouse right button (place)
-     */
-    public void rightClickMouse() {
+     */ public void rightClickMouse() {
         if (!this.playerController.func_181040_m()) {
             this.rightClickDelayTimer = 4;
             boolean flag = true;
@@ -1455,7 +1454,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
 
                         break;
 
-                    case BLOCK: //SCAFFOLD
+                    case BLOCK:
                         BlockPos blockpos = this.objectMouseOver.getBlockPos();
 
                         if (this.theWorld.getBlockState(blockpos).getBlock().getMaterial() != Material.air) {

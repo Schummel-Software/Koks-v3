@@ -16,6 +16,7 @@ import net.minecraft.stats.StatList;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.MathHelper;
 
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -27,12 +28,13 @@ import java.util.concurrent.ThreadLocalRandom;
 public class Speed extends Module {
 
     public Setting mode = new Setting("Mode", new String[]{"Intave", "MCCentral", "Mineplex", "AAC3.3.12", "Tired", "Legit"}, "Intave", this);
-    private final MovementUtil movementUtil = new MovementUtil();
+    private final MovementUtil EmovementUtil = new MovementUtil();
 
     @Override
     public void onEvent(Event event) {
 
         if (event instanceof EventUpdate) {
+            MovementUtil movementUtil = new MovementUtil();
             setInfo(mode.getCurrentMode());
             switch (mode.getCurrentMode()) {
                 case "Legit":
@@ -54,8 +56,9 @@ public class Speed extends Module {
                     if (getPlayer().onGround) {
                         getPlayer().jump();
                         getPlayer().setSprinting(false);
-                        movementUtil.setSpeed(0.15, true);
-                        getTimer().timerSpeed = 2F;
+                        RandomUtil randomUtil = new RandomUtil();
+                        movementUtil.setSpeed(0.06, true);
+                        getTimer().timerSpeed = 5F;
                     } else {
                         getPlayer().setSprinting(true);
                         getPlayer().speedInAir = 0.23F;
@@ -78,6 +81,7 @@ public class Speed extends Module {
                     if (!mc.thePlayer.isInWeb) {
                         if (getPlayer().onGround && isMoving())
                             getPlayer().jump();
+
                         if (isMoving()) {
                             movementUtil.setSpeed(0.35D, true);
                             getPlayer().speedInAir = 0.044F;

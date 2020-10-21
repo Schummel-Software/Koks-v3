@@ -213,7 +213,7 @@ public class Scaffold extends Module {
         if (mc.theWorld.getBlockState(new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY - 1.0D - (shouldBuildDown ? 1 : 0), mc.thePlayer.posZ)).getBlock() instanceof net.minecraft.block.BlockAir) {
             if (!simpleRotations.isToggled())
                 setYaw();
-            boolean rayCasted = !rayCast.isToggled() || rayCastUtil.isRayCastBlock(pos, rayCastUtil.rayCastedBlock(yaw, pitch, silentItemStack, intave.isToggled()));
+            boolean rayCasted = !rayCast.isToggled() && !intave.isToggled() || rayCastUtil.isRayCastBlock(pos, rayCastUtil.rayCastedBlock(yaw, pitch, silentItemStack, intave.isToggled()));
             if (rayCasted) {
                 if (timeUtil.hasReached(mc.thePlayer.onGround ? (randomutil.getRandomLong((long) delay.getCurrentValue(), (long) delay.getCurrentValue() + 1)) : 20L)) {
                     if (blackList.contains(((ItemBlock) silentItemStack.getItem()).getBlock()))

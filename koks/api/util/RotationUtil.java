@@ -68,9 +68,11 @@ public class RotationUtil {
         float f2 = (float) ((yawAngle - currentYaw) * f1);
         float f3 = (float) ((finalPitch - currentPitch) * f1);
 
-        float speed = (float) (40 * (distance / 2) + randomUtil.getRandomFloat(-10, 10));
-        float yaw = updateRotation(currentYaw + f2, yawAngle, smooth ? speed : 360);
-        float pitch = updateRotation(currentPitch + f3, finalPitch, smooth ? speed : 360);
+        float difYaw = yawAngle - currentYaw;
+        float difPitch = finalPitch - currentPitch;
+
+        float yaw = updateRotation(currentYaw + f2, yawAngle, 360);
+        float pitch = updateRotation(currentPitch + f3, finalPitch, 360);
 
         yaw -= yaw % f1;
         pitch -= pitch % f1;
