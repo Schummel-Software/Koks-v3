@@ -3,6 +3,7 @@ package koks.filemanager;
 import koks.Koks;
 import koks.api.util.ClassUtil;
 import koks.filemanager.impl.AlteningToken;
+import koks.filemanager.impl.Settings;
 import koks.filemanager.impl.Toggle;
 import net.minecraft.client.Minecraft;
 
@@ -22,6 +23,7 @@ public class FileManager {
     public FileManager() {
         addFile(new AlteningToken());
         addFile(new Toggle());
+        addFile(new Settings());
     }
 
     public void writeFile(Class<? extends Files> clazz) {

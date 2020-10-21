@@ -56,10 +56,12 @@ public abstract class Module extends Methods {
         this.toggled = !this.toggled;
         if (!this.toggled) {
             animation = 0;
-            onDisable();
+            if (getWorld() != null)
+                onDisable();
         } else {
             animation = 0;
-            onEnable();
+            if (getWorld() != null)
+                onEnable();
         }
 
         try {
@@ -67,17 +69,19 @@ public abstract class Module extends Methods {
                 String toggle = toggled ? "Enabled" : "Disabled";
                 getPlayer().sendChatMessage(toggle + " " + this.getName());
             }
-        }catch (Exception ignored) {
+        } catch (Exception ignored) {
         }
     }
 
     public void setToggled(boolean toggled) {
         if (this.toggled) {
             animation = 0;
-            onDisable();
+            if (getWorld() != null)
+                onDisable();
         } else {
             animation = 0;
-            onEnable();
+            if (getWorld() != null)
+                onEnable();
         }
         this.toggled = toggled;
 
@@ -86,7 +90,7 @@ public abstract class Module extends Methods {
                 String toggle = toggled ? "Enabled" : "Disabled";
                 getPlayer().sendChatMessage(toggle + " " + this.getName());
             }
-        }catch (Exception ignored) {
+        } catch (Exception ignored) {
         }
 
     }

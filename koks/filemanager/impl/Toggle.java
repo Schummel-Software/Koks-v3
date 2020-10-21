@@ -20,9 +20,9 @@ public class Toggle extends Files {
     }
 
     @Override
-    public void readFile(BufferedReader bufferedWriter) throws IOException {
+    public void readFile(BufferedReader bufferedReader) throws IOException {
         String line;
-        while ((line = bufferedWriter.readLine()) != null) {
+        while ((line = bufferedReader.readLine()) != null) {
             String[] split = line.split(":");
             Module module = Koks.getKoks().moduleManager.getModule(split[0]);
             if(module != null) {
@@ -30,10 +30,14 @@ public class Toggle extends Files {
                 module.setBypass(Boolean.parseBoolean(split[2]));
             }
         }
+        bufferedReader.close();
     }
 
     @Override
     public void writeFile(FileWriter fileWriter) throws IOException {
-
+        for(Module module : Koks.getKoks().moduleManager.getModules()) {
+            fileWriter.write(module.getName() + ":" + module.isToggled() + ":" + module.isBypass() + "\n");
+        }
+        fileWriter.close();
     }
 }

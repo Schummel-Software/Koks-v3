@@ -18,10 +18,10 @@ public class AlteningToken extends Files {
     }
 
     @Override
-    public void readFile(BufferedReader bufferedWriter) throws IOException {
+    public void readFile(BufferedReader bufferedReader) throws IOException {
         Koks.getKoks().alteningApiKey = "";
         String line;
-        while((line = bufferedWriter.readLine()) != null) {
+        while((line = bufferedReader.readLine()) != null) {
             String[] args = line.split(":");
             if(args[0].equalsIgnoreCase("apiToken")) {
                 if(args.length == 2) {
@@ -29,7 +29,7 @@ public class AlteningToken extends Files {
                 }
             }
         }
-        bufferedWriter.close();
+        bufferedReader.close();
     }
 
     @Override
