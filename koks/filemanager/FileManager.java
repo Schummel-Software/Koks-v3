@@ -2,6 +2,8 @@ package koks.filemanager;
 
 import koks.Koks;
 import koks.api.util.ClassUtil;
+import koks.filemanager.impl.AlteningToken;
+import koks.filemanager.impl.Toggle;
 import net.minecraft.client.Minecraft;
 
 import java.io.*;
@@ -18,18 +20,8 @@ public class FileManager {
     public ArrayList<Files> files = new ArrayList<>();
 
     public FileManager() {
-        ClassUtil classUtil = new ClassUtil();
-        String prefix = "koks.filemanager.impl";
-        ArrayList<Class> classes = new ArrayList<>();
-
-        try {
-            for (Class clazz : classUtil.getClasses(prefix)) {
-                if (!clazz.getName().contains("$"))
-                    addFile((Files) clazz.newInstance());
-            }
-        } catch (Exception ignored) {
-            ignored.printStackTrace();
-        }
+        addFile(new AlteningToken());
+        addFile(new Toggle());
     }
 
     public void writeFile(Class<? extends Files> clazz) {

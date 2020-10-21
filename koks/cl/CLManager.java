@@ -1,21 +1,21 @@
-package koks.purves;
+package koks.cl;
 
 /**
  * @author kroko
  * @created on 04.10.2020 : 21:11
  */
-public class PurvesManager {
+public class CLManager {
 
     private final User user;
 
-    public PurvesManager(String name) {
+    public CLManager(String name) {
         this.user = new User(name, getRole(name));
     }
 
     public Role getRole(String name) {
         if (name.equalsIgnoreCase("Kroko") || name.equalsIgnoreCase("Phantom") || name.equalsIgnoreCase("Deleteboys") || name.equalsIgnoreCase("Dirt"))
             return Role.Developer;
-        if (name.equalsIgnoreCase("Hizzy") || name.equalsIgnoreCase("ImShadow"))
+        if (name.equalsIgnoreCase("Haze"))
             return Role.Admin;
         else
             return Role.User;

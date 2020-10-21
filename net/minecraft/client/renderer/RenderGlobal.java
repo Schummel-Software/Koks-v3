@@ -23,7 +23,12 @@ import java.util.concurrent.Callable;
 
 import koks.Koks;
 import koks.api.util.ESPUtil;
+import koks.event.EventManager;
+import koks.event.impl.EventAllowOutline;
+import koks.event.impl.EventOutline;
 import koks.module.impl.render.BlockOverlay;
+import koks.module.impl.render.ItemESP;
+import koks.module.impl.render.PlayerESP;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockChest;
 import net.minecraft.block.BlockEnderChest;
@@ -34,6 +39,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.PositionedSoundRecord;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.particle.EntityFX;
@@ -66,6 +72,7 @@ import net.minecraft.crash.CrashReport;
 import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.item.EntityItemFrame;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityWitherSkull;
@@ -323,7 +330,9 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
 
     protected boolean isRenderEntityOutlines()
     {
-        return !Config.isFastRender() && !Config.isShaders() && !Config.isAntialiasing() ? this.entityOutlineFramebuffer != null && this.entityOutlineShader != null && this.mc.thePlayer != null && this.mc.thePlayer.isSpectator() && this.mc.gameSettings.keyBindSpectatorOutlines.isKeyDown() : false;
+        EventOutline eventOutline = new EventOutline(!Config.isFastRender() && !Config.isShaders() && !Config.isAntialiasing() ? this.entityOutlineFramebuffer != null && this.entityOutlineShader != null && this.mc.thePlayer != null && this.mc.thePlayer.isSpectator() && this.mc.gameSettings.keyBindSpectatorOutlines.isKeyDown() : false);
+        Koks.getKoks().eventManager.onEvent(eventOutline);
+        return eventOutline.isOutline();
     }
 
     private void generateSky2()
@@ -714,9 +723,14 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
                     if (!flag || Reflector.callBoolean(entity3, Reflector.ForgeEntity_shouldRenderInPass, new Object[] {Integer.valueOf(i)}))
                     {
                         boolean flag2 = this.mc.getRenderViewEntity() instanceof EntityLivingBase && ((EntityLivingBase)this.mc.getRenderViewEntity()).isPlayerSleeping();
-                        boolean flag3 = entity3.isInRangeToRender3d(d0, d1, d2) && (entity3.ignoreFrustumCheck || camera.isBoundingBoxInFrustum(entity3.getEntityBoundingBox()) || entity3.riddenByEntity == this.mc.thePlayer) && entity3 instanceof EntityPlayer;
+                        boolean flag3 = entity3.isInRangeToRender3d(d0, d1, d2) && (entity3.ignoreFrustumCheck || camera.isBoundingBoxInFrustum(entity3.getEntityBoundingBox()) || entity3.riddenByEntity == this.mc.thePlayer);
+                        ItemESP itemESP = (ItemESP) Koks.getKoks().moduleManager.getModule(ItemESP.class);
+                        boolean item = itemESP.isToggled() && itemESP.espMode.getCurrentMode().equalsIgnoreCase("Glow") && entity3 instanceof EntityItem;
 
-                        if ((entity3 != this.mc.getRenderViewEntity() || this.mc.gameSettings.thirdPersonView != 0 || flag2) && flag3)
+                        PlayerESP playerESP = (PlayerESP) Koks.getKoks().moduleManager.getModule(PlayerESP.class);
+                        boolean player = playerESP.isToggled() && playerESP.espMode.getCurrentMode().equalsIgnoreCase("Glow") && entity3 instanceof EntityPlayer;
+
+                        if ((entity3 != this.mc.getRenderViewEntity() || this.mc.gameSettings.thirdPersonView != 0 || flag2) && flag3 && (item || player))
                         {
                             this.renderManager.renderEntitySimple(entity3, partialTicks);
                         }

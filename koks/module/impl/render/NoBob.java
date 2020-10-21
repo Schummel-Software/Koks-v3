@@ -1,6 +1,7 @@
 package koks.module.impl.render;
 
 import koks.event.Event;
+import koks.event.impl.EventBobbing;
 import koks.module.Module;
 import koks.module.ModuleInfo;
 
@@ -14,7 +15,9 @@ public class NoBob extends Module {
 
     @Override
     public void onEvent(Event event) {
-
+        if(event instanceof EventBobbing) {
+            ((EventBobbing) event).setBobbing(0);
+        }
     }
 
     @Override

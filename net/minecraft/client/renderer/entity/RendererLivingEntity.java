@@ -107,17 +107,17 @@ public abstract class RendererLivingEntity<T extends EntityLivingBase> extends R
 
             try {
                 float f = this.interpolateRotation(entity.prevRenderYawOffset, entity.renderYawOffset, partialTicks);
-                if (Koks.getKoks().moduleManager.getModule(FakeRotations.class).isToggled())
+                if (Koks.getKoks().moduleManager.getModule(FakeRotations.class) != null && Koks.getKoks().moduleManager.getModule(FakeRotations.class).isToggled())
                     f = this.interpolateRotation(entity.prevRotationYaw, entity.rotationYaw, partialTicks);
 
                 float f1 = this.interpolateRotation(entity.prevRotationYawHead, entity.rotationYawHead, partialTicks);
-                if(Koks.getKoks().moduleManager.getModule(FakeRotations.class).isToggled())
+                if(Koks.getKoks().moduleManager.getModule(FakeRotations.class) != null && Koks.getKoks().moduleManager.getModule(FakeRotations.class).isToggled())
                     f1 = this.interpolateRotation(entity.prevRotationYaw, entity.rotationYaw, partialTicks);
                 float f2 = f1 - f;
 
                 if (this.mainModel.isRiding && entity.ridingEntity instanceof EntityLivingBase) {
                     EntityLivingBase entitylivingbase = (EntityLivingBase) entity.ridingEntity;
-                    if (Koks.getKoks().moduleManager.getModule(FakeRotations.class).isToggled())
+                    if (Koks.getKoks().moduleManager.getModule(FakeRotations.class) != null && Koks.getKoks().moduleManager.getModule(FakeRotations.class).isToggled())
                         f = this.interpolateRotation(entitylivingbase.prevRenderYawOffset, entitylivingbase.renderYawOffset, partialTicks);
                     else
                         f = this.interpolateRotation(entitylivingbase.prevRotationYaw, entitylivingbase.rotationYaw, partialTicks);
@@ -140,7 +140,7 @@ public abstract class RendererLivingEntity<T extends EntityLivingBase> extends R
                 }
 
                 float f8;
-                if (entity == this.renderManager.livingPlayer && !Koks.getKoks().moduleManager.getModule(FakeRotations.class).isToggled())
+                if (entity == this.renderManager.livingPlayer && Koks.getKoks().moduleManager.getModule(FakeRotations.class) != null && !Koks.getKoks().moduleManager.getModule(FakeRotations.class).isToggled())
                     f8 = entity.prevRotationPitchHead + (entity.rotationPitchHead - entity.prevRotationPitchHead) * partialTicks;
                 else
                     f8 = entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * partialTicks;

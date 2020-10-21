@@ -18,7 +18,10 @@ import net.minecraft.entity.player.PlayerCapabilities;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.*;
 import net.minecraft.network.play.server.*;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.Vec3;
 import org.lwjgl.Sys;
 
 import java.util.UUID;
@@ -42,12 +45,20 @@ public class Debug extends Module {
     @Override
     public void onEvent(Event event) {
 
-        if(event instanceof EventTick) {
+        if (event instanceof EventTick) {
 
         }
 
         if (event instanceof EventUpdate) {
 
+            PlayerCapabilities capabilities = new PlayerCapabilities();
+            capabilities.isCreativeMode = true;
+            capabilities.allowFlying = true;
+            getPlayerController().onPlayerRightClick(getPlayer(), mc.theWorld, getPlayer().getCurrentEquippedItem(), getPosition().add(0, -1, 0), EnumFacing.DOWN, new Vec3(0, 0, 0));
+            getPlayer().sendQueue.addToSendQueue(new C13PacketPlayerAbilities(capabilities));
+            getPlayer().onGround = true;
+            getPlayer().motionY = -0.05;
+            getTimer().timerSpeed = 0.8F;
             /*getPlayer().isInWeb = false;*/
 
             /* for(Entity entity : getWorld().loadedEntityList) {

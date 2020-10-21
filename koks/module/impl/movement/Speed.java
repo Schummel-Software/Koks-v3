@@ -32,30 +32,29 @@ public class Speed extends Module {
             setInfo(mode.getCurrentMode());
             switch (mode.getCurrentMode()) {
                 case "Legit":
-                    if (isMoving() && getPlayer().motionY >= 0.38799855) {
-                        getPlayer().motionY -= 0.01;
-                    }
-
-                    getPlayer().speedInAir = 0.023F;
-                    getPlayer().jumpMovementFactor = 0.0305F;
-                    getPlayer().addExhaustion(0.8F);
-                    getPlayer().isAirBorne = true;
-
-                    if (getPlayer().onGround)
+                    getGameSettings().keyBindSprint.pressed = false;
+                    if(getPlayer().onGround) {
+                        getPlayer().jump();
+                        getPlayer().setSprinting(false);
+                        movementUtil.setSpeed(0.15, true);
+                        getTimer().timerSpeed = 2F;
+                    }else{
                         getPlayer().setSprinting(true);
-
-                    boolean back = getGameSettings().keyBindBack.pressed;
-                    int backYaw = back ? 180 : 0;
-                    float f = (getPlayer().rotationYaw + backYaw) * 0.017453292F;
-                    if (getHurtTime() == 0 && getPlayer().onGround && isMoving()) {
-                        if (getPlayer().isSprinting()) {
-                            getPlayer().motionX -= MathHelper.sin(f) * 0.2F;
-                            getPlayer().motionZ += MathHelper.cos(f) * 0.2F;
-                        }
+                        getPlayer().speedInAir = 0.23F;
+                    }
+                    if(getPlayer().motionY >= 0.3) {
+                        getPlayer().motionY = 0;
                     }
 
-                    if (mc.thePlayer.onGround) {
-                        if (isMoving()) getPlayer().motionY = 0.42F;
+                    break;
+                case "Mineplex":
+                    if (!mc.thePlayer.isInWeb) {
+                        if (getPlayer().onGround && isMoving())
+                            getPlayer().jump();
+                        if (isMoving()) {
+                            movementUtil.setSpeed(0.35D, true);
+                            getPlayer().speedInAir = 0.044F;
+                        }
                     }
                     break;
                 case "MCCentral":

@@ -39,30 +39,7 @@ public class SuperHit extends Module {
         if (event instanceof EventUpdate) {
             if (getGameSettings().keyBindAttack.pressed) {
                 if (mc.objectMouseOver.entityHit != null && mc.objectMouseOver.entityHit instanceof EntityPlayer && validEntityName(mc.objectMouseOver.entityHit)) {
-                    MovingObjectPosition ray = rayCastUtil.rayCast(reach.getCurrentValue());
-                    if (ray == null) return;
-                    Entity entity = mc.objectMouseOver.entityHit;
-
-                    BlockPos oldPos = getPlayer().getPosition();
-                    BlockPos newPos = entity.getPosition();
-
-                    double distance = getPlayer().getDistance(newPos.getX(), newPos.getY(), newPos.getZ());
-                    for (double d = 0; d < distance; d += 3) {
-                        setPosition(oldPos.getX() + (newPos.getX() - mc.thePlayer.getHorizontalFacing().getFrontOffsetX() - oldPos.getX()) * d / distance, oldPos.getY() + (newPos.getY() - mc.thePlayer.getHorizontalFacing().getFrontOffsetY() - oldPos.getY()) * d / distance, oldPos.getZ() + (newPos.getZ() - mc.thePlayer.getHorizontalFacing().getFrontOffsetZ() - oldPos.getZ()) * d / distance, mc.thePlayer.onGround);
-                    }
-
-                    setPosition(newPos.getX(), newPos.getY(), newPos.getZ(), mc.thePlayer.onGround);
-
-                    getPlayerController().attackEntity(getPlayer(), entity);
-
-                    double distanceToOld = getPlayer().getDistance(oldPos.getX(), oldPos.getY(), oldPos.getZ());
-                    for (double d = 0; d < distance; d += 3) {
-                        setPosition(newPos.getX() + (oldPos.getX() - mc.thePlayer.getHorizontalFacing().getFrontOffsetX() - newPos.getX()) * d / distance, newPos.getY() + (oldPos.getY() - mc.thePlayer.getHorizontalFacing().getFrontOffsetY() - newPos.getY()) * d / distance, newPos.getZ() + (oldPos.getZ() - mc.thePlayer.getHorizontalFacing().getFrontOffsetZ() - newPos.getZ()) * d / distance, mc.thePlayer.onGround);
-                    }
-
-                    setPosition(oldPos.getX(), oldPos.getY() + 0.5, oldPos.getZ(), mc.thePlayer.onGround);
-                    setPosition(oldPos.getX(), oldPos.getY(), oldPos.getZ(), mc.thePlayer.onGround);
-                    getGameSettings().keyBindAttack.pressed = false;
+                    //RECODEN
                 }
             }
         }

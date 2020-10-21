@@ -13,9 +13,7 @@ import koks.api.settings.SettingsManager;
 
 import java.awt.*;
 
-import koks.purves.PurvesManager;
-import koks.purves.Role;
-import koks.purves.User;
+import koks.cl.CLManager;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.opengl.Display;
 
@@ -56,11 +54,11 @@ public class Koks {
     public FileManager fileManager;
     public TabGUI tabGUI;
     public ConfigSystem configSystem;
-    public PurvesManager purvesManager;
+    public CLManager CLManager;
     public FriendManager friendManager;
 
     public void startClient() {
-        purvesManager = new PurvesManager("Kroko");
+        CLManager = new CLManager("Haze");
         settingsManager = new SettingsManager();
         moduleManager = new ModuleManager();
         eventManager = new EventManager();

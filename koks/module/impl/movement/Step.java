@@ -11,12 +11,12 @@ import net.minecraft.network.play.client.C03PacketPlayer;
 @ModuleInfo(name = "Step", description = "Goes up blocks automatically", category = Module.Category.MOVEMENT)
 public class Step extends Module {
 
-    Setting mode = new Setting("Mode", new String[]{"Vanilla", "Intave"}, "Intave", this);
+    Setting mode = new Setting("Mode", new String[]{"Vanilla", "Intave", "Mineplex"}, "Vanilla", this);
     final Setting stepHeight = new Setting("Step Height", 4, 1, 4, false, this);
 
     @Override
     public void onEvent(Event event) {
-        if(event instanceof EventUpdate) {
+        if (event instanceof EventUpdate) {
             String extra = mode.getCurrentMode().equalsIgnoreCase("Vanilla") ? " [" + stepHeight.getCurrentValue() + "]" : "";
             setInfo(mode.getCurrentMode() + extra);
         }
@@ -33,8 +33,25 @@ public class Step extends Module {
                         getPlayer().stepHeight = 1;
                     } else {
                         getPlayer().stepHeight = 0.5F;
-                        if(getPlayer().isCollidedHorizontally && !getPlayer().isOnLadder() && isMoving())
+                        if (getPlayer().isCollidedHorizontally && !getPlayer().isOnLadder() && isMoving())
                             getPlayer().onGround = true;
+                    }
+                }
+            }
+
+            case "Mineplex": {
+                if (event instanceof EventUpdate) {
+                    if (getPlayer().isCollidedHorizontally && !getPlayer().isOnLadder() && getPlayer().onGround && isMoving() && getPlayer().stepHeight != 1) {
+                        getPlayer().motionY = 0.408;
+                        getPlayer().stepHeight = 1;
+                    } else {
+                        getPlayer().stepHeight = 0.5F;
+                        if (getPlayer().isCollidedHorizontally && !getPlayer().isOnLadder() && isMoving())
+                            getPlayer().onGround = true;
+                        if (getPlayer().isCollidedHorizontally)
+                            getGameSettings().keyBindJump.pressed = true;
+
+
                     }
                 }
             }

@@ -3,6 +3,8 @@ package koks.module.impl.render;
 import koks.api.settings.Setting;
 import koks.api.util.ESPUtil;
 import koks.event.Event;
+import koks.event.impl.EventAllowOutline;
+import koks.event.impl.EventOutline;
 import koks.event.impl.EventRender3D;
 import koks.event.impl.EventUpdate;
 import koks.module.Module;
@@ -26,10 +28,19 @@ public class PlayerESP extends Module {
 
     public final ESPUtil espUtil = new ESPUtil();
 
-    public Setting espMode = new Setting("ESP Mode", new String[]{"2D Style", "Box"}, "Box", this);
+    public Setting espMode = new Setting("ESP Mode", new String[]{"Glow","2D Style", "Box"}, "Glow", this);
 
     @Override
     public void onEvent(Event event) {
+
+        if(event instanceof EventOutline) {
+            ((EventOutline) event).setOutline(espMode.getCurrentMode().equalsIgnoreCase("Glow"));
+        }
+
+        if(event instanceof EventAllowOutline) {
+            ((EventAllowOutline) event).setAllow(((EventAllowOutline) event).getEntity() instanceof EntityPlayer && espMode.getCurrentMode().equalsIgnoreCase("Glow"));
+        }
+
         if (event instanceof EventUpdate) {
             setInfo(espMode.getCurrentMode());
         }

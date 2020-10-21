@@ -25,7 +25,6 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.client.resources.IResourceManagerReloadListener;
 import net.minecraft.client.settings.GameSettings;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 import optifine.Config;
 import optifine.CustomColors;
@@ -564,18 +563,20 @@ public class FontRenderer implements IResourceManagerReloadListener {
      */
     private int renderString(String text, float x, float y, int color, boolean dropShadow) {
 
-        Friends friends = (Friends) Koks.getKoks().moduleManager.getModule(Friends.class);
+        if (Koks.getKoks().moduleManager.getModule(Friends.class) != null) {
+            Friends friends = (Friends) Koks.getKoks().moduleManager.getModule(Friends.class);
 
-        if (Minecraft.getMinecraft().thePlayer != null) {
-            if (Koks.getKoks().purvesManager.getUser() != null) {
-                if (Koks.getKoks().moduleManager.getModule(NameProtect.class).isToggled()) {
-                    if (text.contains(Minecraft.getMinecraft().thePlayer.getName())) {
-                        text = text.replace(Minecraft.getMinecraft().thePlayer.getName(), Koks.getKoks().purvesManager.getPrefix());
+            if (Minecraft.getMinecraft().thePlayer != null) {
+                if (Koks.getKoks().CLManager.getUser() != null) {
+                    if (Koks.getKoks().moduleManager.getModule(NameProtect.class).isToggled()) {
+                        if (text.contains(Minecraft.getMinecraft().thePlayer.getName())) {
+                            text = text.replace(Minecraft.getMinecraft().thePlayer.getName(), Koks.getKoks().CLManager.getPrefix());
+                        }
                     }
-                }
-                String[] args = text.split(" ");
-                for (String name : Koks.getKoks().friendManager.friends.keySet()) {
-                    text = text.replace(name, Koks.getKoks().friendManager.getName(name));
+                    String[] args = text.split(" ");
+                    for (String name : Koks.getKoks().friendManager.friends.keySet()) {
+                        text = text.replace(name, Koks.getKoks().friendManager.getName(name));
+                    }
                 }
             }
         }
@@ -616,9 +617,9 @@ public class FontRenderer implements IResourceManagerReloadListener {
         } else {
 
             try {
-                if(Koks.getKoks().moduleManager.getModule(NameProtect.class).isToggled()) {
+                if (Koks.getKoks().moduleManager.getModule(NameProtect.class).isToggled()) {
                     if (text.contains(Minecraft.getMinecraft().thePlayer.getName())) {
-                        text = text.replace(Minecraft.getMinecraft().thePlayer.getName(), Koks.getKoks().purvesManager.getPrefix());
+                        text = text.replace(Minecraft.getMinecraft().thePlayer.getName(), Koks.getKoks().CLManager.getPrefix());
                     }
                 }
                 String[] args = text.split(" ");

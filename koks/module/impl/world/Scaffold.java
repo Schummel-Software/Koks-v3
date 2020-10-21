@@ -21,6 +21,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.C09PacketHeldItemChange;
 import net.minecraft.network.play.client.C0APacketAnimation;
+import net.minecraft.network.play.client.C0BPacketEntityAction;
 import net.minecraft.util.*;
 import org.lwjgl.input.Keyboard;
 
@@ -100,6 +101,10 @@ public class Scaffold extends Module {
             }
             BlockPos pos = new BlockPos(mc.thePlayer.posX, (mc.thePlayer.getEntityBoundingBox()).minY - 1.0D - (shouldBuildDown ? 1 : 0), mc.thePlayer.posZ);
             getPlayer().setSprinting(sprint.isToggled());
+            if (sprint.isToggled()) {
+                getPlayer().sendQueue.addToSendQueue(new C0BPacketEntityAction(getPlayer(), C0BPacketEntityAction.Action.STOP_SPRINTING));
+            }
+
             getBlockPosToPlaceOn(pos);
 
             pitch = getPitch(360);
@@ -229,7 +234,12 @@ public class Scaffold extends Module {
 
                     timeUtil.reset();
                 }
+            } else if (intave.isToggled() && !rayCast.isToggled()) {
+                mc.rightClickMouse();
             } else {
+
+                if(sprint.isToggled())
+                    getPlayer().sendQueue.addToSendQueue(new C0BPacketEntityAction(getPlayer(), C0BPacketEntityAction.Action.START_SPRINTING));
 
                 timeUtil.reset();
             }
