@@ -33,6 +33,9 @@ public class CLManager {
             case Developer:
                 color = "§b§lKoks Dev §7| §b";
                 break;
+            case Friend:
+                color = "§b§lKoks Friend §7 §b";
+                break;
             default:
                 color = "";
                 break;

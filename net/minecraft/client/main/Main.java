@@ -20,6 +20,9 @@ import net.minecraft.util.Session;
 
 public class Main
 {
+
+    public static String clName;
+
     public static void main(String[] p_main_0_)
     {
         System.setProperty("java.net.preferIPv4Stack", "true");
@@ -101,6 +104,7 @@ public class Main
         String s5 = optionset.has(optionspec17) ? (String)optionspec17.value(optionset) : null;
         String s6 = (String)optionset.valueOf(optionspec);
         Integer integer = (Integer)optionset.valueOf(optionspec1);
+        clName = (String)optionspec9.value(optionset);
         Session session = new Session((String)optionspec9.value(optionset), s4, (String)optionspec11.value(optionset), (String)optionspec18.value(optionset));
         GameConfiguration gameconfiguration = new GameConfiguration(new GameConfiguration.UserInformation(session, propertymap, propertymap1, proxy), new GameConfiguration.DisplayInformation(i, j, flag, flag1), new GameConfiguration.FolderInformation(file1, file3, file2, s5), new GameConfiguration.GameInformation(flag2, s3), new GameConfiguration.ServerInformation(s6, integer.intValue()));
         Runtime.getRuntime().addShutdownHook(new Thread("Client Shutdown Thread")

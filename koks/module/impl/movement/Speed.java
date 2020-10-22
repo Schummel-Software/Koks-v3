@@ -43,12 +43,13 @@ public class Speed extends Module {
                     }
                     break;
                 case "Intave":
+                    getPlayer().setSprinting(true);
+                    getPlayer().addExhaustion(0.8F);
                     if (getPlayer().onGround) {
                         getPlayer().jump();
                     }else {
                         if(getPlayer().fallDistance >= 0.7)
                             getPlayer().motionY -= 0.01955;
-                        getPlayer().setSprinting(true);
                     }
                     break;
                 case "Tired":

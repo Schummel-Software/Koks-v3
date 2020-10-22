@@ -51,14 +51,14 @@ public class Debug extends Module {
 
         if (event instanceof EventUpdate) {
 
-            PlayerCapabilities capabilities = new PlayerCapabilities();
-            capabilities.isCreativeMode = true;
-            capabilities.allowFlying = true;
-            getPlayerController().onPlayerRightClick(getPlayer(), mc.theWorld, getPlayer().getCurrentEquippedItem(), getPosition().add(0, -1, 0), EnumFacing.DOWN, new Vec3(0, 0, 0));
-            getPlayer().sendQueue.addToSendQueue(new C13PacketPlayerAbilities(capabilities));
-            getPlayer().onGround = true;
-            getPlayer().motionY = -0.05;
-            getTimer().timerSpeed = 0.8F;
+            if(timeHelper.hasReached(25)) {
+                getPlayer().sendQueue.addToSendQueue(new C03PacketPlayer(true));
+                timeHelper.reset();
+            }
+
+            getPlayer().capabilities.isCreativeMode = true;
+
+            getPlayer().motionY = -0.0001;
             /*getPlayer().isInWeb = false;*/
 
             /* for(Entity entity : getWorld().loadedEntityList) {

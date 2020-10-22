@@ -15,6 +15,7 @@ import java.awt.*;
 
 import koks.cl.CLManager;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.main.Main;
 import org.lwjgl.opengl.Display;
 
 /**
@@ -58,7 +59,8 @@ public class Koks {
     public FriendManager friendManager;
 
     public void startClient() {
-        CLManager = new CLManager("Haze");
+        CLManager = new CLManager(Main.clName);
+        System.out.println("Client Launcher Name: " + Main.clName);
         settingsManager = new SettingsManager();
         moduleManager = new ModuleManager();
         eventManager = new EventManager();

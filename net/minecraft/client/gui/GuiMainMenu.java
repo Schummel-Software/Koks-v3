@@ -69,14 +69,15 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
             windowShowed = !windowShowed;
         }
         if (windowShowed) {
-
-            if (keyCode <= Keyboard.KEY_0 && keyCode >= Keyboard.KEY_1) {
-                int key = Integer.parseInt(Keyboard.getKeyName(keyCode));
-                if (key <= indexSize + 1 && key != 0) {
-                    currentIndex = key - 1;
-                    System.out.println(currentIndex);
-                    if (currentIndex == 5) {
-                        mc.shutdown();
+            if(!email.isFocused() && !password.isFocused()) {
+                if (keyCode <= Keyboard.KEY_0 && keyCode >= Keyboard.KEY_1) {
+                    int key = Integer.parseInt(Keyboard.getKeyName(keyCode));
+                    if (key <= indexSize + 1 && key != 0) {
+                        currentIndex = key - 1;
+                        System.out.println(currentIndex);
+                        if (currentIndex == 5) {
+                            mc.shutdown();
+                        }
                     }
                 }
             }
