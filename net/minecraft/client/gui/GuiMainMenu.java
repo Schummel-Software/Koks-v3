@@ -2,6 +2,7 @@ package net.minecraft.client.gui;
 
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -35,6 +36,10 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
 
     private RenderUtil renderUtil = new RenderUtil();
     private GLSLSandboxShader shader;
+
+    public ArrayList<File> backgrounds = new ArrayList<>();
+
+    public String curBackground = "DEFAULT";
 
     public GuiMainMenu() {
         try {
@@ -70,7 +75,7 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
             windowShowed = !windowShowed;
         }
         if (windowShowed) {
-            if(!email.isFocused() && !password.isFocused()) {
+            if (!email.isFocused() && !password.isFocused()) {
                 if (keyCode <= Keyboard.KEY_0 && keyCode >= Keyboard.KEY_1) {
                     int key = Integer.parseInt(Keyboard.getKeyName(keyCode));
                     if (key <= indexSize + 1 && key != 0) {
@@ -126,6 +131,10 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
     private static final GameSettings.Options[] field_146440_f = new GameSettings.Options[]{GameSettings.Options.FOV};
 
     public void initGui() {
+        File backgrounds = new File(mc.mcDataDir + "/Koks/Backgrounds");
+
+        if (!backgrounds.exists())
+            backgrounds.mkdirs();
 
         ScaledResolution sr = new ScaledResolution(mc);
 
@@ -342,13 +351,13 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
     public HashMap<Integer, Double> saveX = new HashMap<>();
     public HashMap<Integer, Double> saveY = new HashMap<>();
 
-    public boolean drag = false, dragOptions = false, dragColor = false;
-    public double x, y,dragX,dragY, dragOptionsX, dragOptionsY, optionsX, optionsY, colorX, colorY = 20, dragColorX, dragColorY;
+    public boolean drag = false, dragOptions = false, dragColor = false, dragBackground = false;
+    public double x, y, dragX, dragY, dragOptionsX, dragOptionsY, optionsX, optionsY, colorX, colorY, dragColorX, dragColorY, backgroundX, backgroundY, dragBackgroundX, dragBackgroundY;
     public int scaleX;
     public int scaleY;
 
 
-    public boolean showOptions, showColorPicker;
+    public boolean showOptions, showColorPicker, showBackgrounds;
 
     public int rightX, rightY;
     public int rightWidth = 20, rightHeight = 30;
@@ -361,6 +370,18 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
     public float hue = 1;
     int colorSize = 150;
     int pixel = 60;
+
+    int backgroundWidth = 70;
+    int backgroundHeight = 23;
+
+    public void listFilesFromFolder(File folder, ArrayList<File> list) {
+        for (File file : folder.listFiles()) {
+            if (file.isDirectory())
+                listFilesFromFolder(file, list);
+            else if (!list.contains(file))
+                list.add(file);
+        }
+    }
 
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         ScaledResolution sr = new ScaledResolution(mc);
@@ -397,11 +418,19 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
             colorY = dragColorY + mouseY;
         }
 
+        if (dragBackground) {
+            backgroundX = dragBackgroundX + mouseX;
+            backgroundY = dragBackgroundY + mouseY;
+        }
+
         int x = (int) this.x;
         int y = (int) this.y;
 
         int optionsX = (int) this.optionsX;
         int optionsY = (int) this.optionsY;
+
+        int backgroundX = (int) this.backgroundX;
+        int backgroundY = (int) this.backgroundY;
 
 
         GlStateManager.enableAlpha();
@@ -436,7 +465,7 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
 
         if (showColorPicker) {
             int xC = (int) (sr.getScaledWidth() / 2 + colorX);
-            int yC = (int) (sr.getScaledHeight() / 2+  colorY);
+            int yC = (int) (sr.getScaledHeight() / 2 + colorY);
 
             drawRect(xC - 7, yC + colorSize / 360 - 10 - 15, xC + colorSize + 17, yC + (360 * colorSize) / 360 + 1 + 6, wColor.getRGB());
             fontRendererObj.drawString("§lx", xC + colorSize + 17 - fontRendererObj.getStringWidth("§lx") - 2, yC + colorSize / 360 - 10 - 15 + fontRendererObj.FONT_HEIGHT / 2 - 2, Color.red.getRGB(), false);
@@ -531,7 +560,10 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
 
             for (int index = 0; index <= drawIndexSize; index++) {
                 drawRect(sr.getScaledWidth() / 2 + x - wwidth + size * index, sr.getScaledHeight() / 2 + y - wheight - size, sr.getScaledWidth() / 2 + x - wwidth + size * index + size, sr.getScaledHeight() / 2 + y - wheight, currentIndex == index ? outlineColor.getRGB() : wColor.getRGB());
-                renderUtil.drawPicture(sr.getScaledWidth() / 2 + x - wwidth + size * index, sr.getScaledHeight() / 2 + y - wheight - size, picWidth, picHeight, new ResourceLocation("client/icons/MainMenu/" + getIndexName(index) + ".png"));
+                int move = 0;
+                if (index == 0)
+                    move = 2;
+                renderUtil.drawPicture(sr.getScaledWidth() / 2 + x - wwidth + size * index + move, sr.getScaledHeight() / 2 + y - wheight - size, picWidth, picHeight, new ResourceLocation("client/icons/MainMenu/" + getIndexName(index) + ".png"));
             }
             drawRect(sr.getScaledWidth() / 2 + x - wwidth, sr.getScaledHeight() / 2 + y - wheight - size - dicke, sr.getScaledWidth() / 2 + x - wwidth + size * drawIndexSize + size, sr.getScaledHeight() / 2 + y - wheight - size, outlineColor.getRGB());
             drawRect(sr.getScaledWidth() / 2 + x - wwidth - dicke, sr.getScaledHeight() / 2 + y - wheight - size - dicke, sr.getScaledWidth() / 2 + x - wwidth, sr.getScaledHeight() / 2 + y - wheight, outlineColor.getRGB());
@@ -658,6 +690,30 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
             }
         }
 
+        if (showBackgrounds) {
+
+            drawRect(sr.getScaledWidth() / 2 + backgroundX - backgroundWidth, sr.getScaledHeight() / 2 + backgroundY - backgroundHeight, sr.getScaledWidth() / 2 + backgroundX + backgroundWidth, sr.getScaledHeight() / 2 + backgroundY, outlineColor.getRGB());
+            drawCenteredString(fontRendererObj, "§l§nBackgrounds", sr.getScaledWidth() / 2 + backgroundX, sr.getScaledHeight() / 2 + backgroundY - backgroundHeight / 2 - fontRendererObj.FONT_HEIGHT / 2, -1);
+
+            File backgroundDir = new File(mc.mcDataDir + "/Koks/Backgrounds");
+
+            listFilesFromFolder(backgroundDir, backgrounds);
+
+            backgrounds.removeIf(file -> !file.exists());
+            backgrounds.sort(Comparator.comparing(File::getName));
+            for (int i = 0; i < backgrounds.size(); i++) {
+                File file = backgrounds.get(i);
+                drawRect(sr.getScaledWidth() / 2 + backgroundX - backgroundWidth, sr.getScaledHeight() / 2 + backgroundY + backgroundHeight * i, sr.getScaledWidth() / 2 + backgroundX + backgroundWidth, sr.getScaledHeight() / 2 + backgroundY + backgroundHeight * (i + 1), curBackground.equalsIgnoreCase(file.getName().replace(".fsh", "")) ? wColor.darker().getRGB() : wColor.getRGB());
+                drawCenteredString(fontRendererObj, file.getName().replace(".fsh", ""), sr.getScaledWidth() / 2 + backgroundX, sr.getScaledHeight() / 2 + backgroundY + backgroundHeight * i + fontRendererObj.FONT_HEIGHT, -1);
+                if (mouseX >= sr.getScaledWidth() / 2 + backgroundX - backgroundWidth && mouseX <= sr.getScaledWidth() / 2 + backgroundX + backgroundWidth && mouseY >= sr.getScaledHeight() / 2 + backgroundY + backgroundHeight * i && mouseY <= sr.getScaledHeight() / 2 + backgroundY + backgroundHeight * (i + 1)) {
+                    if (Mouse.isButtonDown(0)) {
+                        curBackground = file.getName().replace(".fsh", "");
+
+                    }
+                }
+            }
+        }
+
         if (showOptions) {
 
             drawRect(sr.getScaledWidth() / 2 + optionsX - optionWidth, sr.getScaledHeight() / 2 + optionsY - optionHeight, sr.getScaledWidth() / 2 + optionsX + optionWidth, sr.getScaledHeight() / 2 + optionsY, outlineColor.getRGB());
@@ -685,6 +741,17 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
     /**
      * Called when the mouse is clicked. Args : mouseX, mouseY, clickedButton
      */
+
+
+    public boolean isHoverBackgroundChose(int mouseX, int mouseY) {
+        ScaledResolution sr = new ScaledResolution(mc);
+        for (int i = 0; i < backgrounds.size(); i++) {
+            if (mouseX >= sr.getScaledWidth() / 2 + backgroundX - backgroundWidth && mouseX <= sr.getScaledWidth() / 2 + backgroundX + backgroundWidth && mouseY >= sr.getScaledHeight() / 2 + backgroundY + backgroundHeight * i && mouseY <= sr.getScaledHeight() / 2 + backgroundY + backgroundHeight * (i + 1)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     public boolean isHoverColorClose(int mouseX, int mouseY) {
         ScaledResolution sr = new ScaledResolution(mc);
@@ -752,7 +819,7 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
 
                 if (hoverDrag) {
                     dragOptions = true;
-                    dragOptionsX = optionsX -mouseX;
+                    dragOptionsX = optionsX - mouseX;
                     dragOptionsY = optionsY - mouseY;
                 }
 
@@ -806,13 +873,13 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
 
             if (showColorPicker) {
                 int xC = (int) (sr.getScaledWidth() / 2 + colorX);
-                int yC = (int) (sr.getScaledHeight() / 2+  colorY);
+                int yC = (int) (sr.getScaledHeight() / 2 + colorY);
 
                 if (!isHoverColorClose(mouseX, mouseY) && mouseX >= xC - 7 && mouseX <= xC + colorSize + 17 && mouseY >= yC + colorSize / 360 - 25 && mouseY <= yC + colorSize / 360) {
                     dragColor = true;
-                    dragColorX = colorX -mouseX;
+                    dragColorX = colorX - mouseX;
                     dragColorY = colorY - mouseY;
-                }else if(isHoverColorClose(mouseX,mouseY)) {
+                } else if (isHoverColorClose(mouseX, mouseY)) {
                     showColorPicker = false;
                 }
             }
@@ -829,8 +896,13 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
                     }
                 }
             }
-            
+
             showRight = false;
+
+            if (showBackgrounds) {
+
+            }
+
             if (windowShowed) {
                 if (isHover(mouseX, mouseY)) {
                     if (!(showColorPicker && isHoverColor(mouseX, mouseY)))
@@ -839,7 +911,7 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
                                 if (!(currentIndex == 3 && isHoverPassword(mouseX, mouseY))) {
                                     if (!(currentIndex == 0 && mouseX >= sr.getScaledWidth() / 2 + x - wwidth / 2 + size * (1 - 1) && mouseX <= sr.getScaledWidth() / 2 + x - wwidth / 2 + size * (indexSize - 1) + size && mouseY >= sr.getScaledHeight() / 2 + y + wheight - size && mouseY <= sr.getScaledHeight() / 2 + y + wheight)) {
                                         drag = true;
-                                        dragX = x -mouseX;
+                                        dragX = x - mouseX;
                                         dragY = y - mouseY;
                                     }
                                 }
