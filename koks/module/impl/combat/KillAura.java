@@ -169,8 +169,6 @@ public class KillAura extends Module {
         if (!failing && rayCastEntity != null) {
 
 
-
-
             for (int i = 0; i < crackSize.getCurrentValue(); i++)
                 mc.effectRenderer.emitParticleAtEntity(finalEntity, EnumParticleTypes.CRIT);
 
@@ -206,8 +204,6 @@ public class KillAura extends Module {
                 switchCounter++;
             else
                 switchCounter = 0;
-
-
         }
     }
 
@@ -321,9 +317,9 @@ public class KillAura extends Module {
             return false;
         if (((EntityLivingBase) entity).deathTime != 0 && ignoreDeath.isToggled())
             return false;
-        if(((EntityLivingBase) entity).isOnSameTeam(getPlayer()) && Koks.getKoks().moduleManager.getModule(Teams.class).isToggled())
+        if (((EntityLivingBase) entity).isOnSameTeam(getPlayer()) && Koks.getKoks().moduleManager.getModule(Teams.class).isToggled())
             return false;
-        if(Koks.getKoks().friendManager.isFriend(entity.getName()) && Koks.getKoks().moduleManager.getModule(Friends.class).isToggled())
+        if (Koks.getKoks().friendManager.isFriend(entity.getName()) && Koks.getKoks().moduleManager.getModule(Friends.class).isToggled())
             return false;
         return true;
     }

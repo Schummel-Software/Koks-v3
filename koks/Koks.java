@@ -12,6 +12,7 @@ import koks.module.ModuleManager;
 import koks.api.settings.SettingsManager;
 
 import java.awt.*;
+import java.io.File;
 
 import koks.cl.CLManager;
 import net.minecraft.client.Minecraft;
@@ -40,7 +41,7 @@ public class Koks {
 
     public Color clientColor = Color.ORANGE;
 
-    public boolean isNew = true;
+    public boolean isNew = false;
 
     public static Koks getKoks() {
         return KOKS;

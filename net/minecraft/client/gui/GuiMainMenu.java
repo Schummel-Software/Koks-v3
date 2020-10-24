@@ -33,6 +33,7 @@ import org.lwjgl.opengl.GL20;
 
 public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
 
+    private RenderUtil renderUtil = new RenderUtil();
     private GLSLSandboxShader shader;
 
     public GuiMainMenu() {
@@ -525,9 +526,12 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
                 drawIndexSize = 0;
             }
 
+            int picWidth = size - 3;
+            int picHeight = size - 3;
+
             for (int index = 0; index <= drawIndexSize; index++) {
                 drawRect(sr.getScaledWidth() / 2 + x - wwidth + size * index, sr.getScaledHeight() / 2 + y - wheight - size, sr.getScaledWidth() / 2 + x - wwidth + size * index + size, sr.getScaledHeight() / 2 + y - wheight, currentIndex == index ? outlineColor.getRGB() : wColor.getRGB());
-                drawCenteredString(fontRendererObj, getIndexName(index), sr.getScaledWidth() / 2 + x - wwidth + size * index + fontRendererObj.getStringWidth(getIndexName(index)) / 2 + 20 / 2, sr.getScaledHeight() / 2 + y - wheight - size, Color.white.getRGB());
+                renderUtil.drawPicture(sr.getScaledWidth() / 2 + x - wwidth + size * index, sr.getScaledHeight() / 2 + y - wheight - size, picWidth, picHeight, new ResourceLocation("client/icons/MainMenu/" + getIndexName(index) + ".png"));
             }
             drawRect(sr.getScaledWidth() / 2 + x - wwidth, sr.getScaledHeight() / 2 + y - wheight - size - dicke, sr.getScaledWidth() / 2 + x - wwidth + size * drawIndexSize + size, sr.getScaledHeight() / 2 + y - wheight - size, outlineColor.getRGB());
             drawRect(sr.getScaledWidth() / 2 + x - wwidth - dicke, sr.getScaledHeight() / 2 + y - wheight - size - dicke, sr.getScaledWidth() / 2 + x - wwidth, sr.getScaledHeight() / 2 + y - wheight, outlineColor.getRGB());
@@ -536,7 +540,7 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
             if (currentIndex == 0) {
                 for (int index = 1; index <= indexSize; index++) {
                     drawRect(sr.getScaledWidth() / 2 + x - wwidth / 2 + size * (index - 1), sr.getScaledHeight() / 2 + y + wheight - size, sr.getScaledWidth() / 2 + x - wwidth / 2 + size * (index - 1) + size, sr.getScaledHeight() / 2 + y + wheight, wColor.getRGB());
-                    drawCenteredString(fontRendererObj, getIndexName(index), sr.getScaledWidth() / 2 + x - wwidth / 2 + size * (index - 1) + fontRendererObj.getStringWidth(getIndexName(index)) / 2 + 20 / 2, sr.getScaledHeight() / 2 + y + wheight - size, Color.white.getRGB());
+                    renderUtil.drawPicture(sr.getScaledWidth() / 2 + x - wwidth / 2 + size * (index - 1), sr.getScaledHeight() / 2 + y + wheight - size, picWidth, picHeight, new ResourceLocation("client/icons/MainMenu/" + getIndexName(index) + ".png"));
                 }
             }
 
