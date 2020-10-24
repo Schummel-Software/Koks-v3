@@ -88,7 +88,7 @@ public class Speed extends Module {
                                 mineplexMotion += 0.15F;
                                 getPlayer().jump();
                             } else {
-                                mineplexMotion -= mineplexMotion / 64;
+                                mineplexMotion -= mineplexMotion / 67;
                                 movementUtil.setSpeed(mineplexMotion, false);
                             }
                         }else{
