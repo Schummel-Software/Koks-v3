@@ -1,7 +1,11 @@
 package net.minecraft.client.renderer.tileentity;
 
 import com.google.common.collect.Maps;
+
+import java.awt.*;
 import java.util.Map;
+
+import koks.Koks;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -109,7 +113,12 @@ public class TileEntityRendererDispatcher
             int j = i % 65536;
             int k = i / 65536;
             OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)j / 1.0F, (float)k / 1.0F);
-            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+            if (tileentityIn instanceof TileEntityChest) {
+                final Color color = Koks.getKoks().clientColor;
+                GlStateManager.color(color.getRed(), color.getGreen(), color.getBlue(), 1);
+            }else {
+                GlStateManager.color(1, 1, 1, 1);
+            }
             BlockPos blockpos = tileentityIn.getPos();
             this.renderTileEntityAt(tileentityIn, (double)blockpos.getX() - staticPlayerX, (double)blockpos.getY() - staticPlayerY, (double)blockpos.getZ() - staticPlayerZ, partialTicks, destroyStage);
         }

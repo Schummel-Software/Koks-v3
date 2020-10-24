@@ -21,12 +21,12 @@ import net.minecraft.util.AxisAlignedBB;
  * @created on 07.10.2020 : 15:46
  */
 
-@ModuleInfo(name = "ChestESP", description = "Its show all chest in the world", category = Module.Category.RENDER)
+@ModuleInfo(name = "ChestESP", description = "Marks all chests in the world.", category = Module.Category.RENDER)
 public class ChestESP extends Module {
 
     public final ESPUtil espUtil = new ESPUtil();
 
-    public Setting espMode = new Setting("ESP Mode", new String[]{"2D Style", "Box"}, "Box", this);
+    public Setting espMode = new Setting("ESP Mode", new String[]{"2D Style", "Box", "Shader"}, "Box", this);
 
     @Override
     public void onEvent(Event event) {
@@ -44,7 +44,6 @@ public class ChestESP extends Module {
                     if (espMode.getCurrentMode().equals("2D Style")) {
                         espUtil.drawCorners(x + 0.5, y + 0.5, z + 0.5, 16, 16, 8, 3);
                     }
-
                     if (espMode.getCurrentMode().equals("Box")) {
                         AxisAlignedBB axisAlignedBB = e.getBlockType().getSelectedBoundingBox(mc.theWorld, e.getPos()).offset(-mc.getRenderManager().renderPosX, -mc.getRenderManager().renderPosY, -mc.getRenderManager().renderPosZ);
                         espUtil.renderBox(axisAlignedBB);
