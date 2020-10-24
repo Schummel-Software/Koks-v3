@@ -61,6 +61,7 @@ import net.minecraft.world.World;
 
 import java.util.Arrays;
 
+@SuppressWarnings("EntityConstructor")
 public class EntityPlayerSP extends AbstractClientPlayer
 {
     public final NetHandlerPlayClient sendQueue;
@@ -178,6 +179,7 @@ public class EntityPlayerSP extends AbstractClientPlayer
      */
     public void onUpdate() {
         if (this.worldObj.isBlockLoaded(new BlockPos(this.posX, 0.0D, this.posZ))) {
+
             EventUpdate eventUpdate = new EventUpdate();
             Koks.getKoks().eventManager.onEvent(eventUpdate);
 

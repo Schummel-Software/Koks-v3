@@ -27,8 +27,10 @@ import java.util.concurrent.ThreadLocalRandom;
 @ModuleInfo(name = "Speed", description = "In germany we call it rasant", category = Module.Category.MOVEMENT)
 public class Speed extends Module {
 
-    public Setting mode = new Setting("Mode", new String[]{"Intave", "MCCentral", "Mineplex", "AAC3.3.12", "Tired", "Legit"}, "Intave", this);
+    public Setting mode = new Setting("Mode", new String[]{"Intave", "MCCentral", "Mineplex", "Mineplex FAST", "AAC3.3.12", "Tired", "Legit"}, "Intave", this);
     private final MovementUtil EmovementUtil = new MovementUtil();
+
+    public float mineplexMotion;
 
     @Override
     public void onEvent(Event event) {
@@ -78,12 +80,30 @@ public class Speed extends Module {
                         }
                     }
                     break;
+                case "Mineplex FAST":
+                    if (!mc.thePlayer.isInWeb) {
+                        if(isMoving()) {
+                            if (getPlayer().onGround) {
+                                getPlayer().motionX = getPlayer().motionZ = 0;
+                                mineplexMotion += 0.15F;
+                                getPlayer().jump();
+                            } else {
+                                mineplexMotion -= mineplexMotion / 64;
+                                movementUtil.setSpeed(mineplexMotion, false);
+                            }
+                        }else{
+                            mineplexMotion = 0.02F;
+                        }
+                    }
+                    break;
                 case "Mineplex":
                     if (!mc.thePlayer.isInWeb) {
                         if (getPlayer().onGround && isMoving())
                             getPlayer().jump();
 
                         if (isMoving()) {
+                            getPlayer().setSprinting(false);
+                            getGameSettings().keyBindSprint.pressed = false;
                             movementUtil.setSpeed(0.35D, true);
                             getPlayer().speedInAir = 0.044F;
                         }
@@ -104,7 +124,7 @@ public class Speed extends Module {
 
     @Override
     public void onEnable() {
-
+        mineplexMotion = 0.2F;
     }
 
     @Override

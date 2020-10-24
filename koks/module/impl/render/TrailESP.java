@@ -10,7 +10,9 @@ import koks.api.settings.Setting;
 import koks.module.ModuleInfo;
 import org.lwjgl.opengl.GL11;
 
+import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * @author deleteboys | lmao | kroko
@@ -27,6 +29,7 @@ public class TrailESP extends Module {
 
     @Override
     public void onEvent(Event event) {
+
         if(event instanceof EventRender3D) {
             if (mc.gameSettings.thirdPersonView != 0 || inFirstPerson.isToggled()) {
                 GL11.glPushMatrix();
@@ -61,7 +64,6 @@ public class TrailESP extends Module {
 
         if(event instanceof EventMotion) {
             positions.add(new double[] {mc.thePlayer.posX,mc.thePlayer.posY + 0.01,mc.thePlayer.posZ});
-
         }
     }
 

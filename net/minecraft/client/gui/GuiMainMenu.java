@@ -747,7 +747,7 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
 
             if (showOptions) {
 
-                boolean hoverDrag = mouseX > sr.getScaledWidth() / 2 + optionsX - optionWidth && mouseX < sr.getScaledWidth() / 2 + optionsX + optionWidth && mouseY > sr.getScaledHeight() / 2 + optionsY - height && mouseY < sr.getScaledHeight() / 2 + optionsY;
+                boolean hoverDrag = mouseX > sr.getScaledWidth() / 2 + optionsX - optionWidth && mouseX < sr.getScaledWidth() / 2 + optionsX + optionWidth && mouseY > sr.getScaledHeight() / 2 + optionsY - optionHeight && mouseY < sr.getScaledHeight() / 2 + optionsY;
 
                 if (hoverDrag) {
                     dragOptions = true;

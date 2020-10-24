@@ -65,7 +65,10 @@ public class FileManager {
     }
 
     public void readAllFiles() {
-        if (!DIR.exists()) DIR.mkdirs();
+        if (!DIR.exists()){
+            Koks.getKoks().isNew = true;
+            DIR.mkdirs();
+        }
 
         if (DIR.exists()) {
             for (Files file : files) {

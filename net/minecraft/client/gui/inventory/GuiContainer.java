@@ -241,6 +241,7 @@ public abstract class GuiContainer extends GuiScreen {
 
     @Override
     protected void actionPerformed(GuiButton button) throws IOException {
+        System.out.println(button.id);
         switch(button.id) {
             case 187:
                 KillAura killAura = (KillAura) Koks.getKoks().moduleManager.getModule(KillAura.class);

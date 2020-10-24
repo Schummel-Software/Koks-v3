@@ -3,7 +3,6 @@ package koks.module.impl.render;
 import koks.api.settings.Setting;
 import koks.api.util.ESPUtil;
 import koks.event.Event;
-import koks.event.impl.EventAllowOutline;
 import koks.event.impl.EventOutline;
 import koks.event.impl.EventRender3D;
 import koks.event.impl.EventUpdate;
@@ -11,11 +10,7 @@ import koks.module.Module;
 import koks.module.ModuleInfo;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityChest;
-import net.minecraft.tileentity.TileEntityEnderChest;
 import net.minecraft.util.AxisAlignedBB;
 
 /**
@@ -35,10 +30,6 @@ public class PlayerESP extends Module {
 
         if(event instanceof EventOutline) {
             ((EventOutline) event).setOutline(espMode.getCurrentMode().equalsIgnoreCase("Glow"));
-        }
-
-        if(event instanceof EventAllowOutline) {
-            ((EventAllowOutline) event).setAllow(((EventAllowOutline) event).getEntity() instanceof EntityPlayer && espMode.getCurrentMode().equalsIgnoreCase("Glow"));
         }
 
         if (event instanceof EventUpdate) {

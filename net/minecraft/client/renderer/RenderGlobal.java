@@ -24,10 +24,9 @@ import java.util.concurrent.Callable;
 
 import koks.Koks;
 import koks.api.util.ESPUtil;
-import koks.event.EventManager;
-import koks.event.impl.EventAllowOutline;
 import koks.event.impl.EventOutline;
 import koks.module.impl.render.BlockOverlay;
+import koks.module.impl.render.DormantESP;
 import koks.module.impl.render.ItemESP;
 import koks.module.impl.render.PlayerESP;
 import net.minecraft.block.Block;
@@ -40,7 +39,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.PositionedSoundRecord;
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.particle.EntityFX;
@@ -661,7 +659,18 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
                 this.entityOutlineFramebuffer.bindFramebuffer(false);
                 this.theWorld.theProfiler.endStartSection("entityOutlines");
                 RenderHelper.disableStandardItemLighting();
+                //TRUE = nur Entity FALSE = Armor
                 this.renderManager.setRenderOutlines(true);
+
+                if (Koks.getKoks().moduleManager.getModule(DormantESP.class).isToggled()) {
+                    DormantESP dormantESP = (DormantESP) Koks.getKoks().moduleManager.getModule(DormantESP.class);
+                    for (int k = 0; k < dormantESP.dormant.size(); ++k) {
+                        Entity entity3 = (Entity) dormantESP.dormant.keySet().toArray()[k];
+                        if (!flag || Reflector.callBoolean(entity3, Reflector.ForgeEntity_shouldRenderInPass, new Object[]{Integer.valueOf(i)})) {
+                            this.renderManager.renderEntitySimple(entity3, partialTicks);
+                        }
+                    }
+                }
 
                 for (int k = 0; k < list.size(); ++k) {
                     Entity entity3 = (Entity) list.get(k);

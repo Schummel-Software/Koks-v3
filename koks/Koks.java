@@ -28,7 +28,7 @@ public class Koks {
 
     public final String NAME = "Koks";
     public final String PREFIX = "§c" + NAME + " §7>> ";
-    public final String VERSION = "2.1.3";
+    public final String VERSION = "3.0.0";
     public final String[] AUTHORS = new String[]{"DasDirt", "Deleteboys","Kroko", "Phantom"};
     public long initTime = System.currentTimeMillis();
 
@@ -39,6 +39,8 @@ public class Koks {
     }
 
     public Color clientColor = Color.ORANGE;
+
+    public boolean isNew = true;
 
     public static Koks getKoks() {
         return KOKS;

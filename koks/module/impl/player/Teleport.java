@@ -7,6 +7,7 @@ import koks.event.impl.EventMouseOver;
 import koks.event.impl.EventUpdate;
 import koks.module.Module;
 import koks.module.ModuleInfo;
+import net.minecraft.network.play.client.C03PacketPlayer;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 
@@ -29,7 +30,11 @@ public class Teleport extends Module {
             if(getGameSettings().keyBindAttack.pressed) {
                 MovingObjectPosition position = mc.objectMouseOver;
                 if(position.typeOfHit.equals(MovingObjectPosition.MovingObjectType.BLOCK)) {
+
+                    getPlayer().sendQueue.addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(position.getBlockPos().getX(), position.getBlockPos().getY() + 1, position.getBlockPos().getZ(), true));
                     getPlayer().setPosition(position.getBlockPos().getX(), position.getBlockPos().getY() + 1, position.getBlockPos().getZ());
+
+                    getPlayer().motionY = 2;
 
                     getGameSettings().keyBindAttack.pressed = false;
                 }
