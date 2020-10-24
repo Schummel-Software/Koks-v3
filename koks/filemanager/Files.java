@@ -23,6 +23,6 @@ public abstract class Files {
         this.file = new File(DIR, name + "." + Koks.getKoks().NAME.toLowerCase());
     }
 
-    public abstract void readFile(BufferedReader bufferedWriter) throws IOException;
+    public abstract void readFile(BufferedReader bufferedReader) throws IOException;
     public abstract void writeFile(FileWriter fileWriter) throws IOException;
 }

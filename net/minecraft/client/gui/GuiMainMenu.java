@@ -1,42 +1,17 @@
 package net.minecraft.client.gui;
 
-import com.google.common.collect.Lists;
-
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.Proxy;
-import java.net.URI;
-import java.nio.file.Files;
 import java.util.*;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
-import com.mojang.authlib.Agent;
-import com.mojang.authlib.exceptions.AuthenticationException;
-import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
-import com.mojang.authlib.yggdrasil.YggdrasilUserAuthentication;
-import com.sun.webkit.dom.KeyboardEventImpl;
-import com.thealtening.api.response.Account;
-import com.thealtening.api.retriever.AsynchronousDataRetriever;
-import com.thealtening.api.retriever.BasicDataRetriever;
-import com.thealtening.auth.TheAlteningAuthentication;
-import com.thealtening.auth.service.AlteningServiceType;
-import javafx.scene.transform.Scale;
 import koks.Koks;
 import koks.api.util.GLSLSandboxShader;
 import koks.api.util.LoginUtil;
 import koks.api.util.RenderUtil;
 import koks.api.util.fonts.GlyphPageFontRenderer;
 import koks.filemanager.impl.AlteningToken;
-import koks.gui.GuiAltLogin;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.audio.SoundCategory;
 import net.minecraft.client.audio.SoundEventAccessorComposite;
@@ -44,34 +19,17 @@ import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.gui.stream.GuiStreamOptions;
 import net.minecraft.client.gui.stream.GuiStreamUnavailable;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
-import net.minecraft.client.renderer.texture.DynamicTexture;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.stream.IStream;
-import net.minecraft.realms.RealmsBridge;
 import net.minecraft.util.*;
-import net.minecraft.world.EnumDifficulty;
-import net.minecraft.world.demo.DemoWorldServer;
-import net.minecraft.world.storage.ISaveFormat;
-import net.minecraft.world.storage.WorldInfo;
-import org.apache.commons.io.Charsets;
 import org.apache.commons.io.FileUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.lwjgl.Sys;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
-import org.lwjgl.opengl.GLContext;
-import org.lwjgl.util.glu.Project;
-
-import javax.tools.Tool;
 
 public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
 
@@ -111,14 +69,15 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
             windowShowed = !windowShowed;
         }
         if (windowShowed) {
-
-            if (keyCode <= Keyboard.KEY_0 && keyCode >= Keyboard.KEY_1) {
-                int key = Integer.parseInt(Keyboard.getKeyName(keyCode));
-                if (key <= indexSize + 1 && key != 0) {
-                    currentIndex = key - 1;
-                    System.out.println(currentIndex);
-                    if (currentIndex == 5) {
-                        mc.shutdown();
+            if(!email.isFocused() && !password.isFocused()) {
+                if (keyCode <= Keyboard.KEY_0 && keyCode >= Keyboard.KEY_1) {
+                    int key = Integer.parseInt(Keyboard.getKeyName(keyCode));
+                    if (key <= indexSize + 1 && key != 0) {
+                        currentIndex = key - 1;
+                        System.out.println(currentIndex);
+                        if (currentIndex == 5) {
+                            mc.shutdown();
+                        }
                     }
                 }
             }
@@ -651,7 +610,7 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
                 float yPos = sr.getScaledHeight() / 2 + y - fontRenderer.getFontHeight() - 10;
 
                 fontRenderer.drawString(Koks.getKoks().NAME, xPos, yPos, Color.white.getRGB(), true);
-                fontRendererObj.drawString("Welcome " + Koks.getKoks().purvesManager.getPrefix(), xPos + 2, sr.getScaledHeight() / 2 + y - 14, Color.gray.getRGB(), true);
+                fontRendererObj.drawString("Welcome " + Koks.getKoks().CLManager.getPrefix(), xPos + 2, sr.getScaledHeight() / 2 + y - 14, Color.gray.getRGB(), true);
             } else {
                 wheight = 120;
                 switch (currentIndex) {
@@ -788,7 +747,7 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
 
             if (showOptions) {
 
-                boolean hoverDrag = mouseX > sr.getScaledWidth() / 2 + optionsX - optionWidth && mouseX < sr.getScaledWidth() / 2 + optionsX + optionWidth && mouseY > sr.getScaledHeight() / 2 + optionsY - height && mouseY < sr.getScaledHeight() / 2 + optionsY;
+                boolean hoverDrag = mouseX > sr.getScaledWidth() / 2 + optionsX - optionWidth && mouseX < sr.getScaledWidth() / 2 + optionsX + optionWidth && mouseY > sr.getScaledHeight() / 2 + optionsY - optionHeight && mouseY < sr.getScaledHeight() / 2 + optionsY;
 
                 if (hoverDrag) {
                     dragOptions = true;

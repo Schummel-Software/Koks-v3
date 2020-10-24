@@ -13,10 +13,9 @@ import koks.api.settings.SettingsManager;
 
 import java.awt.*;
 
-import koks.purves.PurvesManager;
-import koks.purves.Role;
-import koks.purves.User;
+import koks.cl.CLManager;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.main.Main;
 import org.lwjgl.opengl.Display;
 
 /**
@@ -29,7 +28,7 @@ public class Koks {
 
     public final String NAME = "Koks";
     public final String PREFIX = "§c" + NAME + " §7>> ";
-    public final String VERSION = "2.1.3";
+    public final String VERSION = "3.0.0";
     public final String[] AUTHORS = new String[]{"DasDirt", "Deleteboys","Kroko", "Phantom"};
     public long initTime = System.currentTimeMillis();
 
@@ -40,6 +39,8 @@ public class Koks {
     }
 
     public Color clientColor = Color.ORANGE;
+
+    public boolean isNew = true;
 
     public static Koks getKoks() {
         return KOKS;
@@ -56,11 +57,12 @@ public class Koks {
     public FileManager fileManager;
     public TabGUI tabGUI;
     public ConfigSystem configSystem;
-    public PurvesManager purvesManager;
+    public CLManager CLManager;
     public FriendManager friendManager;
 
     public void startClient() {
-        purvesManager = new PurvesManager("Kroko");
+        CLManager = new CLManager(Main.clName);
+        System.out.println("Client Launcher Name: " + Main.clName);
         settingsManager = new SettingsManager();
         moduleManager = new ModuleManager();
         eventManager = new EventManager();

@@ -107,7 +107,7 @@ public class KillAura extends Module {
             if (((EventMotion) event).getType() == EventMotion.Type.PRE) {
                 if (finalEntity != null) {
                     float[] rotations = rotationUtil.faceEntity(finalEntity, curYaw, curPitch, this.rotations.smooth.isToggled(), this.rotations.accuracy.getCurrentValue(), this.rotations.precision.getCurrentValue(), this.rotations.predictionMultiplier.getCurrentValue());
-                    yaw = rotationUtil.updateRotation(mc.thePlayer.rotationYaw, rotations[0], fov.getCurrentValue());
+                    yaw = rotations[0];
                     pitch = rotations[1];
 
                     if (this.rotations.lockView.isToggled()) {
@@ -212,7 +212,7 @@ public class KillAura extends Module {
     }
 
     boolean canBlock() {
-        return mc.thePlayer.getCurrentEquippedItem() != null && mc.thePlayer.getCurrentEquippedItem().getItem() != null && mc.thePlayer.getCurrentEquippedItem().getItem() instanceof ItemSword;
+        return mc.thePlayer.getHeldItem() != null && mc.thePlayer.getHeldItem().getItem() != null && mc.thePlayer.getHeldItem().getItem() instanceof ItemSword;
     }
 
     public void manageEntities() {

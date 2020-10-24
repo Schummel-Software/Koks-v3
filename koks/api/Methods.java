@@ -8,11 +8,9 @@ import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.event.ClickEvent;
 import net.minecraft.network.play.client.C03PacketPlayer;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Timer;
+import net.minecraft.util.*;
 import net.minecraft.world.World;
 
 /**
@@ -63,6 +61,13 @@ public class Methods {
 
     public void sendmsg(String msg, boolean prefix) {
         mc.thePlayer.addChatMessage(new ChatComponentText((prefix ? Koks.getKoks().PREFIX : "") + msg));
+    }
+
+    public void sendURL(String msg, String url, boolean underline, boolean prefix) {
+        IChatComponent chatComponent = new ChatComponentText((prefix ? Koks.getKoks().PREFIX : "") + msg);
+        chatComponent.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, url));
+        chatComponent.getChatStyle().setUnderlined(underline);
+        mc.thePlayer.addChatMessage(chatComponent);
     }
 
     public void sendError(String type, String solution) {

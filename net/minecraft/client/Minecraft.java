@@ -38,10 +38,12 @@ import java.util.concurrent.FutureTask;
 import javax.imageio.ImageIO;
 
 import koks.Koks;
+import koks.api.Methods;
 import koks.event.impl.EventKeyPress;
 import koks.event.impl.EventTick;
 import koks.module.Module;
 
+import koks.module.impl.gui.ClickGui;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.audio.MusicTicker;
@@ -712,7 +714,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
 
                 if (inputstream != null && inputstream1 != null) {
                     Display.setIcon(new ByteBuffer[]{this.readImageToBuffer(inputstream), this.readImageToBuffer(inputstream1)});
-                }else{
+                } else {
 
                 }
             } catch (IOException ioexception) {
@@ -1435,8 +1437,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
 
     /**
      * Called when user clicked he's mouse right button (place)
-     */
-    private void rightClickMouse() {
+     */ public void rightClickMouse() {
         if (!this.playerController.func_181040_m()) {
             this.rightClickDelayTimer = 4;
             boolean flag = true;
@@ -1455,7 +1456,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
 
                         break;
 
-                    case BLOCK: //SCAFFOLD
+                    case BLOCK:
                         BlockPos blockpos = this.objectMouseOver.getBlockPos();
 
                         if (this.theWorld.getBlockState(blockpos).getBlock().getMaterial() != Material.air) {
@@ -1571,6 +1572,16 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
     public void runTick() throws IOException {
         EventTick eventTick = new EventTick();
         Koks.getKoks().eventManager.onEvent(eventTick);
+
+        if(theWorld != null) {
+            if(Koks.getKoks().isNew) {
+                Methods methods = new Methods();
+                methods.sendmsg("§aWelcome to Koks!", true);
+                methods.sendURL("§aPlease join the Discord server! §7(§cClick§7)", "https://discord.gg/SeKKV5G", false, true);
+                methods.sendmsg("§aYou can open the ClickGUI with §e" + Keyboard.getKeyName(Koks.getKoks().moduleManager.getModule(ClickGui.class).getKey()).toUpperCase(), true);
+                Koks.getKoks().isNew = false;
+            }
+        }
 
         bgShaderInitTime = System.currentTimeMillis();
 

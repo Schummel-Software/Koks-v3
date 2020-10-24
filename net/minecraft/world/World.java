@@ -62,7 +62,7 @@ public abstract class World implements IBlockAccess
      */
     protected boolean scheduledUpdatesAreImmediate;
     public final List<Entity> loadedEntityList = Lists.<Entity>newArrayList();
-    protected final List<Entity> unloadedEntityList = Lists.<Entity>newArrayList();
+    public final List<Entity> unloadedEntityList = Lists.<Entity>newArrayList();
     public final List<TileEntity> loadedTileEntityList = Lists.<TileEntity>newArrayList();
     public final List<TileEntity> tickableTileEntities = Lists.<TileEntity>newArrayList();
     private final List<TileEntity> addedTileEntityList = Lists.<TileEntity>newArrayList();

@@ -1,5 +1,6 @@
 package net.minecraft.client.entity;
 
+import com.mojang.authlib.GameProfile;
 import koks.Koks;
 import koks.command.Command;
 import koks.event.impl.EventMotion;
@@ -58,9 +59,9 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.IInteractionObject;
 import net.minecraft.world.World;
 
-import java.awt.*;
 import java.util.Arrays;
 
+@SuppressWarnings("EntityConstructor")
 public class EntityPlayerSP extends AbstractClientPlayer
 {
     public final NetHandlerPlayClient sendQueue;
@@ -134,8 +135,8 @@ public class EntityPlayerSP extends AbstractClientPlayer
     /** The amount of time an entity has been in a Portal the previous tick */
     public float prevTimeInPortal;
 
-    public EntityPlayerSP(Minecraft mcIn, World worldIn, NetHandlerPlayClient netHandler, StatFileWriter statFile)
-    {
+
+    public EntityPlayerSP(Minecraft mcIn, World worldIn, NetHandlerPlayClient netHandler, StatFileWriter statFile) {
         super(worldIn, netHandler.getGameProfile());
         this.sendQueue = netHandler;
         this.statWriter = statFile;
@@ -178,6 +179,7 @@ public class EntityPlayerSP extends AbstractClientPlayer
      */
     public void onUpdate() {
         if (this.worldObj.isBlockLoaded(new BlockPos(this.posX, 0.0D, this.posZ))) {
+
             EventUpdate eventUpdate = new EventUpdate();
             Koks.getKoks().eventManager.onEvent(eventUpdate);
 

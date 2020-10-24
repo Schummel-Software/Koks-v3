@@ -1,6 +1,16 @@
 package koks.module;
 
 import koks.api.util.ClassUtil;
+import koks.command.impl.Friend;
+import koks.module.impl.combat.*;
+import koks.module.impl.debug.Debug;
+import koks.module.impl.debug.Test;
+import koks.module.impl.gui.ClickGui;
+import koks.module.impl.gui.HUD;
+import koks.module.impl.movement.*;
+import koks.module.impl.player.*;
+import koks.module.impl.render.*;
+import koks.module.impl.world.Scaffold;
 import org.reflections.util.ClasspathHelper;
 
 import java.io.File;
@@ -21,28 +31,57 @@ public class ModuleManager {
         /* if(!Koks.getKoks().purvesManager.getUser().getRole().equals(Role.Developer)) {
             removeCategory(Module.Category.DEBUG);
         }*/
-        ClassUtil classUtil = new ClassUtil();
-        String prefix = "koks.module.impl.";
-        ArrayList<Class> classes = new ArrayList<>();
-
-        try {
-            for (Module.Category category : Module.Category.values()) {
-
-                for (Class clazz : classUtil.getClasses(prefix + category.name().toLowerCase())) {
-                    if (!classes.contains(clazz)) {
-                        classes.add(clazz);
-                    }
-                }
-            }
-
-            for (Class<? extends Module> mod : classes) {
-                if (!mod.getName().contains("$"))
-                    addModule(mod.newInstance());
-            }
-
-        } catch (Exception ignored) {
-            ignored.printStackTrace();
-        }
+        addModule(new Criticals());
+        addModule(new FastBow());
+        addModule(new Friends());
+        addModule(new KillAura());
+        addModule(new Rotations());
+        addModule(new SuperHit());
+        addModule(new Teams());
+        addModule(new TNTBlock());
+        addModule(new Velocity());
+        addModule(new Debug());
+        addModule(new Test());
+        addModule(new ClickGui());
+        addModule(new HUD());
+        addModule(new BoatFly());
+        addModule(new Fly());
+        addModule(new InvMove());
+        addModule(new Jesus());
+        addModule(new NoCobweb());
+        addModule(new NoFall());
+        addModule(new NoSlowdown());
+        addModule(new Speed());
+        addModule(new Sprint());
+        addModule(new StairSpeed());
+        addModule(new Step());
+        addModule(new VClip());
+        addModule(new AutoArmor());
+        addModule(new ChestStealer());
+        addModule(new CivBreak());
+        addModule(new FastPlace());
+        addModule(new GodMode());
+        addModule(new InventoryCleaner());
+        addModule(new Phase());
+        addModule(new SendPublic());
+        addModule(new SetBack());
+        addModule(new Teleport());
+        addModule(new BlockOverlay());
+        addModule(new CameraClip());
+        addModule(new ChestESP());
+        addModule(new CustomItem());
+        addModule(new FakeRotations());
+        addModule(new ItemESP());
+        addModule(new MemoryCleaner());
+        addModule(new NameProtect());
+        addModule(new NameTags());
+        addModule(new NoBob());
+        addModule(new NoFov());
+        addModule(new NoHurtCam());
+        addModule(new PlayerESP());
+        addModule(new TrailESP());
+        addModule(new Scaffold());
+        addModule(new DormantESP());
 
         modules.sort(Comparator.comparing(Module::getName));
     }

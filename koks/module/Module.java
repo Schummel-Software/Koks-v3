@@ -53,41 +53,27 @@ public abstract class Module extends Methods {
     }
 
     public void toggle() {
-        this.toggled = !this.toggled;
-        if (!this.toggled) {
-            animation = 0;
-            onDisable();
-        } else {
-            animation = 0;
-            onEnable();
-        }
-
-        try {
-            if (Koks.getKoks().moduleManager.getModule(SendPublic.class).isToggled()) {
-                String toggle = toggled ? "Enabled" : "Disabled";
-                getPlayer().sendChatMessage(toggle + " " + this.getName());
-            }
-        }catch (Exception ignored) {
-        }
+        setToggled(!isToggled());
     }
 
     public void setToggled(boolean toggled) {
-        if (this.toggled) {
-            animation = 0;
-            onDisable();
-        } else {
-            animation = 0;
-            onEnable();
-        }
         this.toggled = toggled;
-
         try {
+            if (!this.toggled) {
+                animation = 0;
+                onDisable();
+            } else {
+                animation = 0;
+                onEnable();
+            }
+
             if (Koks.getKoks().moduleManager.getModule(SendPublic.class).isToggled()) {
                 String toggle = toggled ? "Enabled" : "Disabled";
                 getPlayer().sendChatMessage(toggle + " " + this.getName());
             }
-        }catch (Exception ignored) {
+        } catch (Exception ignored) {
         }
+
 
     }
 
