@@ -46,15 +46,8 @@ public class ChestESP extends Module {
                     }
 
                     if (espMode.getCurrentMode().equals("Box")) {
-                        AxisAlignedBB axisalignedbb = new AxisAlignedBB(
-                                x,
-                                y,
-                                z,
-                                x + 1,
-                                y + 1,
-                                z + 1);
-
-                        espUtil.renderBox(axisalignedbb);
+                        AxisAlignedBB axisAlignedBB = e.getBlockType().getSelectedBoundingBox(mc.theWorld, e.getPos()).offset(-mc.getRenderManager().renderPosX, -mc.getRenderManager().renderPosY, -mc.getRenderManager().renderPosZ);
+                        espUtil.renderBox(axisAlignedBB);
                     }
                 }
             }
