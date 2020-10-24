@@ -363,6 +363,7 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
 
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         ScaledResolution sr = new ScaledResolution(mc);
+        RenderUtil renderUtil = new RenderUtil();
 
         for (GuiButton button : buttonList) {
             if ((!saveY.containsKey(button.id) && !saveX.containsKey(button.id)) || (scaleY != sr.getScaledHeight() || scaleX != sr.getScaledWidth())) {
@@ -407,7 +408,6 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
 
         this.shader.useShader(this.width, this.height, mouseX, mouseY, (System.currentTimeMillis() - Koks.getKoks().initTime) / 1000F);
 
-
         GL11.glBegin(GL11.GL_QUADS);
 
         GL11.glVertex2f(-1f, -1f);
@@ -436,8 +436,6 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
         if (showColorPicker) {
             int xC = (int) (sr.getScaledWidth() / 2 + colorX);
             int yC = (int) (sr.getScaledHeight() / 2+  colorY);
-
-            RenderUtil renderUtil = new RenderUtil();
 
             drawRect(xC - 7, yC + colorSize / 360 - 10 - 15, xC + colorSize + 17, yC + (360 * colorSize) / 360 + 1 + 6, wColor.getRGB());
             fontRendererObj.drawString("§lx", xC + colorSize + 17 - fontRendererObj.getStringWidth("§lx") - 2, yC + colorSize / 360 - 10 - 15 + fontRendererObj.FONT_HEIGHT / 2 - 2, Color.red.getRGB(), false);
@@ -669,7 +667,6 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
                 drawCenteredString(fontRendererObj, getOptionName(ix), sr.getScaledWidth() / 2 + optionsX, sr.getScaledHeight() / 2 + optionsY + optionHeight * ix + 8, hover ? Koks.getKoks().clientColor.getRGB() : -7829368);
             }
         }
-
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
 

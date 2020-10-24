@@ -3,10 +3,8 @@ package koks.command.impl;
 import koks.command.Command;
 import koks.command.CommandInfo;
 import net.kronos.rkon.core.Rcon;
-import net.kronos.rkon.core.ex.AuthenticationException;
 
 import javax.swing.*;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.List;

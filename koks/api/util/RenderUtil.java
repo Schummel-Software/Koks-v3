@@ -15,6 +15,8 @@ import net.minecraft.entity.monster.EntityGhast;
 import net.minecraft.entity.monster.EntitySlime;
 import net.minecraft.entity.passive.EntityBat;
 import net.minecraft.entity.passive.EntitySquid;
+import net.minecraft.util.ResourceLocation;
+import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 import java.util.List;
@@ -72,6 +74,12 @@ public class RenderUtil {
                 GlStateManager.popMatrix();
             }
         }
+    }
+
+    public void drawPicture(int x, int y, int width, int height, ResourceLocation resourceLocation){
+        GL11.glColor3f(1,1,1);
+        mc.getTextureManager().bindTexture(resourceLocation);
+        Gui.drawModalRectWithCustomSizedTexture(x, y, 0, 0, width, height, width, height);
     }
 
     public void drawOutlineRect(double left, double top, double right, double bottom, int size, int colorOutline, int color) {

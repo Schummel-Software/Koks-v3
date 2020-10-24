@@ -11,7 +11,6 @@ import koks.module.impl.movement.*;
 import koks.module.impl.player.*;
 import koks.module.impl.render.*;
 import koks.module.impl.world.Scaffold;
-import org.reflections.util.ClasspathHelper;
 
 import java.io.File;
 import java.io.IOException;
