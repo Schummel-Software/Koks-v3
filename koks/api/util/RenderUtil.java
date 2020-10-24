@@ -77,9 +77,10 @@ public class RenderUtil {
     }
 
     public void drawPicture(int x, int y, int width, int height, ResourceLocation resourceLocation){
-        GL11.glColor3f(1,1,1);
         mc.getTextureManager().bindTexture(resourceLocation);
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         Gui.drawModalRectWithCustomSizedTexture(x, y, 0, 0, width, height, width, height);
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
     }
 
     public void drawOutlineRect(double left, double top, double right, double bottom, int size, int colorOutline, int color) {
