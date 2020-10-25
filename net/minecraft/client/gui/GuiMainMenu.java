@@ -560,10 +560,7 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
 
             for (int index = 0; index <= drawIndexSize; index++) {
                 drawRect(sr.getScaledWidth() / 2 + x - wwidth + size * index, sr.getScaledHeight() / 2 + y - wheight - size, sr.getScaledWidth() / 2 + x - wwidth + size * index + size, sr.getScaledHeight() / 2 + y - wheight, currentIndex == index ? outlineColor.getRGB() : wColor.getRGB());
-                int move = 0;
-                if (index == 0)
-                    move = 2;
-                renderUtil.drawPicture(sr.getScaledWidth() / 2 + x - wwidth + size * index + move, sr.getScaledHeight() / 2 + y - wheight - size, picWidth, picHeight, new ResourceLocation("client/icons/MainMenu/" + getIndexName(index) + ".png"));
+                renderUtil.drawPicture(sr.getScaledWidth() / 2 + x - wwidth + size * index, sr.getScaledHeight() / 2 + y - wheight - size, picWidth, picHeight, new ResourceLocation("client/icons/MainMenu/" + getIndexName(index) + ".png"));
             }
             drawRect(sr.getScaledWidth() / 2 + x - wwidth, sr.getScaledHeight() / 2 + y - wheight - size - dicke, sr.getScaledWidth() / 2 + x - wwidth + size * drawIndexSize + size, sr.getScaledHeight() / 2 + y - wheight - size, outlineColor.getRGB());
             drawRect(sr.getScaledWidth() / 2 + x - wwidth - dicke, sr.getScaledHeight() / 2 + y - wheight - size - dicke, sr.getScaledWidth() / 2 + x - wwidth, sr.getScaledHeight() / 2 + y - wheight, outlineColor.getRGB());
@@ -572,7 +569,7 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
             if (currentIndex == 0) {
                 for (int index = 1; index <= indexSize; index++) {
                     drawRect(sr.getScaledWidth() / 2 + x - wwidth / 2 + size * (index - 1), sr.getScaledHeight() / 2 + y + wheight - size, sr.getScaledWidth() / 2 + x - wwidth / 2 + size * (index - 1) + size, sr.getScaledHeight() / 2 + y + wheight, wColor.getRGB());
-                    renderUtil.drawPicture(sr.getScaledWidth() / 2 + x - wwidth / 2 + size * (index - 1), sr.getScaledHeight() / 2 + y + wheight - size, picWidth, picHeight, new ResourceLocation("client/icons/MainMenu/" + getIndexName(index) + ".png"));
+                    renderUtil.drawPicture(sr.getScaledWidth() / 2 + x - wwidth / 2 + size * (index - 1), sr.getScaledHeight() / 2 + y + wheight - picHeight, picWidth, picHeight, new ResourceLocation("client/icons/MainMenu/" + getIndexName(index) + ".png"));
                 }
             }
 
@@ -643,7 +640,7 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
                 float xPos = sr.getScaledWidth() / 2 + x - fontRenderer.getStringWidth(Koks.getKoks().NAME) / 2;
                 float yPos = sr.getScaledHeight() / 2 + y - fontRenderer.getFontHeight() - 10;
 
-                fontRenderer.drawString(Koks.getKoks().NAME, xPos, yPos, Color.white.getRGB(), true);
+                renderUtil.drawPicture((int)xPos - 15, (int)yPos + 1, 160, 60, new ResourceLocation("client/logo.png"));
                 fontRendererObj.drawString("Welcome " + Koks.getKoks().CLManager.getPrefix(), xPos + 2, sr.getScaledHeight() / 2 + y - 14, Color.gray.getRGB(), true);
             } else {
                 wheight = 120;

@@ -81,7 +81,9 @@ public class ModuleManager {
         addModule(new TrailESP());
         addModule(new Scaffold());
         addModule(new DormantESP());
-
+        addModule(new Scoreboard());
+        addModule(new Tracers());
+        
         modules.sort(Comparator.comparing(Module::getName));
     }
 

@@ -1438,27 +1438,19 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
     /**
      * Called when user clicked he's mouse right button (place)
      */ public void rightClickMouse() {
-        if (!this.playerController.func_181040_m())
-        {
+        if (!this.playerController.func_181040_m()) {
             this.rightClickDelayTimer = 4;
             boolean flag = true;
             ItemStack itemstack = this.thePlayer.inventory.getCurrentItem();
 
-            if (this.objectMouseOver == null)
-            {
+            if (this.objectMouseOver == null) {
                 logger.warn("Null returned as \'hitResult\', this shouldn\'t happen!");
-            }
-            else
-            {
-                switch (this.objectMouseOver.typeOfHit)
-                {
+            } else {
+                switch (this.objectMouseOver.typeOfHit) {
                     case ENTITY:
-                        if (this.playerController.func_178894_a(this.thePlayer, this.objectMouseOver.entityHit, this.objectMouseOver))
-                        {
+                        if (this.playerController.func_178894_a(this.thePlayer, this.objectMouseOver.entityHit, this.objectMouseOver)) {
                             flag = false;
-                        }
-                        else if (this.playerController.interactWithEntitySendPacket(this.thePlayer, this.objectMouseOver.entityHit))
-                        {
+                        } else if (this.playerController.interactWithEntitySendPacket(this.thePlayer, this.objectMouseOver.entityHit)) {
                             flag = false;
                         }
 
@@ -1467,39 +1459,31 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
                     case BLOCK:
                         BlockPos blockpos = this.objectMouseOver.getBlockPos();
 
-                        if (this.theWorld.getBlockState(blockpos).getBlock().getMaterial() != Material.air)
-                        {
+                        if (this.theWorld.getBlockState(blockpos).getBlock().getMaterial() != Material.air) {
                             int i = itemstack != null ? itemstack.stackSize : 0;
 
-                            if (this.playerController.onPlayerRightClick(this.thePlayer, this.theWorld, itemstack, blockpos, this.objectMouseOver.sideHit, this.objectMouseOver.hitVec))
-                            {
+                            if (this.playerController.onPlayerRightClick(this.thePlayer, this.theWorld, itemstack, blockpos, this.objectMouseOver.sideHit, this.objectMouseOver.hitVec)) {
                                 flag = false;
                                 this.thePlayer.swingItem();
                             }
 
-                            if (itemstack == null)
-                            {
+                            if (itemstack == null) {
                                 return;
                             }
 
-                            if (itemstack.stackSize == 0)
-                            {
+                            if (itemstack.stackSize == 0) {
                                 this.thePlayer.inventory.mainInventory[this.thePlayer.inventory.currentItem] = null;
-                            }
-                            else if (itemstack.stackSize != i || this.playerController.isInCreativeMode())
-                            {
+                            } else if (itemstack.stackSize != i || this.playerController.isInCreativeMode()) {
                                 this.entityRenderer.itemRenderer.resetEquippedProgress();
                             }
                         }
                 }
             }
 
-            if (flag)
-            {
+            if (flag) {
                 ItemStack itemstack1 = this.thePlayer.inventory.getCurrentItem();
 
-                if (itemstack1 != null && this.playerController.sendUseItem(this.thePlayer, this.theWorld, itemstack1))
-                {
+                if (itemstack1 != null && this.playerController.sendUseItem(this.thePlayer, this.theWorld, itemstack1)) {
                     this.entityRenderer.itemRenderer.resetEquippedProgress2();
                 }
             }
@@ -1586,11 +1570,13 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
      * Runs the current tick.
      */
     public void runTick() throws IOException {
-        EventTick eventTick = new EventTick();
-        Koks.getKoks().eventManager.onEvent(eventTick);
-
         if(theWorld != null) {
-            if(Koks.getKoks().isNew) {
+            EventTick eventTick = new EventTick();
+            Koks.getKoks().eventManager.onEvent(eventTick);
+        }
+
+        if (theWorld != null) {
+            if (Koks.getKoks().isNew) {
                 Methods methods = new Methods();
                 methods.sendmsg("§aWelcome to Koks!", true);
                 methods.sendURL("§aPlease join the Discord server! §7(§cClick§7)", "https://discord.gg/SeKKV5G", false, true);

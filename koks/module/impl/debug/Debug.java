@@ -54,8 +54,6 @@ public class Debug extends Module {
         }
 
         if (event instanceof EventTick) {
-
-            mc.thePlayer.noClip = true;
             /* if(timeHelper.hasReached(25)) {
                 getPlayer().sendQueue.addToSendQueue(new C03PacketPlayer(true));
                 timeHelper.reset();
