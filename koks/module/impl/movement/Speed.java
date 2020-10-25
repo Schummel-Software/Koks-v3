@@ -82,13 +82,25 @@ public class Speed extends Module {
                     break;
                 case "Mineplex FAST":
                     if (!mc.thePlayer.isInWeb) {
+
+                        if(getPlayer().isCollidedHorizontally) {
+                            setMotion(0);
+                            mineplexMotion = 0.02F;
+                        }
+
                         if(isMoving()) {
                             if (getPlayer().onGround) {
                                 getPlayer().motionX = getPlayer().motionZ = 0;
-                                mineplexMotion += 0.15F;
+                                mineplexMotion += 0.25F;
                                 getPlayer().jump();
                             } else {
-                                mineplexMotion -= mineplexMotion / 67;
+                                console.log(getPlayer().fallDistance);
+
+                                /*if(getPlayer().fallDistance >= 0.41 && getPlayer().fallDistance <= 0.43) {
+                                    getPlayer().motionY += 0.42F;
+                                }*/
+                                console.log(getPlayer().motionY);
+                                mineplexMotion -= mineplexMotion / 64;
                                 movementUtil.setSpeed(mineplexMotion, false);
                             }
                         }else{

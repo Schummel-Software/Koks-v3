@@ -63,6 +63,10 @@ public class Methods {
         mc.thePlayer.addChatMessage(new ChatComponentText((prefix ? Koks.getKoks().PREFIX : "") + msg));
     }
 
+    public void setMotion(double motion) {
+        getPlayer().motionX = getPlayer().motionZ = 0;
+    }
+
     public void sendURL(String msg, String url, boolean underline, boolean prefix) {
         IChatComponent chatComponent = new ChatComponentText((prefix ? Koks.getKoks().PREFIX : "") + msg);
         chatComponent.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, url));
