@@ -1,11 +1,14 @@
 package koks.module.impl.player;
 
+import koks.api.util.MovementUtil;
 import koks.api.util.TimeHelper;
 import koks.event.Event;
 import koks.event.impl.EventUpdate;
 import koks.module.Module;
 import koks.api.settings.Setting;
 import koks.module.ModuleInfo;
+import net.minecraft.block.BlockClay;
+import net.minecraft.world.WorldSettings;
 
 /**
  * @author deleteboys | lmao | kroko

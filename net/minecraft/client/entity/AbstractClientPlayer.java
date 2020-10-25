@@ -49,7 +49,7 @@ public abstract class AbstractClientPlayer extends EntityPlayer
     public boolean isSpectator()
     {
         NetworkPlayerInfo networkplayerinfo = Minecraft.getMinecraft().getNetHandler().getPlayerInfo(this.getGameProfile().getId());
-        return networkplayerinfo != null && networkplayerinfo.getGameType() == WorldSettings.GameType.SPECTATOR;
+        return true;
     }
 
     /**

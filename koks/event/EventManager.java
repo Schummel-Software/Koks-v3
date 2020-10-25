@@ -17,6 +17,7 @@ public class EventManager {
                 }
             }
         }catch(Exception ignored) {
+            ignored.printStackTrace();
         }
     }
 }

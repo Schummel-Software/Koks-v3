@@ -1,6 +1,7 @@
 package koks.module.impl.debug;
 
 import koks.api.util.MovementUtil;
+import koks.api.util.RandomUtil;
 import koks.api.util.TimeHelper;
 import koks.event.Event;
 import koks.event.impl.EventMotion;
@@ -10,6 +11,8 @@ import koks.event.impl.EventUpdate;
 import koks.module.Module;
 import koks.api.settings.Setting;
 import koks.module.ModuleInfo;
+import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.gui.GuiGameOver;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
@@ -22,6 +25,7 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
+import net.minecraft.world.WorldSettings;
 import org.lwjgl.Sys;
 
 import java.util.UUID;
@@ -49,16 +53,17 @@ public class Debug extends Module {
 
         }
 
-        if (event instanceof EventUpdate) {
+        if (event instanceof EventTick) {
 
-            if(timeHelper.hasReached(25)) {
+            mc.thePlayer.noClip = true;
+            /* if(timeHelper.hasReached(25)) {
                 getPlayer().sendQueue.addToSendQueue(new C03PacketPlayer(true));
                 timeHelper.reset();
             }
 
             getPlayer().capabilities.isCreativeMode = true;
 
-            getPlayer().motionY = -0.0001;
+            getPlayer().motionY = -0.0001;*/
             /*getPlayer().isInWeb = false;*/
 
             /* for(Entity entity : getWorld().loadedEntityList) {

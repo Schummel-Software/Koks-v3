@@ -34,7 +34,6 @@ public class Teleport extends Module {
                     getPlayer().sendQueue.addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(position.getBlockPos().getX(), position.getBlockPos().getY() + 1, position.getBlockPos().getZ(), true));
                     getPlayer().setPosition(position.getBlockPos().getX(), position.getBlockPos().getY() + 1, position.getBlockPos().getZ());
 
-                    getPlayer().motionY = 2;
 
                     getGameSettings().keyBindAttack.pressed = false;
                 }

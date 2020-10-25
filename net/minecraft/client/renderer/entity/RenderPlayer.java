@@ -72,7 +72,7 @@ public class RenderPlayer extends RendererLivingEntity<AbstractClientPlayer>
     {
         ModelPlayer modelplayer = this.getMainModel();
 
-        if (clientPlayer.isSpectator())
+        if (!clientPlayer.isSpectator())
         {
             modelplayer.setInvisible(false);
             modelplayer.bipedHead.showModel = true;

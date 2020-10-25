@@ -3,6 +3,7 @@ package koks.module.impl.combat;
 import koks.api.settings.Setting;
 import koks.event.Event;
 import koks.event.impl.EventRender3D;
+import koks.event.impl.EventTick;
 import koks.event.impl.EventUpdate;
 import koks.module.Module;
 import koks.module.ModuleInfo;
@@ -28,21 +29,22 @@ public class TNTBlock extends Module {
     @Override
     public void onEvent(Event event) {
         if (event instanceof EventUpdate) {
-            for (Entity entity : getWorld().loadedEntityList) {
-                if (getPlayer().getCurrentEquippedItem().getItem() instanceof ItemSword) {
-                    if (entity instanceof EntityTNTPrimed) {
-                        EntityTNTPrimed entityTNTPrimed = (EntityTNTPrimed) entity;
-                        console.log("test");
-                        if (entity.getDistanceToEntity(getPlayer()) <= 8) {
-                            if (entityTNTPrimed.fuse == 0) {
-                                getGameSettings().keyBindUseItem.pressed = false;
-                            } else if (entityTNTPrimed.fuse <= blockFuse.getCurrentValue()) {
-                                getGameSettings().keyBindUseItem.pressed = true;
+            if(getPlayer().getCurrentEquippedItem() != null) {
+                for (Entity entity : getWorld().loadedEntityList) {
+                    if (getPlayer().getCurrentEquippedItem().getItem() instanceof ItemSword) {
+                        if (entity instanceof EntityTNTPrimed) {
+                            EntityTNTPrimed entityTNTPrimed = (EntityTNTPrimed) entity;
+                            if (entity.getDistanceToEntity(getPlayer()) <= 8) {
+                                if (entityTNTPrimed.fuse == 0) {
+                                    getGameSettings().keyBindUseItem.pressed = false;
+                                } else if (entityTNTPrimed.fuse <= blockFuse.getCurrentValue()) {
+                                    getGameSettings().keyBindUseItem.pressed = true;
+                                } else {
+                                    getGameSettings().keyBindUseItem.pressed = false;
+                                }
                             } else {
                                 getGameSettings().keyBindUseItem.pressed = false;
                             }
-                        } else {
-                            getGameSettings().keyBindUseItem.pressed = false;
                         }
                     }
                 }

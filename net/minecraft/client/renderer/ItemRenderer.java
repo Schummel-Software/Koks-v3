@@ -433,7 +433,7 @@ public class ItemRenderer
             }
         }
 
-        if (!this.mc.thePlayer.isSpectator())
+        if (this.mc.thePlayer.isSpectator())
         {
             if (this.mc.thePlayer.isInsideOfMaterial(Material.water) && !Reflector.callBoolean(Reflector.ForgeEventFactory_renderWaterOverlay, new Object[] {this.mc.thePlayer, Float.valueOf(partialTicks)}))
             {
