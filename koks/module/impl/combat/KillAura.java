@@ -126,7 +126,7 @@ public class KillAura extends Module {
 
         if (event instanceof EventAttack) {
             if (finalEntity != null) {
-                if (getPlayer().getCurrentEquippedItem().getItem() != null) {
+                if (getPlayer().getCurrentEquippedItem() != null) {
                     if (canBlock() && autoBlock.isToggled() && blockMode.getCurrentMode().equals("Full"))
                         mc.playerController.sendUseItem(mc.thePlayer, mc.theWorld, mc.thePlayer.getCurrentEquippedItem());
                 }

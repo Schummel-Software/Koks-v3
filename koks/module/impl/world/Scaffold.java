@@ -216,35 +216,36 @@ public class Scaffold extends Module {
         if (mc.theWorld.getBlockState(new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY - 1.0D - (shouldBuildDown ? 1 : 0), mc.thePlayer.posZ)).getBlock() instanceof net.minecraft.block.BlockAir) {
             if (!simpleRotations.isToggled())
                 setYaw();
-            boolean rayCasted = !rayCast.isToggled() && !intave.isToggled() || rayCastUtil.isRayCastBlock(pos, rayCastUtil.rayCastedBlock(yaw, pitch, silentItemStack, intave.isToggled()));
-            if (rayCasted) {
-                if (timeUtil.hasReached(mc.thePlayer.onGround ? (randomutil.getRandomLong((long) delay.getCurrentValue(), (long) delay.getCurrentValue() + 1)) : 20L)) {
-                    if (blackList.contains(((ItemBlock) silentItemStack.getItem()).getBlock()))
-                        return;
+            if (silentItemStack != null) {
+                boolean rayCasted = !rayCast.isToggled() && !intave.isToggled() || rayCastUtil.isRayCastBlock(pos, rayCastUtil.rayCastedBlock(yaw, pitch, silentItemStack, intave.isToggled()));
+                if (rayCasted) {
+                    if (timeUtil.hasReached(mc.thePlayer.onGround ? (randomutil.getRandomLong((long) delay.getCurrentValue(), (long) delay.getCurrentValue() + 1)) : 20L)) {
+                        if (blackList.contains(((ItemBlock) silentItemStack.getItem()).getBlock()))
+                            return;
+                        MovingObjectPosition ray = rayCastUtil.rayCastedBlock(yaw, pitch, silentItemStack, intave.isToggled());
+                        if (intave.isToggled())
+                            mc.playerController.onPlayerRightClick(mc.thePlayer, mc.theWorld, silentItemStack, ray.getBlockPos(), ray.sideHit, ray.hitVec);
+                        else
+                            mc.playerController.onPlayerRightClick(mc.thePlayer, mc.theWorld, silentItemStack, pos, face, new Vec3(pos.getX() + (this.randomHit.isToggled() ? randomutil.getRandomDouble(0, 0.7) : 0), pos.getY() + (this.randomHit.isToggled() ? randomutil.getRandomDouble(0, 0.7) : 0), pos.getZ() + (this.randomHit.isToggled() ? randomutil.getRandomDouble(0, 0.7) : 0)));
+                        sneakCount++;
 
-                    MovingObjectPosition ray = rayCastUtil.rayCastedBlock(yaw, pitch, silentItemStack, intave.isToggled());
-                    if (intave.isToggled())
-                        mc.playerController.onPlayerRightClick(mc.thePlayer, mc.theWorld, silentItemStack, ray.getBlockPos(), ray.sideHit, ray.hitVec);
-                    else
-                        mc.playerController.onPlayerRightClick(mc.thePlayer, mc.theWorld, silentItemStack, pos, face, new Vec3(pos.getX() + (this.randomHit.isToggled() ? randomutil.getRandomDouble(0, 0.7) : 0), pos.getY() + (this.randomHit.isToggled() ? randomutil.getRandomDouble(0, 0.7) : 0), pos.getZ() + (this.randomHit.isToggled() ? randomutil.getRandomDouble(0, 0.7) : 0)));
-                    sneakCount++;
+                        mc.thePlayer.motionX *= motion.getCurrentValue();
+                        mc.thePlayer.motionZ *= motion.getCurrentValue();
 
-                    mc.thePlayer.motionX *= motion.getCurrentValue();
-                    mc.thePlayer.motionZ *= motion.getCurrentValue();
+                        if (sneakCount > sneakAfterBlocks.getCurrentValue())
+                            sneakCount = 0;
 
-                    if (sneakCount > sneakAfterBlocks.getCurrentValue())
-                        sneakCount = 0;
+                        timeUtil.reset();
+                    }
+                } else if (intave.isToggled() && !rayCast.isToggled()) {
+                    mc.rightClickMouse();
+                } else {
+
+                    if (sprint.isToggled())
+                        getPlayer().sendQueue.addToSendQueue(new C0BPacketEntityAction(getPlayer(), C0BPacketEntityAction.Action.START_SPRINTING));
 
                     timeUtil.reset();
                 }
-            } else if (intave.isToggled() && !rayCast.isToggled()) {
-                mc.rightClickMouse();
-            } else {
-
-                if(sprint.isToggled())
-                    getPlayer().sendQueue.addToSendQueue(new C0BPacketEntityAction(getPlayer(), C0BPacketEntityAction.Action.START_SPRINTING));
-
-                timeUtil.reset();
             }
         } else {
             mc.gameSettings.keyBindSneak.pressed = false;

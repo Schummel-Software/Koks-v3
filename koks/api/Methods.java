@@ -9,6 +9,7 @@ import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.event.ClickEvent;
+import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.C03PacketPlayer;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
@@ -19,12 +20,18 @@ import net.minecraft.world.World;
  */
 public class Methods {
 
+    public static Methods INSTANCE = new Methods();
+
     public final Console console = new Console();
 
     public final Minecraft mc = Minecraft.getMinecraft();
 
     public EntityPlayerSP getPlayer() {
         return mc.thePlayer;
+    }
+
+    public void sendPacket(Packet packet) {
+        getPlayer().sendQueue.addToSendQueue(packet);
     }
 
     public PlayerControllerMP getPlayerController() {

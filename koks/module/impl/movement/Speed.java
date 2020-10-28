@@ -41,14 +41,14 @@ public class Speed extends Module {
             setInfo(mode.getCurrentMode());
             switch (mode.getCurrentMode()) {
                 case "Legit":
-                    if (getPlayer().onGround) {
+                    if (getPlayer().onGround && isMoving()) {
                         getPlayer().jump();
                     }
                     break;
                 case "Intave":
                     getPlayer().setSprinting(true);
                     getPlayer().addExhaustion(0.8F);
-                    if (getPlayer().onGround) {
+                    if (getPlayer().onGround && isMoving()) {
                         getPlayer().jump();
                     }else {
                         if(getPlayer().fallDistance >= 0.7)
@@ -57,7 +57,7 @@ public class Speed extends Module {
                     break;
                 case "Tired":
                     getGameSettings().keyBindSprint.pressed = false;
-                    if (getPlayer().onGround) {
+                    if (getPlayer().onGround && isMoving()) {
                         getPlayer().jump();
                         getPlayer().setSprinting(false);
                         RandomUtil randomUtil = new RandomUtil();
@@ -95,12 +95,10 @@ public class Speed extends Module {
                                 mineplexMotion += 0.25F;
                                 getPlayer().jump();
                             } else {
-                                console.log(getPlayer().fallDistance);
 
                                 /*if(getPlayer().fallDistance >= 0.41 && getPlayer().fallDistance <= 0.43) {
                                     getPlayer().motionY += 0.42F;
                                 }*/
-                                console.log(getPlayer().motionY);
                                 mineplexMotion -= mineplexMotion / 64;
                                 movementUtil.setSpeed(mineplexMotion, false);
                             }
@@ -123,7 +121,7 @@ public class Speed extends Module {
                     }
                     break;
                 case "MCCentral":
-                    if (mc.thePlayer.onGround) {
+                    if (mc.thePlayer.onGround && isMoving()) {
                         mc.thePlayer.jump();
                     } else {
                         if (isMoving())

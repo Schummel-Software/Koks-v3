@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.util.Set;
 
 import koks.Koks;
+import koks.api.Methods;
+import koks.module.ModuleManager;
 import koks.module.impl.combat.KillAura;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
@@ -241,11 +243,8 @@ public abstract class GuiContainer extends GuiScreen {
 
     @Override
     protected void actionPerformed(GuiButton button) throws IOException {
-        switch(button.id) {
-            case 187:
-                KillAura killAura = (KillAura) Koks.getKoks().moduleManager.getModule(KillAura.class);
-                killAura.toggle();
-                break;
+        if(button.id == 187) {
+            Koks.getKoks().moduleManager.getModule(KillAura.class).toggle();
         }
         super.actionPerformed(button);
     }

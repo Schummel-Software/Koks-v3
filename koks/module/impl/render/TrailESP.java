@@ -30,7 +30,7 @@ public class TrailESP extends Module {
     @Override
     public void onEvent(Event event) {
 
-        if(event instanceof EventRender3D) {
+        if (event instanceof EventRender3D) {
             if (mc.gameSettings.thirdPersonView != 0 || inFirstPerson.isToggled()) {
                 GL11.glPushMatrix();
                 GL11.glColor4f(Koks.getKoks().clientColor.getRed() / 255F, Koks.getKoks().clientColor.getGreen() / 255F, Koks.getKoks().clientColor.getBlue() / 255F, Koks.getKoks().clientColor.getAlpha() / 255F);
@@ -52,18 +52,19 @@ public class TrailESP extends Module {
             }
         }
 
-        if(event instanceof EventUpdate) {
+        if (event instanceof EventUpdate) {
             setInfo(length.getCurrentValue() + "");
-            if(positions.size() > length.getCurrentValue()) {
-                int toMush = (int) (positions.size() - length.getCurrentValue());
-                for(int i = 0; i < toMush; i++) {
+            for (int i = 0; i < positions.size(); i++) {
+                if(System.currentTimeMillis() - positions.get(i)[3] > length.getCurrentValue()) {
                     positions.remove(i);
                 }
             }
         }
 
-        if(event instanceof EventMotion) {
-            positions.add(new double[] {mc.thePlayer.posX,mc.thePlayer.posY + 0.01,mc.thePlayer.posZ});
+        if (event instanceof EventMotion) {
+            if (isMoving()) {
+                positions.add(new double[]{mc.thePlayer.posX, mc.thePlayer.posY + 0.01, mc.thePlayer.posZ, System.currentTimeMillis()});
+            }
         }
     }
 

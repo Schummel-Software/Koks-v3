@@ -12,6 +12,7 @@ import net.minecraft.entity.player.EntityPlayer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author kroko
@@ -22,7 +23,7 @@ import java.util.HashMap;
 public class DormantESP extends Module {
 
     public ArrayList<Entity> entities = new ArrayList<>();
-    public HashMap<Entity, Long> dormant = new HashMap<Entity, Long>();
+    public ConcurrentHashMap<Entity, Long> dormant = new ConcurrentHashMap<>();
 
     public Setting time = new Setting("Time", 3, 1, 10, false, this);
 
