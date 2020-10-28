@@ -1,5 +1,6 @@
 package koks.module.impl.player;
 
+import god.buddy.aot.BCompiler;
 import koks.api.util.TimeHelper;
 import koks.event.Event;
 import koks.event.impl.EventHeadLook;
@@ -24,6 +25,7 @@ public class GodMode extends Module {
 
     public TimeHelper timeHelper = new TimeHelper();
 
+    @BCompiler(aot = BCompiler.AOT.AGGRESSIVE)
     @Override
     public void onEvent(Event event) {
         if (event instanceof EventHeadLook) {

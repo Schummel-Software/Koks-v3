@@ -1,7 +1,9 @@
 package koks.cl;
 
+import god.buddy.aot.BCompiler;
+
 /**
- * @author kroko
+ * @author krokoM
  * @created on 04.10.2020 : 21:11
  */
 public class CLManager {
@@ -12,8 +14,9 @@ public class CLManager {
         this.user = new User(name, getRole(name));
     }
 
+    @BCompiler(aot = BCompiler.AOT.NORMAL)
     public Role getRole(String name) {
-        if (name.equalsIgnoreCase("Kroko") || name.equalsIgnoreCase("Phantom") || name.equalsIgnoreCase("Deleteboys") || name.equalsIgnoreCase("Dirt"))
+        if (name.equalsIgnoreCase("Kroko") || name.equalsIgnoreCase("Phantom") || name.equalsIgnoreCase("Deleteboys") || name.equalsIgnoreCase("derrealedasdirt"))
             return Role.Developer;
         if (name.equalsIgnoreCase("Haze"))
             return Role.Admin;

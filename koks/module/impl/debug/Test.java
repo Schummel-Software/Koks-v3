@@ -1,5 +1,6 @@
 package koks.module.impl.debug;
 
+import god.buddy.aot.BCompiler;
 import koks.api.settings.Setting;
 import koks.api.settings.SettingInfo;
 import koks.api.util.TimeHelper;
@@ -40,15 +41,15 @@ public class Test extends Module {
     @SettingInfo(name = "testFloat", max = 100, min = 0, onlyInt = true)
     public float testFloat = 1;
 
+    @BCompiler(aot = BCompiler.AOT.AGGRESSIVE)
     @Override
     public void onEvent(Event event) {
         if (event instanceof EventUpdate) {
-           /* if(getPlayer().isEating()) {
+            /* if(getPlayer().isEating()) {
                 getPlayer().sendQueue.addToSendQueue(new C03PacketPlayer(true));
             }*/
 
             getPlayer().noClip = true;
-
 
 
             getPlayer().sendQueue.addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(getX(), getY(), getZ(), true));

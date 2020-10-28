@@ -1,5 +1,6 @@
 package koks.module.impl.movement;
 
+import god.buddy.aot.BCompiler;
 import koks.api.settings.Setting;
 import koks.event.Event;
 import koks.event.impl.EventUpdate;
@@ -19,6 +20,7 @@ public class StairSpeed extends Module {
 
     public Setting mode = new Setting("Mode", new String[]{"Intave"}, "Intave", this);
 
+    @BCompiler(aot = BCompiler.AOT.NORMAL)
     @Override
     public void onEvent(Event event) {
         if (event instanceof EventUpdate) {

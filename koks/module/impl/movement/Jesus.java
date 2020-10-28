@@ -1,5 +1,6 @@
 package koks.module.impl.movement;
 
+import god.buddy.aot.BCompiler;
 import koks.event.Event;
 import koks.event.impl.EventUpdate;
 import koks.module.Module;
@@ -18,6 +19,7 @@ public class Jesus extends Module {
 
     public Setting mode = new Setting("Mode", new String[]{"Intave"}, "Intave", this);
 
+    @BCompiler(aot = BCompiler.AOT.NORMAL)
     @Override
     public void onEvent(Event event) {
         if (event instanceof EventUpdate) {

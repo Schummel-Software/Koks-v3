@@ -1,5 +1,6 @@
 package koks.module.impl.combat;
 
+import god.buddy.aot.BCompiler;
 import koks.api.settings.Setting;
 import koks.event.Event;
 import koks.event.impl.EventUpdate;
@@ -21,6 +22,7 @@ public class FastBow extends Module {
 
     Setting strength = new Setting("Strength", 20F, 5F, 20F, true, this);
 
+    @BCompiler(aot = BCompiler.AOT.NORMAL)
     @Override
     public void onEvent(Event event) {
         if (event instanceof EventUpdate) {

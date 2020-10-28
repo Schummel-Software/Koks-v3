@@ -1,8 +1,6 @@
 package koks.command;
 
-import koks.api.util.ClassUtil;
 import koks.command.impl.*;
-import koks.module.Module;
 
 import java.util.ArrayList;
 import java.util.Comparator;

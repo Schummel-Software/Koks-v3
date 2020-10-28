@@ -1,5 +1,6 @@
 package koks.module.impl.movement;
 
+import god.buddy.aot.BCompiler;
 import koks.api.settings.Setting;
 import koks.api.util.MovementUtil;
 import koks.api.util.RandomUtil;
@@ -32,9 +33,9 @@ public class Speed extends Module {
 
     public float mineplexMotion;
 
+    @BCompiler(aot = BCompiler.AOT.AGGRESSIVE)
     @Override
     public void onEvent(Event event) {
-
         if (event instanceof EventUpdate) {
             MovementUtil movementUtil = new MovementUtil();
             setInfo(mode.getCurrentMode());

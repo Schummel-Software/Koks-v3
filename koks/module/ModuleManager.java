@@ -1,7 +1,5 @@
 package koks.module;
 
-import koks.api.util.ClassUtil;
-import koks.command.impl.Friend;
 import koks.module.impl.combat.*;
 import koks.module.impl.debug.Debug;
 import koks.module.impl.debug.Test;
@@ -12,9 +10,6 @@ import koks.module.impl.player.*;
 import koks.module.impl.render.*;
 import koks.module.impl.world.Scaffold;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
 import java.util.*;
 
 /**

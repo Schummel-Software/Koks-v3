@@ -1,7 +1,6 @@
 package koks.filemanager;
 
 import koks.Koks;
-import koks.api.util.ClassUtil;
 import koks.filemanager.impl.AlteningToken;
 import koks.filemanager.impl.Settings;
 import koks.filemanager.impl.Toggle;

@@ -1,5 +1,6 @@
 package koks.module.impl.movement;
 
+import god.buddy.aot.BCompiler;
 import koks.api.settings.Setting;
 import koks.api.util.TimeHelper;
 import koks.event.Event;
@@ -36,6 +37,7 @@ public class NoFall extends Module {
         }
     }
 
+    @BCompiler(aot = BCompiler.AOT.NORMAL)
     public void intave() {
         if (getPlayer().fallDistance > 2F) {
             getPlayer().onGround = true;
@@ -43,6 +45,7 @@ public class NoFall extends Module {
         }
     }
 
+    @BCompiler(aot = BCompiler.AOT.NORMAL)
     public void aac4() {
         if (!getPlayer().onGround && getPlayer().fallDistance > 1.2 && getPlayer().ticksExisted % 3 == 2) {
             getPlayer().motionY = 0;

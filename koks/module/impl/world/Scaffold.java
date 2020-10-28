@@ -1,5 +1,6 @@
 package koks.module.impl.world;
 
+import god.buddy.aot.BCompiler;
 import koks.Koks;
 import koks.api.settings.Setting;
 import koks.api.util.RandomUtil;
@@ -78,6 +79,7 @@ public class Scaffold extends Module {
         this.blackList = Arrays.asList(Blocks.crafting_table, Blocks.chest, Blocks.enchanting_table, Blocks.anvil, Blocks.sand, Blocks.gravel, Blocks.glass_pane, Blocks.stained_glass_pane, Blocks.ice, Blocks.packed_ice, Blocks.cobblestone_wall, Blocks.water, Blocks.lava, Blocks.web, Blocks.sapling, Blocks.rail, Blocks.golden_rail, Blocks.activator_rail, Blocks.detector_rail, Blocks.tnt, Blocks.red_flower, Blocks.yellow_flower, Blocks.flower_pot, Blocks.tallgrass, Blocks.red_mushroom, Blocks.brown_mushroom, Blocks.ladder, Blocks.torch, Blocks.stone_button, Blocks.wooden_button, Blocks.redstone_torch, Blocks.redstone_wire, Blocks.furnace, Blocks.cactus, Blocks.oak_fence, Blocks.acacia_fence, Blocks.nether_brick_fence, Blocks.birch_fence, Blocks.dark_oak_fence, Blocks.jungle_fence, Blocks.oak_fence, Blocks.acacia_fence_gate, Blocks.snow_layer, Blocks.trapdoor, Blocks.ender_chest, Blocks.beacon, Blocks.hopper, Blocks.daylight_detector, Blocks.daylight_detector_inverted, Blocks.carpet);
     }
 
+    @BCompiler(aot = BCompiler.AOT.NORMAL)
     @Override
     public void onEvent(Event event) {
         if (event instanceof EventMotion) {
@@ -178,6 +180,7 @@ public class Scaffold extends Module {
         }
     }
 
+    @BCompiler(aot = BCompiler.AOT.AGGRESSIVE)
     public void placeBlock(BlockPos pos, EnumFacing face) {
         finalPos = pos;
         ItemStack silentItemStack = null;
@@ -266,6 +269,7 @@ public class Scaffold extends Module {
         mc.thePlayer.sendQueue.addToSendQueue(new C09PacketHeldItemChange(mc.thePlayer.inventory.currentItem));
     }
 
+    @BCompiler(aot = BCompiler.AOT.AGGRESSIVE)
     public void getBlockPosToPlaceOn(BlockPos pos) {
         BlockPos blockPos1 = pos.add(-1, 0, 0);
         BlockPos blockPos2 = pos.add(1, 0, 0);

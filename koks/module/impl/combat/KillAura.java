@@ -120,36 +120,35 @@ public class KillAura extends Module {
 
                     curPitch = pitch;
                     curYaw = yaw;
+                }
+            }
+        }
 
+        if (event instanceof EventAttack) {
+            if (finalEntity != null) {
+                if (getPlayer().getCurrentEquippedItem().getItem() != null) {
+                    if (canBlock() && autoBlock.isToggled() && blockMode.getCurrentMode().equals("Full"))
+                        mc.playerController.sendUseItem(mc.thePlayer, mc.theWorld, mc.thePlayer.getCurrentEquippedItem());
+                }
 
-                    if (getPlayer().getCurrentEquippedItem().getItem() != null) {
-                        if (canBlock() && autoBlock.isToggled() && blockMode.getCurrentMode().equals("Full"))
+                long cps = (long) this.cps.getCurrentValue();
+
+                cps = cps < 10 ? cps : cps + 5;
+                if (((EntityLivingBase) finalEntity).hurtTime <= hurtTime.getCurrentValue()) {
+                    if (timeHelper.hasReached((1000L / cps) + (long) randomUtil.getRandomGaussian(20))) {
+                        attackEntity();
+                        if (canBlock() && autoBlock.isToggled() && (blockMode.getCurrentMode().equals("On Attack") || blockMode.getCurrentMode().equals("Half")))
                             mc.playerController.sendUseItem(mc.thePlayer, mc.theWorld, mc.thePlayer.getCurrentEquippedItem());
-                    }
-
-                    long cps = (long) this.cps.getCurrentValue();
-
-                    cps = cps < 10 ? cps : cps + 5;
-                    if (((EntityLivingBase) finalEntity).hurtTime <= hurtTime.getCurrentValue()) {
-                        if (timeHelper.hasReached((1000L / cps) + (long) randomUtil.getRandomGaussian(20))) {
-                            attackEntity();
-                            if (canBlock() && autoBlock.isToggled() && (blockMode.getCurrentMode().equals("On Attack") || blockMode.getCurrentMode().equals("Half")))
-                                mc.playerController.sendUseItem(mc.thePlayer, mc.theWorld, mc.thePlayer.getCurrentEquippedItem());
-                            timeHelper.reset();
-                        } else {
-                            if (canBlock() && autoBlock.isToggled() && blockMode.getCurrentMode().equals("Half"))
-                                mc.playerController.sendUseItem(mc.thePlayer, mc.theWorld, mc.thePlayer.getCurrentEquippedItem());
-                        }
-                    } else {
                         timeHelper.reset();
+                    } else {
                         if (canBlock() && autoBlock.isToggled() && blockMode.getCurrentMode().equals("Half"))
                             mc.playerController.sendUseItem(mc.thePlayer, mc.theWorld, mc.thePlayer.getCurrentEquippedItem());
                     }
+                } else {
+                    timeHelper.reset();
+                    if (canBlock() && autoBlock.isToggled() && blockMode.getCurrentMode().equals("Half"))
+                        mc.playerController.sendUseItem(mc.thePlayer, mc.theWorld, mc.thePlayer.getCurrentEquippedItem());
                 }
-            }
-
-            if (((EventMotion) event).getType() == EventMotion.Type.POST) {
-
             }
         }
 

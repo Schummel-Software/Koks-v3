@@ -637,11 +637,11 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
    */
 
                 double scale = 1.5;
-                float xPos = sr.getScaledWidth() / 2 + x - fontRenderer.getStringWidth(Koks.getKoks().NAME) / 2;
+                float xPos = sr.getScaledWidth() / 2 + x - fontRendererObj.getStringWidth("Welcome " + Koks.getKoks().CLManager.getPrefix()) / 2;
                 float yPos = sr.getScaledHeight() / 2 + y - fontRenderer.getFontHeight() - 10;
 
-                renderUtil.drawPicture((int)xPos - 15, (int)yPos + 1, 160, 60, new ResourceLocation("client/logo.png"));
-                fontRendererObj.drawString("Welcome " + Koks.getKoks().CLManager.getPrefix(), xPos + 2, sr.getScaledHeight() / 2 + y - 14, Color.gray.getRGB(), true);
+                renderUtil.drawPicture((int)xPos - 13, (int)yPos + 1, 160, 60, new ResourceLocation("client/logo.png"));
+                fontRendererObj.drawString("Welcome " + Koks.getKoks().CLManager.getPrefix(), xPos, sr.getScaledHeight() / 2 + y - 14, Color.gray.getRGB(), true);
             } else {
                 wheight = 120;
                 switch (currentIndex) {

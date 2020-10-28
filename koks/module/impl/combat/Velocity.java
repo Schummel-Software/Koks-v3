@@ -1,5 +1,6 @@
 package koks.module.impl.combat;
 
+import god.buddy.aot.BCompiler;
 import koks.api.settings.Setting;
 import koks.event.Event;
 import koks.event.impl.EventPacket;
@@ -33,6 +34,7 @@ public class Velocity extends Module {
     public Setting hurtTime = new Setting("HurtTime", 10, 1, 10, true, this);
     public Setting onGround = new Setting("onGround", false, this);
 
+    @BCompiler(aot = BCompiler.AOT.AGGRESSIVE)
     @Override
     public void onEvent(Event event) {
         if (event instanceof EventUpdate) {

@@ -1,5 +1,6 @@
 package koks.module.impl.player;
 
+import god.buddy.aot.BCompiler;
 import koks.event.Event;
 import koks.event.impl.EventUpdate;
 import koks.module.Module;
@@ -22,6 +23,7 @@ public class SetBack extends Module {
 
     public Setting mode = new Setting("Mode", new String[]{"Intave", "AAC3.0.1"},"Intave", this);
 
+    @BCompiler(aot = BCompiler.AOT.NORMAL)
     public void aac301() {
         Random rnd = new Random();
         if (mc.thePlayer.hurtResistantTime != 0 && mc.thePlayer.getHealth() == 0) {
@@ -39,6 +41,7 @@ public class SetBack extends Module {
 
     }
 
+    @BCompiler(aot = BCompiler.AOT.NORMAL)
     public void intave() {
         if (!mc.thePlayer.isInWater()) {
             if (mc.thePlayer.getHealth() < 3F) {

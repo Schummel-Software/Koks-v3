@@ -107,11 +107,11 @@ public abstract class GuiContainer extends GuiScreen {
      * window resizes, the buttonList is cleared beforehand.
      */
     public void initGui() {
+        buttonList.add(new GuiButton(187, (this.width - this.xSize) / 2, (this.height - this.ySize) / 2 - 25, 70, 20, "KillAura"));
         super.initGui();
         this.mc.thePlayer.openContainer = this.inventorySlots;
         this.guiLeft = (this.width - this.xSize) / 2;
         this.guiTop = (this.height - this.ySize) / 2;
-        buttonList.add(new GuiButton(187, (this.width - this.xSize) / 2, (this.height - this.ySize) / 2 - 25, 70, 20, "KillAura"));
     }
 
     /**
@@ -241,7 +241,6 @@ public abstract class GuiContainer extends GuiScreen {
 
     @Override
     protected void actionPerformed(GuiButton button) throws IOException {
-        System.out.println(button.id);
         switch(button.id) {
             case 187:
                 KillAura killAura = (KillAura) Koks.getKoks().moduleManager.getModule(KillAura.class);

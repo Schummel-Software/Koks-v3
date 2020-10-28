@@ -1,5 +1,6 @@
 package koks.command.impl;
 
+import god.buddy.aot.BCompiler;
 import koks.command.Command;
 import koks.command.CommandInfo;
 import net.kronos.rkon.core.Rcon;
@@ -20,6 +21,7 @@ public class RconLogin extends Command {
     public Rcon rcon = null;
     private List<String> lines;
 
+    @BCompiler(aot = BCompiler.AOT.NORMAL)
     @Override
     public void execute(String[] args) {
         if (args.length == 0) {

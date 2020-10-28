@@ -39,6 +39,7 @@ import javax.imageio.ImageIO;
 
 import koks.Koks;
 import koks.api.Methods;
+import koks.event.impl.EventAttack;
 import koks.event.impl.EventKeyPress;
 import koks.event.impl.EventTick;
 import koks.module.Module;
@@ -1884,6 +1885,9 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
             if (this.currentScreen == null && this.gameSettings.keyBindCommand.isPressed() && flag) {
                 this.displayGuiScreen(new GuiChat("/"));
             }
+
+            EventAttack eventAttack = new EventAttack();
+            Koks.getKoks().eventManager.onEvent(eventAttack);
 
             if (this.thePlayer.isUsingItem()) {
                 if (!this.gameSettings.keyBindUseItem.isKeyDown()) {

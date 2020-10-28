@@ -1,5 +1,6 @@
 package koks.module.impl.movement;
 
+import god.buddy.aot.BCompiler;
 import koks.api.settings.Setting;
 import koks.event.Event;
 import koks.event.impl.EventUpdate;
@@ -14,6 +15,7 @@ public class Step extends Module {
     Setting mode = new Setting("Mode", new String[]{"Vanilla", "Intave", "Mineplex"}, "Vanilla", this);
     final Setting stepHeight = new Setting("Step Height", 4, 1, 4, false, this);
 
+    @BCompiler(aot = BCompiler.AOT.AGGRESSIVE)
     @Override
     public void onEvent(Event event) {
         if (event instanceof EventUpdate) {

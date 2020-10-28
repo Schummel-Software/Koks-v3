@@ -1,5 +1,6 @@
 package koks.module.impl.movement;
 
+import god.buddy.aot.BCompiler;
 import koks.Koks;
 import koks.api.settings.Setting;
 import koks.api.util.MovementUtil;
@@ -28,6 +29,7 @@ public class Fly extends Module {
     public TimeHelper timeHelper = new TimeHelper();
     public TimeHelper damageTime = new TimeHelper();
 
+    @BCompiler(aot = BCompiler.AOT.NORMAL)
     @Override
     public void onEvent(Event event) {
         if (event instanceof EventUpdate) {

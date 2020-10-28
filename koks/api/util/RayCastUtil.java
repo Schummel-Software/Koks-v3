@@ -26,6 +26,7 @@ import java.util.Random;
  * @author deleteboys | lmao | kroko
  * @created on 13.09.2020 : 20:18
  */
+
 public class RayCastUtil {
 
     private final Minecraft mc = Minecraft.getMinecraft();
@@ -119,70 +120,12 @@ public class RayCastUtil {
         return pointedEntity;
     }
 
-    public MovingObjectPosition rayCast(double reach) {
-        Vec3 positionEyes = mc.thePlayer.getPositionEyes(1.0F);
-        Vec3 lookVec = mc.thePlayer.getLookVec();
-        Vec3 ray = positionEyes.addVector(lookVec.xCoord * reach, lookVec.yCoord * reach, lookVec.zCoord * reach);
-        return mc.theWorld.rayTraceBlocks(positionEyes, ray, !mc.thePlayer.isInWater(), false, false);
-    }
-
     public Vec3 getLook(float yaw, float pitch) {
         return Entity.getVectorForRotation(pitch, yaw);
     }
 
     public boolean isRayCastBlock(BlockPos bp, MovingObjectPosition ray) {
         return ray.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK && bp.equals(ray.getBlockPos());
-    }
-
-    public Object[] getPlacingPosition(BlockPos pos, int expansion) {
-        BlockPos blockPos = pos;
-        EnumFacing facing = EnumFacing.UP;
-
-        if (pos.add(0, 0, expansion).getBlock() != Blocks.air) {
-            blockPos = pos.add(0, 0, expansion);
-            facing = EnumFacing.NORTH;
-        }
-        if (pos.add(0, 0, -expansion).getBlock() != Blocks.air) {
-            blockPos = pos.add(0, 0, -expansion);
-            facing = EnumFacing.SOUTH;
-        }
-        if (pos.add(expansion, 0, 0).getBlock() != Blocks.air) {
-            blockPos = pos.add(expansion, 0, 0);
-            facing = EnumFacing.WEST;
-        }
-        if (pos.add(-expansion, 0, 0).getBlock() != Blocks.air) {
-            blockPos = pos.add(-expansion, 0, 0);
-            facing = EnumFacing.EAST;
-        }
-        if (pos.add(0, -expansion, 0).getBlock() != Blocks.air) {
-            blockPos = pos.add(0, -expansion, 0);
-            facing = EnumFacing.UP;
-        }
-        return new Object[] { blockPos, facing, new Vec3(0, 0, 0) };
-    }
-
-    public Vec3 blockDataToVec3(BlockPos paramBlockPos, EnumFacing paramEnumFacing) {
-        RandomUtil randomUtil = new RandomUtil();
-        double x = paramBlockPos.getX() + 0.5D;
-        double y = paramBlockPos.getY() + 0.5D;
-        double z = paramBlockPos.getZ() + 0.5D;
-        x += paramEnumFacing.getFrontOffsetX() / 2.0D;
-        y += paramEnumFacing.getFrontOffsetZ() / 2.0D;
-        z += paramEnumFacing.getFrontOffsetY() / 2.0D;
-        if (paramEnumFacing == EnumFacing.UP || paramEnumFacing == EnumFacing.DOWN) {
-            x += randomUtil.getRandomDouble(-0.3, 0.3);
-            z += randomUtil.getRandomDouble(-0.3, 0.3);
-        }
-        else {
-            y += randomUtil.getRandomDouble(0.49, 0.5);
-        }
-        if (paramEnumFacing == EnumFacing.WEST || paramEnumFacing == EnumFacing.EAST) {
-            z += randomUtil.getRandomDouble(-0.3, 0.3);
-        }
-        if (paramEnumFacing == EnumFacing.SOUTH || paramEnumFacing == EnumFacing.NORTH) {
-            x += randomUtil.getRandomDouble(-0.3, 0.3);
-        }
-        return new Vec3(x, y, z);
     }
 
     public MovingObjectPosition rayCastedBlock(float yaw, float pitch, ItemStack silentItem, boolean intave) {
@@ -201,13 +144,4 @@ public class RayCastUtil {
             return ray;
         return null;
     }
-
-    public boolean onEdge() {
-        BlockPos localBlockPos1 = new BlockPos(mc.thePlayer.posX - 0.024D, mc.thePlayer.posY - 0.5D, mc.thePlayer.posZ - 0.024D);
-        BlockPos localBlockPos2 = new BlockPos(mc.thePlayer.posX - 0.024D, mc.thePlayer.posY - 0.5D, mc.thePlayer.posZ + 0.024D);
-        BlockPos localBlockPos3 = new BlockPos(mc.thePlayer.posX + 0.024D, mc.thePlayer.posY - 0.5D, mc.thePlayer.posZ + 0.024D);
-        BlockPos localBlockPos4 = new BlockPos(mc.thePlayer.posX + 0.024D, mc.thePlayer.posY - 0.5D, mc.thePlayer.posZ - 0.024D);
-        return (mc.thePlayer.worldObj.getBlockState(localBlockPos1).getBlock() == Blocks.air) && (mc.thePlayer.worldObj.getBlockState(localBlockPos2).getBlock() == Blocks.air) && (mc.thePlayer.worldObj.getBlockState(localBlockPos3).getBlock() == Blocks.air) && (mc.thePlayer.worldObj.getBlockState(localBlockPos4).getBlock() == Blocks.air);
-    }
-
 }

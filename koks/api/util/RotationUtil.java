@@ -1,5 +1,6 @@
 package koks.api.util;
 
+import god.buddy.aot.BCompiler;
 import koks.Koks;
 import koks.module.impl.combat.KillAura;
 import net.minecraft.client.Minecraft;
@@ -18,6 +19,7 @@ public class RotationUtil {
     public final Minecraft mc = Minecraft.getMinecraft();
     public final RandomUtil randomUtil = new RandomUtil();
 
+    @BCompiler(aot = BCompiler.AOT.NORMAL)
     public Vec3 getBestVector(Entity entity, float accuracy, float precision) {
         try {
             Vec3 playerVector = mc.thePlayer.getPositionEyes(1.0F);
@@ -42,6 +44,7 @@ public class RotationUtil {
         }
     }
 
+    @BCompiler(aot = BCompiler.AOT.AGGRESSIVE)
     public float[] faceEntity(Entity entity, float currentYaw, float currentPitch, boolean smooth, float accuracy, float precision, float predictionMultiplier) {
         Vec3 rotations = getBestVector(entity, accuracy, precision);
 
@@ -80,6 +83,7 @@ public class RotationUtil {
         return new float[]{yaw, pitch};
     }
 
+    @BCompiler(aot = BCompiler.AOT.AGGRESSIVE)
     public float[] faceBlock(BlockPos pos, float currentYaw, float currentPitch, float speed) {
         double x = (pos.getX() + 0.5F) - mc.thePlayer.posX;
         double y = (pos.getY() - 3.0F) - (mc.thePlayer.posY + mc.thePlayer.getEyeHeight());
@@ -103,27 +107,6 @@ public class RotationUtil {
         pitch -= pitch % f1;
 
         return new float[]{yaw, pitch};
-    }
-
-    public float[] calculateDiff(float v1, float v2) {
-        float y = Math.abs(v1 - v2);
-        if (y < 0) y += 360;
-        if (y > 360) y -= 360;
-        float y1 = 360 - y;
-        float oneoranother = 0;
-        if (y > y1) oneoranother++;
-        if (y > y1) y = y1;
-        return new float[]{y, oneoranother};
-    }
-
-    public float[] fixedSensitivity(float sensitivity, float yawdiff, float pitchdiff) {
-        float f = sensitivity * 0.6F + 0.2F;
-        float gcd = f * f * f * 8f;
-        yawdiff = (int) ((yawdiff) / gcd / 0.15f);
-        pitchdiff = (int) ((pitchdiff) / gcd / 0.15f);
-        yawdiff = yawdiff * gcd * 0.15f;
-        pitchdiff = pitchdiff * gcd * 0.15f;
-        return new float[]{yawdiff, pitchdiff};
     }
 
     public float updateRotation(float curRot, float destination, float speed)

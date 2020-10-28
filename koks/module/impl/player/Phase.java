@@ -1,5 +1,6 @@
 package koks.module.impl.player;
 
+import god.buddy.aot.BCompiler;
 import koks.api.util.MovementUtil;
 import koks.api.util.TimeHelper;
 import koks.event.Event;
@@ -33,6 +34,7 @@ public class Phase extends Module {
         }
     }
 
+    @BCompiler(aot = BCompiler.AOT.NORMAL)
     public void intave() {
         if (getPlayer().isCollidedHorizontally) {
             if (isMoving()) {

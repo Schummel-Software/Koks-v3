@@ -1,5 +1,6 @@
 package koks.module.impl.movement;
 
+import god.buddy.aot.BCompiler;
 import koks.event.Event;
 import koks.event.impl.EventUpdate;
 import koks.module.Module;
@@ -20,6 +21,7 @@ public class BoatFly extends Module {
 
     public boolean ride;
 
+    @BCompiler(aot = BCompiler.AOT.NORMAL)
     @Override
     public void onEvent(Event event) {
         if(event instanceof EventUpdate) {

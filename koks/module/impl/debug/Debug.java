@@ -1,5 +1,6 @@
 package koks.module.impl.debug;
 
+import god.buddy.aot.BCompiler;
 import koks.api.util.MovementUtil;
 import koks.api.util.RandomUtil;
 import koks.api.util.TimeHelper;
@@ -46,6 +47,7 @@ public class Debug extends Module {
 
     // Hunger Balken sind flaggs
 
+    @BCompiler(aot = BCompiler.AOT.AGGRESSIVE)
     @Override
     public void onEvent(Event event) {
 

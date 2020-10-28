@@ -1,5 +1,6 @@
 package koks.module.impl.combat;
 
+import god.buddy.aot.BCompiler;
 import koks.api.settings.Setting;
 import koks.api.util.RayCastUtil;
 import koks.event.Event;
@@ -26,6 +27,7 @@ public class SuperHit extends Module {
 
     private RayCastUtil rayCastUtil = new RayCastUtil();
 
+    @BCompiler(aot = BCompiler.AOT.AGGRESSIVE)
     @Override
     public void onEvent(Event event) {
         if (event instanceof EventMouseOver) {
