@@ -17,6 +17,7 @@ import java.awt.*;
 import java.io.File;
 
 import koks.cl.CLManager;
+import koks.wrapper.Wrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.main.Main;
 import org.lwjgl.opengl.Display;
@@ -63,9 +64,14 @@ public class Koks {
     public CLManager CLManager;
     public FriendManager friendManager;
 
+    public DiscordUtil discordUtil;
+
+    public Wrapper wrapper;
+
     public void startClient() {
+        wrapper = new Wrapper();
         CLManager = new CLManager(Main.clName);
-        System.out.println("Client Launcher Name: " + Main.clName);
+        wrapper.logger.log("Client Launcher Name: " + Main.clName);
         settingsManager = new SettingsManager();
         moduleManager = new ModuleManager();
         eventManager = new EventManager();
@@ -78,9 +84,10 @@ public class Koks {
         fileManager.readAllFiles();
         friendManager = new FriendManager();
         configSystem = new ConfigSystem();
-        new DiscordUtil();
 
-        DiscordUtil.getSingleton().setupRPC("769964846506311690");
+        new DiscordUtil();
+        discordUtil = DiscordUtil.getSingleton();
+        discordUtil.setupRPC("769964846506311690");
 
         StringBuilder author = new StringBuilder();
         for (int i = 0; i < KOKS.AUTHORS.length; i++) {
@@ -94,5 +101,9 @@ public class Koks {
 
     public void stopClient() {
         fileManager.writeAllFiles();
+    }
+
+    public Wrapper getWrapper() {
+        return wrapper;
     }
 }

@@ -3,6 +3,7 @@ package koks.api.util;
 import club.minnced.discord.rpc.DiscordEventHandlers;
 import club.minnced.discord.rpc.DiscordRPC;
 import club.minnced.discord.rpc.DiscordRichPresence;
+import koks.Koks;
 
 /**
  * @author kroko
@@ -17,28 +18,31 @@ public class DiscordUtil {
         SINGLETON = this;
     }
 
-    public void setupRPC(String applicationID){
-        lib = DiscordRPC.INSTANCE;
-        presence = new DiscordRichPresence();
-        String steamId = "";
-        DiscordEventHandlers handlers = new DiscordEventHandlers();
-        handlers.ready = (user) -> System.out.println("[Koks] Initialized Discord RPC");
-        lib.Discord_Initialize(applicationID, handlers, true, steamId);
+    public void setupRPC(String applicationID) {
+        try {
+            lib = DiscordRPC.INSTANCE;
+            presence = new DiscordRichPresence();
+            String steamId = "";
+            DiscordEventHandlers handlers = new DiscordEventHandlers();
+            handlers.ready = (user) -> Koks.getKoks().wrapper.logger.log("Initialized Discord RPC");
+            lib.Discord_Initialize(applicationID, handlers, true, steamId);
 
-        presence.startTimestamp = System.currentTimeMillis() / 1000; // epoch second
-        presence.details = "Playing Koks";
-        presence.largeImageKey = "koks-logo";
-        lib.Discord_UpdatePresence(presence);
+            presence.startTimestamp = System.currentTimeMillis() / 1000;
+            presence.details = "Playing Koks";
+            presence.largeImageKey = "koks-logo";
+            lib.Discord_UpdatePresence(presence);
 
-        new Thread(() -> {
-            while (!Thread.currentThread().isInterrupted()) {
-                lib.Discord_RunCallbacks();
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException ignored) {}
-            }
-        }, "RPC-Callback-Handler").start();
+            new Thread(() -> {
+                while (!Thread.currentThread().isInterrupted()) {
+                    lib.Discord_RunCallbacks();
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException ignored) {
+                    }
+                }
+            }, "RPC-Callback-Handler").start();
 
+        }catch(Exception ignored){}
     }
 
     public void updateRPC(DiscordRichPresence presence){

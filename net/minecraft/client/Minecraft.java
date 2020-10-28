@@ -197,11 +197,6 @@ import org.lwjgl.util.glu.GLU;
 
 public class Minecraft implements IThreadListener, IPlayerUsage {
 
-    public String discordDetail = "";
-    public String discordState = "";
-
-    public long bgShaderInitTime = System.currentTimeMillis();
-
     private static final Logger logger = LogManager.getLogger();
     private static final ResourceLocation locationMojangPng = new ResourceLocation("textures/gui/title/mojang.png");
     public static final boolean isRunningOnMac = Util.getOSType() == Util.EnumOS.OSX;
@@ -1585,8 +1580,6 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
                 Koks.getKoks().isNew = false;
             }
         }
-
-        bgShaderInitTime = System.currentTimeMillis();
 
         if (this.rightClickDelayTimer > 0) {
             --this.rightClickDelayTimer;

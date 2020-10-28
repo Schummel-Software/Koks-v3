@@ -27,26 +27,28 @@ public class Settings extends Files {
         while ((line = bufferedReader.readLine()) != null) {
             String[] args = line.split(":");
             if (args[0].equalsIgnoreCase("clientcolor")) {
-                Koks.getKoks().clientColor = new Color(Integer.parseInt(args[1]), Integer.parseInt(args[2]),Integer.parseInt(args[3]));
+                Koks.getKoks().clientColor = new Color(Integer.parseInt(args[1]), Integer.parseInt(args[2]), Integer.parseInt(args[3]));
             } else {
                 Module module = Koks.getKoks().moduleManager.getModule(args[0]);
                 Setting setting = Koks.getKoks().settingsManager.getSetting(module, args[1]);
-                switch (setting.getType()) {
-                    case CHECKBOX:
-                        setting.setToggled(Boolean.parseBoolean(args[2]));
-                        break;
-                    case COMBOBOX:
-                        setting.setCurrentMode(args[2]);
-                        break;
-                    case SLIDER:
-                        setting.setCurrentValue(Float.parseFloat(args[2]));
-                        break;
-                    case KEY:
-                        setting.setKey(Integer.parseInt(args[2]));
-                        break;
-                    case TYPE:
-                        setting.setTyped(args[2]);
-                        break;
+                if (setting != null) {
+                    switch (setting.getType()) {
+                        case CHECKBOX:
+                            setting.setToggled(Boolean.parseBoolean(args[2]));
+                            break;
+                        case COMBOBOX:
+                            setting.setCurrentMode(args[2]);
+                            break;
+                        case SLIDER:
+                            setting.setCurrentValue(Float.parseFloat(args[2]));
+                            break;
+                        case KEY:
+                            setting.setKey(Integer.parseInt(args[2]));
+                            break;
+                        case TYPE:
+                            setting.setTyped(args[2]);
+                            break;
+                    }
                 }
             }
         }

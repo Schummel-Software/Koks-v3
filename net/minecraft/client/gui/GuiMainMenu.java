@@ -34,10 +34,35 @@ import org.lwjgl.opengl.GL20;
 
 public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
 
-    private RenderUtil renderUtil = new RenderUtil();
+    public GuiTextField email, password;
+
+    public boolean windowShowed = true, showOptions, showColorPicker, showBackgrounds, showRight, drag = false, dragOptions = false, dragColor = false, dragBackground = false;
+
+    public int currentIndex = 0, size = 40, indexSize = 6,wheight = 120, wwidth = 200, dicke = 5,drawIndexSize = currentIndex, lastIndex = 0
+            ,optionSize = 4, optionWidth = 125, optionHeight = 25
+            ,rightWidth = 20, rightHeight = 30, rightOutline = 2, rightOptions = 2,
+            colorSize = 150, pixel = 60,
+            backgroundWidth = 70, backgroundHeight = 23,
+            rightX, rightY;
+
+    public double x, y, dragX, dragY,
+            dragOptionsX, dragOptionsY, optionsX, optionsY,
+            colorX, colorY, dragColorX, dragColorY,
+            backgroundX, backgroundY, dragBackgroundX, dragBackgroundY,
+            scaleX, scaleY;
+
+    public float hue = 1;
+
+    public GlyphPageFontRenderer fontRenderer = GlyphPageFontRenderer.create("Arial", 120, true, true, true);
+
+    public LoginUtil loginUtil = Koks.getKoks().wrapper.loginUtil;
+    private RenderUtil renderUtil = Koks.getKoks().wrapper.renderUtil;
     private GLSLSandboxShader shader;
 
     public ArrayList<File> backgrounds = new ArrayList<>();
+
+    public HashMap<Integer, Double> saveX = new HashMap<>();
+    public HashMap<Integer, Double> saveY = new HashMap<>();
 
     public String curBackground = "DEFAULT";
 
@@ -66,8 +91,6 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
      * Fired when a key is typed (except F11 which toggles full screen). This is the equivalent of
      * KeyListener.keyTyped(KeyEvent e). Args : character (character on the key), keyCode (lwjgl Keyboard key code)
      */
-
-    public boolean windowShowed = true;
 
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
         if (keyCode == Keyboard.KEY_SPACE) {
@@ -126,10 +149,6 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
         }
     }
 
-    public int yOptions;
-
-    private static final GameSettings.Options[] field_146440_f = new GameSettings.Options[]{GameSettings.Options.FOV};
-
     public void initGui() {
         File backgrounds = new File(mc.mcDataDir + "/Koks/Backgrounds");
 
@@ -139,41 +158,6 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
         ScaledResolution sr = new ScaledResolution(mc);
 
         buttonList.add(new GuiButton(99, sr.getScaledWidth() / 2 - 50 / 2, sr.getScaledHeight() / 2 + 55, 50, 20, "Login"));
-
-        yOptions = 3;
-
-        int ix = 0;
-        for (GameSettings.Options gamesettings$options : field_146440_f) {
-            if (gamesettings$options.getEnumFloat()) {
-                this.buttonList.add(new GuiOptionSlider(gamesettings$options.returnEnumOrdinal(), this.width / 2 - 155 + ix % 2 * 160, this.height / yOptions + 12 + 24 * (ix >> 1), gamesettings$options));
-            } else {
-                GuiOptionButton guioptionbutton = new GuiOptionButton(gamesettings$options.returnEnumOrdinal(), this.width / 2 - 155 + ix % 2 * 160, this.height / yOptions - 12 + 24 * (ix >> 1), gamesettings$options, mc.gameSettings.getKeyBinding(gamesettings$options));
-                this.buttonList.add(guioptionbutton);
-            }
-
-            ++ix;
-        }
-
-        this.buttonList.add(new GuiButton(110, this.width / 2 - 155, this.height / yOptions + 48 - 6, 150, 20, I18n.format("options.skinCustomisation", new Object[0])));
-        this.buttonList.add(new GuiButton(8675309, this.width / 2 + 5, this.height / yOptions + 48 - 6, 150, 20, "Super Secret Settings...") {
-            public void playPressSound(SoundHandler soundHandlerIn) {
-                SoundEventAccessorComposite soundeventaccessorcomposite = soundHandlerIn.getRandomSoundFromCategories(new SoundCategory[]{SoundCategory.ANIMALS, SoundCategory.BLOCKS, SoundCategory.MOBS, SoundCategory.PLAYERS, SoundCategory.WEATHER});
-
-                if (soundeventaccessorcomposite != null) {
-                    soundHandlerIn.playSound(PositionedSoundRecord.create(soundeventaccessorcomposite.getSoundEventLocation(), 0.5F));
-                }
-            }
-        });
-
-        this.buttonList.add(new GuiButton(106, this.width / 2 - 155, this.height / yOptions + 72 - 6, 150, 20, I18n.format("options.sounds", new Object[0])));
-        this.buttonList.add(new GuiButton(107, this.width / 2 + 5, this.height / yOptions + 72 - 6, 150, 20, I18n.format("options.stream", new Object[0])));
-        this.buttonList.add(new GuiButton(101, this.width / 2 - 155, this.height / yOptions + 96 - 6, 150, 20, I18n.format("options.video", new Object[0])));
-        this.buttonList.add(new GuiButton(100, this.width / 2 + 5, this.height / yOptions + 96 - 6, 150, 20, I18n.format("options.controls", new Object[0])));
-        this.buttonList.add(new GuiButton(102, this.width / 2 - 155, this.height / yOptions + 120 - 6, 150, 20, I18n.format("options.language", new Object[0])));
-        this.buttonList.add(new GuiButton(103, this.width / 2 + 5, this.height / yOptions + 120 - 6, 150, 20, I18n.format("options.chat.title", new Object[0])));
-        this.buttonList.add(new GuiButton(105, this.width / 2 - 155, this.height / yOptions + 144 - 6, 150, 20, I18n.format("options.resourcepack", new Object[0])));
-        this.buttonList.add(new GuiButton(104, this.width / 2 + 5, this.height / yOptions + 144 - 6, 150, 20, I18n.format("options.snooper.view", new Object[0])));
-        this.buttonList.add(new GuiButton(200, this.width / 2 - 100, this.height / yOptions + 168, I18n.format("gui.done", new Object[0])));
 
         email = new GuiTextField(187, mc.fontRendererObj, sr.getScaledWidth() / 2 - 180 / 2, sr.getScaledHeight() / 3 + 25, 180, 20);
         email.setFocused(false);
@@ -189,58 +173,6 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
 
         if (windowShowed) {
             switch (button.id) {
-                case 109:
-                    this.mc.displayGuiScreen(new GuiYesNo(this, (new ChatComponentTranslation("difficulty.lock.title", new Object[0])).getFormattedText(), (new ChatComponentTranslation("difficulty.lock.question", new Object[]{new ChatComponentTranslation(this.mc.theWorld.getWorldInfo().getDifficulty().getDifficultyResourceKey(), new Object[0])})).getFormattedText(), 109));
-                    break;
-                case 110:
-                    this.mc.gameSettings.saveOptions();
-                    this.mc.displayGuiScreen(new GuiCustomizeSkin(this));
-                    break;
-                case 8675309:
-                    this.mc.entityRenderer.activateNextShader();
-                    break;
-                case 101:
-                    this.mc.gameSettings.saveOptions();
-                    this.mc.displayGuiScreen(new GuiVideoSettings(this, mc.gameSettings));
-                    break;
-                case 100:
-                    this.mc.gameSettings.saveOptions();
-                    this.mc.displayGuiScreen(new GuiControls(this, mc.gameSettings));
-                    break;
-                case 102:
-                    this.mc.gameSettings.saveOptions();
-                    this.mc.displayGuiScreen(new GuiLanguage(this, mc.gameSettings, this.mc.getLanguageManager()));
-                    break;
-                case 103:
-                    this.mc.gameSettings.saveOptions();
-                    this.mc.displayGuiScreen(new ScreenChatOptions(this, mc.gameSettings));
-                    break;
-                case 104:
-                    this.mc.gameSettings.saveOptions();
-                    this.mc.displayGuiScreen(new GuiSnooper(this, mc.gameSettings));
-                    break;
-                case 200:
-                    this.mc.gameSettings.saveOptions();
-                    currentIndex = lastIndex;
-                    break;
-                case 105:
-                    this.mc.gameSettings.saveOptions();
-                    this.mc.displayGuiScreen(new GuiScreenResourcePacks(this));
-                    break;
-                case 106:
-                    this.mc.gameSettings.saveOptions();
-                    this.mc.displayGuiScreen(new GuiScreenOptionsSounds(this, mc.gameSettings));
-                    break;
-                case 107:
-                    this.mc.gameSettings.saveOptions();
-                    IStream istream = this.mc.getTwitchStream();
-
-                    if (istream.func_152936_l() && istream.func_152928_D()) {
-                        this.mc.displayGuiScreen(new GuiStreamOptions(this, mc.gameSettings));
-                    } else {
-                        GuiStreamUnavailable.func_152321_a(this);
-                    }
-                    break;
                 case 99:
                     if (!Koks.getKoks().alteningApiKey.equals("") && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
                         loginUtil.generate(Koks.getKoks().alteningApiKey);
@@ -287,21 +219,6 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
         }
     }
 
-    public GuiTextField email, password;
-
-    public int currentIndex = 0;
-    public int size = 40;
-    public int indexSize = 6;
-    public int wheight = 120;
-    public int wwidth = 200;
-    public int dicke = 5;
-    public int drawIndexSize = currentIndex;
-    public int lastIndex = 0;
-
-    public GlyphPageFontRenderer fontRenderer = GlyphPageFontRenderer.create("Arial", 120, true, true, true);
-
-    public LoginUtil loginUtil = new LoginUtil();
-
     public String getRightName(int right, boolean edit) {
         switch (right) {
             case 0:
@@ -347,32 +264,6 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
         }
         return "";
     }
-
-    public HashMap<Integer, Double> saveX = new HashMap<>();
-    public HashMap<Integer, Double> saveY = new HashMap<>();
-
-    public boolean drag = false, dragOptions = false, dragColor = false, dragBackground = false;
-    public double x, y, dragX, dragY, dragOptionsX, dragOptionsY, optionsX, optionsY, colorX, colorY, dragColorX, dragColorY, backgroundX, backgroundY, dragBackgroundX, dragBackgroundY;
-    public int scaleX;
-    public int scaleY;
-
-
-    public boolean showOptions, showColorPicker, showBackgrounds;
-
-    public int rightX, rightY;
-    public int rightWidth = 20, rightHeight = 30;
-    public boolean showRight;
-    public int rightOutline = 2;
-    public int rightOptions = 2;
-
-    public int optionSize = 4;
-
-    public float hue = 1;
-    int colorSize = 150;
-    int pixel = 60;
-
-    int backgroundWidth = 70;
-    int backgroundHeight = 23;
 
     public void listFilesFromFolder(File folder, ArrayList<File> list) {
         for (File file : folder.listFiles()) {
@@ -640,7 +531,7 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
                 float xPos = sr.getScaledWidth() / 2 + x - fontRendererObj.getStringWidth("Welcome " + Koks.getKoks().CLManager.getPrefix()) / 2;
                 float yPos = sr.getScaledHeight() / 2 + y - fontRenderer.getFontHeight() - 10;
 
-                renderUtil.drawPicture((int)xPos - 13, (int)yPos + 1, 160, 60, new ResourceLocation("client/logo.png"));
+                renderUtil.drawPicture((int)sr.getScaledWidth() / 2 + x - (wwidth - size + 5) / 2, (int)yPos + 1, 160, 60, new ResourceLocation("client/logo.png"));
                 fontRendererObj.drawString("Welcome " + Koks.getKoks().CLManager.getPrefix(), xPos, sr.getScaledHeight() / 2 + y - 14, Color.gray.getRGB(), true);
             } else {
                 wheight = 120;
@@ -794,10 +685,6 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
         ScaledResolution sr = new ScaledResolution(mc);
         return mouseX >= sr.getScaledWidth() / 2 + optionsX + optionWidth - fontRendererObj.getStringWidth("§lx") - 2 && mouseX <= sr.getScaledWidth() / 2 + optionsX + optionWidth && mouseY >= sr.getScaledHeight() / 2 + optionsY - optionHeight && mouseY <= sr.getScaledHeight() / 2 + optionsY - optionHeight + fontRendererObj.FONT_HEIGHT;
     }
-
-
-    int optionWidth = 125;
-    int optionHeight = 25;
 
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
         super.mouseClicked(mouseX, mouseY, mouseButton);
