@@ -3,6 +3,7 @@ package koks.module.impl.gui;
 import koks.Koks;
 import koks.api.util.fonts.GlyphPage;
 import koks.api.util.fonts.GlyphPageFontRenderer;
+import koks.cl.Role;
 import koks.event.Event;
 import koks.event.impl.EventKeyPress;
 import koks.event.impl.EventRender2D;
@@ -29,7 +30,6 @@ public class HUD extends Module {
 
     public final FontRenderer fr = mc.fontRendererObj;
     public Setting clientName = new Setting("Name", Koks.getKoks().NAME, this);
-    public Setting substring = new Setting("Substring", 2, 2, 4, true, this);
     public Setting waterMark = new Setting("Watermark", true, this);
     public Setting waterMarkFont = new Setting("Font", "NONE", this);
     public Setting arrayList = new Setting("ArrayList", true, this);
@@ -48,13 +48,9 @@ public class HUD extends Module {
     public void onEvent(Event event) {
 
         if(event instanceof EventTick) {
-            
-            if(clientName.getTyped().length() < substring.getCurrentValue())
-                clientName.setTyped(Koks.getKoks().NAME.substring(0, (int) substring.getCurrentValue()));
-
-            if (!clientName.getTyped().substring(0, (int) (substring.getCurrentValue())).startsWith(Koks.getKoks().NAME.substring(0, (int) (substring.getCurrentValue()))))
-                clientName.setTyped(Koks.getKoks().NAME.substring(0, (int) substring.getCurrentValue()) + clientName.getTyped().substring((int) substring.getCurrentValue()));
-
+            if(Koks.getKoks().CLManager.getUser().getRole() != Role.Developer) {
+                waterMarkFont.setTyped("NONE");
+            }
         }
 
         if (event instanceof EventRender2D) {
