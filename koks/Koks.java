@@ -1,6 +1,7 @@
 package koks;
 
 import koks.api.util.DiscordUtil;
+import koks.cl.User;
 import koks.command.CommandManager;
 import koks.config.ConfigSystem;
 import koks.event.EventManager;
