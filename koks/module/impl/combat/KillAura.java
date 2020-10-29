@@ -182,6 +182,11 @@ public class KillAura extends Module {
                 mc.thePlayer.sendQueue.addToSendQueue(new C02PacketUseEntity(rayCastEntity, C02PacketUseEntity.Action.ATTACK));
             }
 
+            if (switchCounter < entities.size())
+                switchCounter++;
+            else
+                switchCounter = 0;
+
             if (noSwing.isToggled()) {
                 switch (noSwingType.getCurrentMode()) {
                     case "Vanilla":
@@ -196,12 +201,6 @@ public class KillAura extends Module {
             } else {
                 mc.thePlayer.swingItem();
             }
-
-            switchCounter = 0;
-            if (switchCounter < entities.size())
-                switchCounter++;
-            else
-                switchCounter = 0;
         }
     }
 
@@ -210,9 +209,6 @@ public class KillAura extends Module {
     }
 
     public void manageEntities() {
-        if (switchCounter > entities.size())
-            switchCounter = 0;
-
         entities.removeIf(entity -> !isValid(entity));
 
         if (finalEntity != null && !isValid(finalEntity))
@@ -231,7 +227,10 @@ public class KillAura extends Module {
                 if (finalEntity == null) finalEntity = entityToSet;
                 break;
             case "Switch":
-                finalEntity = entities.get(switchCounter);
+                if (entities.size() - 1 >= switchCounter)
+                    finalEntity = entities.get(switchCounter);
+                else
+                    switchCounter = 0;
                 break;
             case "Hybrid":
                 finalEntity = entityToSet;
