@@ -33,6 +33,12 @@ public class config extends Command {
                     cfgname += args[i] + " ";
                 config.loadConfig(cfgname.substring(0, cfgname.length() - 1));
                 sendmsg("§aLoaded §e" + cfgname.substring(0, cfgname.length() - 1), true);
+            } else if (args[0].equalsIgnoreCase("online")) {
+                String cfgname = "";
+                for (int i = 1; i < args.length; i++)
+                    cfgname += args[i] + " ";
+                config.loadConfigOnline("https://raw.githubusercontent.com/Koks-Team/Koks-Configs/main/" + cfgname.substring(0, cfgname.length() - 1)+ ".koks");
+                sendmsg("§aLoaded §e" + cfgname.substring(0, cfgname.length() - 1), true);
             }
         }
     }

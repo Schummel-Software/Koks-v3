@@ -125,7 +125,7 @@ public class RayCastUtil {
     }
 
     public boolean isRayCastBlock(BlockPos bp, MovingObjectPosition ray) {
-        return ray.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK && bp.equals(ray.getBlockPos());
+        return ray != null && ray.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK && bp.equals(ray.getBlockPos());
     }
 
     public MovingObjectPosition rayCastedBlock(float yaw, float pitch, ItemStack silentItem, boolean intave) {

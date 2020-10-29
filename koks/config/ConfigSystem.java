@@ -6,6 +6,8 @@ import koks.api.settings.Setting;
 import net.minecraft.client.Minecraft;
 
 import java.io.*;
+import java.net.URL;
+import java.util.Scanner;
 
 /**
  * @author deleteboys | lmao | kroko
@@ -43,6 +45,47 @@ public class ConfigSystem {
             fileWriter.close();
         } catch (IOException ex) {
             ex.printStackTrace();
+        }
+    }
+
+    public void loadConfigOnline(String config) {
+        try {
+            URL url = new URL(config);
+            Scanner scanner = new Scanner(url.openStream(), "UTF-8");
+            String line;
+            while (scanner.hasNextLine()) {
+                line = scanner.nextLine();
+                String[] args = line.split(":");
+                switch (args[0]) {
+                    case "Module":
+                        Module module = Koks.getKoks().moduleManager.getModule(args[1]);
+                        if (module != null) {
+                            module.setToggled(Boolean.parseBoolean(args[2]));
+                            module.setBypass(Boolean.parseBoolean(args[3]));
+                        }
+                        break;
+                    case "Setting":
+                        module = Koks.getKoks().moduleManager.getModule(args[1]);
+                        Setting setting = Koks.getKoks().settingsManager.getSetting(module, args[2]);
+                        if (setting != null && module != null) {
+                            switch (setting.getType()) {
+                                case SLIDER:
+                                    setting.setCurrentValue(Float.parseFloat(args[3]));
+                                    break;
+                                case CHECKBOX:
+                                    setting.setToggled(Boolean.parseBoolean(args[3]));
+                                    break;
+                                case COMBOBOX:
+                                    setting.setCurrentMode(args[3]);
+                                    break;
+                            }
+                        }
+                        break;
+                }
+            }
+            scanner.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
