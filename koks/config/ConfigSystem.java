@@ -55,23 +55,26 @@ public class ConfigSystem {
                 switch (args[0]) {
                     case "Module":
                         Module module = Koks.getKoks().moduleManager.getModule(args[1]);
-                        if (module == null) continue;
-                        module.setToggled(Boolean.parseBoolean(args[2]));
-                        module.setBypass(Boolean.parseBoolean(args[3]));
+                        if (module != null) {
+                            module.setToggled(Boolean.parseBoolean(args[2]));
+                            module.setBypass(Boolean.parseBoolean(args[3]));
+                        }
                         break;
                     case "Setting":
                         module = Koks.getKoks().moduleManager.getModule(args[1]);
                         Setting setting = Koks.getKoks().settingsManager.getSetting(module, args[2]);
-                        switch (setting.getType()) {
-                            case SLIDER:
-                                setting.setCurrentValue(Float.parseFloat(args[3]));
-                                break;
-                            case CHECKBOX:
-                                setting.setToggled(Boolean.parseBoolean(args[3]));
-                                break;
-                            case COMBOBOX:
-                                setting.setCurrentMode(args[3]);
-                                break;
+                        if (setting != null && module != null) {
+                            switch (setting.getType()) {
+                                case SLIDER:
+                                    setting.setCurrentValue(Float.parseFloat(args[3]));
+                                    break;
+                                case CHECKBOX:
+                                    setting.setToggled(Boolean.parseBoolean(args[3]));
+                                    break;
+                                case COMBOBOX:
+                                    setting.setCurrentMode(args[3]);
+                                    break;
+                            }
                         }
                         break;
                 }
