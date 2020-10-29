@@ -47,6 +47,7 @@ public class NameTags extends Module {
                     String tagText = name + " " + health;
 
                     GL11.glPushMatrix();
+                    GL11.glDisable(GL11.GL_LIGHTING);
                     GL11.glTranslated(x, y + 2.1 - height, z);
                     GL11.glScaled(-(defaultScale + scale), -(defaultScale + scale), -(defaultScale + scale));
                     GL11.glRotated(mc.getRenderManager().playerViewY, 0, -1, 0);
@@ -56,6 +57,7 @@ public class NameTags extends Module {
                     mc.fontRendererObj.drawString(tagText, -mc.fontRendererObj.getStringWidth(tagText) / 2, -90, 0xFFFFFFFF);
 
                     GlStateManager.enableDepth();
+                    GL11.glEnable(GL11.GL_LIGHTING);
                     GL11.glPopMatrix();
                 }
             }

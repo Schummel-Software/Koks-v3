@@ -222,20 +222,22 @@ public class Scaffold extends Module {
                     if (timeUtil.hasReached(mc.thePlayer.onGround ? (randomutil.getRandomLong((long) delay.getCurrentValue(), (long) delay.getCurrentValue() + 1)) : 20L)) {
                         if (blackList.contains(((ItemBlock) silentItemStack.getItem()).getBlock()))
                             return;
-                        MovingObjectPosition ray = rayCastUtil.rayCastedBlock(yaw, pitch, silentItemStack, intave.isToggled());
-                        if (intave.isToggled())
-                            mc.playerController.onPlayerRightClick(mc.thePlayer, mc.theWorld, silentItemStack, ray.getBlockPos(), ray.sideHit, ray.hitVec);
-                        else
-                            mc.playerController.onPlayerRightClick(mc.thePlayer, mc.theWorld, silentItemStack, pos, face, new Vec3(pos.getX() + (this.randomHit.isToggled() ? randomutil.getRandomDouble(0, 0.7) : 0), pos.getY() + (this.randomHit.isToggled() ? randomutil.getRandomDouble(0, 0.7) : 0), pos.getZ() + (this.randomHit.isToggled() ? randomutil.getRandomDouble(0, 0.7) : 0)));
-                        sneakCount++;
+                        if (silentItemStack != null) {
+                            MovingObjectPosition ray = rayCastUtil.rayCastedBlock(yaw, pitch, silentItemStack, intave.isToggled());
+                            if (intave.isToggled())
+                                mc.playerController.onPlayerRightClick(mc.thePlayer, mc.theWorld, silentItemStack, ray.getBlockPos(), ray.sideHit, ray.hitVec);
+                            else
+                                mc.playerController.onPlayerRightClick(mc.thePlayer, mc.theWorld, silentItemStack, pos, face, new Vec3(pos.getX() + (this.randomHit.isToggled() ? randomutil.getRandomDouble(0, 0.7) : 0), pos.getY() + (this.randomHit.isToggled() ? randomutil.getRandomDouble(0, 0.7) : 0), pos.getZ() + (this.randomHit.isToggled() ? randomutil.getRandomDouble(0, 0.7) : 0)));
+                            sneakCount++;
 
-                        mc.thePlayer.motionX *= motion.getCurrentValue();
-                        mc.thePlayer.motionZ *= motion.getCurrentValue();
+                            mc.thePlayer.motionX *= motion.getCurrentValue();
+                            mc.thePlayer.motionZ *= motion.getCurrentValue();
 
-                        if (sneakCount > sneakAfterBlocks.getCurrentValue())
-                            sneakCount = 0;
+                            if (sneakCount > sneakAfterBlocks.getCurrentValue())
+                                sneakCount = 0;
 
-                        timeUtil.reset();
+                            timeUtil.reset();
+                        }
                     }
                 } else if (intave.isToggled() && !rayCast.isToggled()) {
                     mc.rightClickMouse();

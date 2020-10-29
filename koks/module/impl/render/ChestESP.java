@@ -1,7 +1,9 @@
 package koks.module.impl.render;
 
+import koks.Koks;
 import koks.api.settings.Setting;
 import koks.api.util.ESPUtil;
+import koks.api.util.RenderUtil;
 import koks.event.Event;
 import koks.event.impl.EventRender3D;
 import koks.event.impl.EventUpdate;
@@ -15,6 +17,11 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.tileentity.TileEntityEnderChest;
 import net.minecraft.util.AxisAlignedBB;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.util.glu.Cylinder;
+import org.lwjgl.util.glu.GLU;
+
+import java.awt.*;
 
 /**
  * @author kroko
@@ -26,7 +33,9 @@ public class ChestESP extends Module {
 
     public final ESPUtil espUtil = new ESPUtil();
 
-    public Setting espMode = new Setting("ESP Mode", new String[]{"2D Style", "Box", "Shader"}, "Box", this);
+    public Setting espMode = new Setting("ESP Mode", new String[]{"2D Style", "Box", "Shader", "Cylinder"}, "Box", this);
+
+    private final RenderUtil renderUtil = new RenderUtil();
 
     @Override
     public void onEvent(Event event) {
@@ -47,6 +56,37 @@ public class ChestESP extends Module {
                     if (espMode.getCurrentMode().equals("Box")) {
                         AxisAlignedBB axisAlignedBB = e.getBlockType().getSelectedBoundingBox(mc.theWorld, e.getPos()).offset(-mc.getRenderManager().renderPosX, -mc.getRenderManager().renderPosY, -mc.getRenderManager().renderPosZ);
                         espUtil.renderBox(axisAlignedBB);
+                    }
+                    if (espMode.getCurrentMode().equalsIgnoreCase("Cylinder")) {
+
+                        GL11.glPushMatrix();
+                        GL11.glDisable(GL11.GL_LIGHTING);
+                        GL11.glTranslated(x + 0.5,y + 0.9,z + 0.5);
+                        GL11.glRotated(90,1,0,0);
+                        GL11.glDisable(GL11.GL_TEXTURE_2D);
+                        GL11.glEnable(GL11.GL_BLEND);
+                        GL11.glDisable(GL11.GL_DEPTH_TEST);
+
+                        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+                        GL11.glLineWidth(1);
+//                        renderUtil.setColor(Color.red);
+                        renderUtil.setColor(Koks.getKoks().clientColor);
+                        Cylinder cylinder = new Cylinder();
+//
+                        cylinder.setDrawStyle(GLU.GLU_LINE);
+                        cylinder.setOrientation(GLU.GLU_INSIDE);
+                        cylinder.draw(0.62f,0.62f,0.9f,8,1);
+
+                        renderUtil.setColor(renderUtil.getAlphaColor(Koks.getKoks().clientColor, 150));
+                        cylinder.setDrawStyle(GLU.GLU_FILL);
+                        cylinder.setOrientation(GLU.GLU_INSIDE);
+                        cylinder.draw(0.62f,0.65f,0.9f,8,1);
+
+                        GL11.glDisable(GL11.GL_BLEND);
+                        GL11.glEnable(GL11.GL_TEXTURE_2D);
+                        GL11.glEnable(GL11.GL_LIGHTING);
+                        GL11.glEnable(GL11.GL_DEPTH_TEST);
+                        GL11.glPopMatrix();
                     }
                 }
             }

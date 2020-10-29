@@ -127,4 +127,23 @@ public class RenderUtil {
         GlStateManager.disableBlend();
     }
 
+    public Color getRainbow(int offset, int speed, float saturation, float brightness) {
+        float hue = ((System.currentTimeMillis() + offset) % speed) / (float) speed;
+        return Color.getHSBColor(hue, saturation, brightness);
+    }
+
+    public Color getAlphaColor(Color color, int alpha) {
+        if (alpha > 255) {
+            alpha = 255;
+        }
+        if (alpha < 0) {
+            alpha = 1;
+        }
+        return new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
+    }
+
+    public void setColor(Color color) {
+        color(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, color.getAlpha() / 255f);
+    }
+
 }

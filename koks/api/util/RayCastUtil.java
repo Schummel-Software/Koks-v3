@@ -140,7 +140,7 @@ public class RayCastUtil {
         MovingObjectPosition ray = mc.theWorld.rayTraceBlocks(vec3, vec32, false, false, false);
         ItemBlock itemblock = (ItemBlock) silentItem.getItem();
 
-        if (ray.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
+        if (ray != null && ray.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
             return ray;
         return null;
     }

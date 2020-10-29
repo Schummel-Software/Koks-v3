@@ -1,6 +1,7 @@
 package koks.module.impl.gui;
 
 import koks.Koks;
+import koks.api.util.RenderUtil;
 import koks.api.util.fonts.GlyphPage;
 import koks.api.util.fonts.GlyphPageFontRenderer;
 import koks.cl.Role;
@@ -35,10 +36,13 @@ public class HUD extends Module {
     public Setting arrayList = new Setting("ArrayList", true, this);
     public Setting showTags = new Setting("Show Tags", true, this);
     public Setting tabGUI = new Setting("TabGUI", true, this);
+    public Setting arrayListMode = new Setting("ArrayListMode", new String[]{"Mode1", "Mode2"}, "Mode1",this);
     public Setting x = new Setting("X", 5, 0, 20, true, this);
     public Setting y = new Setting("Y", 30, 20, 50, true, this);
     public Setting width = new Setting("Width", 91, 80, 100, true, this);
     public Setting height = new Setting("height", 13, 10, 20, true, this);
+
+    private final RenderUtil renderUtil = new RenderUtil();
 
     public HUD() {
         setToggled(true);
@@ -96,21 +100,46 @@ public class HUD extends Module {
 
     public void drawArrayList() {
         ScaledResolution sr = new ScaledResolution(mc);
-        int[] offset = {fr.FONT_HEIGHT + 2};
-        int[] y = {0};
-        Koks.getKoks().moduleManager.getModules().stream().sorted(Comparator.comparingDouble(module -> -fr.getStringWidth(module.getArrayName("§7", showTags.isToggled())))).forEach(module -> {
-            if (module.isToggled()) {
-                if (module.getAnimation() < fr.getStringWidth(module.getArrayName("§7", showTags.isToggled())))
-                    module.setAnimation(module.getAnimation() + 0.5);
-                if (module.getAnimation() > fr.getStringWidth(module.getArrayName("§7", showTags.isToggled())))
-                    module.setAnimation(module.getAnimation() - 0.5);
+        if(arrayListMode.getCurrentMode().equalsIgnoreCase("mode1")) {
+            int[] offset = {fr.FONT_HEIGHT + 2};
+            int[] y = {0};
+            Koks.getKoks().moduleManager.getModules().stream().sorted(Comparator.comparingDouble(module -> -fr.getStringWidth(module.getArrayName("§7", showTags.isToggled())))).forEach(module -> {
+                if (module.isToggled()) {
+                    if (module.getAnimation() < fr.getStringWidth(module.getArrayName("§7", showTags.isToggled())))
+                        module.setAnimation(module.getAnimation() + 0.5);
+                    if (module.getAnimation() > fr.getStringWidth(module.getArrayName("§7", showTags.isToggled())))
+                        module.setAnimation(module.getAnimation() - 0.5);
 
-                Gui.drawRect((int) (sr.getScaledWidth() - module.getAnimation() - 5), y[0], sr.getScaledWidth(), y[0] + offset[0], 0xBB000000);
-                Gui.drawRect((int) (sr.getScaledWidth() - module.getAnimation() - 7), y[0], (int) (sr.getScaledWidth() - module.getAnimation() - 5), y[0] + offset[0], Koks.getKoks().clientColor.getRGB());
-                fr.drawStringWithShadow(module.getArrayName("§7", showTags.isToggled()), (float) (sr.getScaledWidth() - module.getAnimation() - 2), y[0] + 1.5F, Koks.getKoks().clientColor.getRGB());
-                y[0] += offset[0];
-            }
-        });
+                    Gui.drawRect((int) (sr.getScaledWidth() - module.getAnimation() - 5), y[0], sr.getScaledWidth(), y[0] + offset[0], 0xBB000000);
+                    Gui.drawRect((int) (sr.getScaledWidth() - module.getAnimation() - 7), y[0], (int) (sr.getScaledWidth() - module.getAnimation() - 5), y[0] + offset[0], Koks.getKoks().clientColor.getRGB());
+                    fr.drawStringWithShadow(module.getArrayName("§7", showTags.isToggled()), (float) (sr.getScaledWidth() - module.getAnimation() - 2), y[0] + 1.5F, Koks.getKoks().clientColor.getRGB());
+                    y[0] += offset[0];
+                }
+            });
+        }
+        if(arrayListMode.getCurrentMode().equalsIgnoreCase("Mode2")) {
+
+            int[] offset = {fr.FONT_HEIGHT + 2};
+            int[] y = {0};
+            int[] currentOffset = {0};
+
+            Koks.getKoks().moduleManager.getModules().stream().sorted(Comparator.comparingDouble(module -> -fr.getStringWidth(module.getArrayName("§7", showTags.isToggled())))).forEach(module -> {
+                if (module.isToggled()) {
+                    if (module.getAnimation() < fr.getStringWidth(module.getArrayName("§7", showTags.isToggled())))
+                        module.setAnimation(module.getAnimation() + 0.5);
+                    if (module.getAnimation() > fr.getStringWidth(module.getArrayName("§7", showTags.isToggled())))
+                        module.setAnimation(module.getAnimation() - 0.5);
+
+                    renderUtil.drawRect(sr.getScaledWidth() - 1.5, y[0], sr.getScaledWidth(), y[0] + offset[0], renderUtil.getRainbow(currentOffset[0], 3000, 1, 1).getRGB());
+                    renderUtil.drawRect(sr.getScaledWidth()- (module.getName() != null ? 2 : 0) - 3 - module.getAnimation(), y[0], sr.getScaledWidth() - 1.5, y[0] + offset[0], renderUtil.getAlphaColor(new Color(25, 25, 25), 170).getRGB());
+
+                    fr.drawStringWithShadow(module.getArrayName("§7", showTags.isToggled()), (float) (sr.getScaledWidth() - module.getAnimation() - 2), y[0] + 1.5F, Color.white.getRGB());
+
+                    y[0] += offset[0];
+                    currentOffset[0] += 100;
+                }
+            });
+        }
     }
 
     @Override

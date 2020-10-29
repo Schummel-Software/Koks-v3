@@ -618,8 +618,10 @@ public class FontRenderer implements IResourceManagerReloadListener {
 
             try {
                 if (Koks.getKoks().moduleManager.getModule(NameProtect.class).isToggled()) {
-                    if (text.contains(Minecraft.getMinecraft().thePlayer.getName())) {
-                        text = text.replace(Minecraft.getMinecraft().thePlayer.getName(), Koks.getKoks().CLManager.getPrefix());
+                    if (Minecraft.getMinecraft().thePlayer != null) {
+                        if (text.contains(Minecraft.getMinecraft().thePlayer.getName())) {
+                            text = text.replace(Minecraft.getMinecraft().thePlayer.getName(), Koks.getKoks().CLManager.getPrefix());
+                        }
                     }
                 }
                 String[] args = text.split(" ");

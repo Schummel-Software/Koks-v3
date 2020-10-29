@@ -73,6 +73,9 @@ public class ModuleManager {
         addModule(new NoFov());
         addModule(new NoHurtCam());
         addModule(new PlayerESP());
+        addModule(new MotionGraph());
+        addModule(new FakeAutoBlock());
+        addModule(new Swing());
         addModule(new TrailESP());
         addModule(new Scaffold());
         addModule(new DormantESP());

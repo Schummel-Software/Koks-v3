@@ -35,6 +35,7 @@ public class TrailESP extends Module {
                 GL11.glPushMatrix();
                 GL11.glColor4f(Koks.getKoks().clientColor.getRed() / 255F, Koks.getKoks().clientColor.getGreen() / 255F, Koks.getKoks().clientColor.getBlue() / 255F, Koks.getKoks().clientColor.getAlpha() / 255F);
                 GL11.glDisable(GL11.GL_TEXTURE_2D);
+                GL11.glDisable(GL11.GL_LIGHTING);
                 GL11.glLineWidth(2F);
 
                 GL11.glBegin(GL11.GL_LINE_STRIP);
@@ -46,6 +47,7 @@ public class TrailESP extends Module {
                 GL11.glVertex3d(0, 0.01, 0);
                 GL11.glEnd();
                 GL11.glEnable(GL11.GL_TEXTURE_2D);
+                GL11.glEnable(GL11.GL_LIGHTING);
                 GL11.glColor4f(1, 1, 1, 1);
 
                 GL11.glPopMatrix();
