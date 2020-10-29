@@ -15,10 +15,6 @@ import org.lwjgl.input.Keyboard;
 @ModuleInfo(name = "ClickGUI", description = "Opens the ClickGUI", category = Module.Category.GUI)
 public class ClickGui extends Module {
 
-    public Setting red = new Setting("Red", 0, 0, 255, true, this);
-    public Setting green = new Setting("Green", 140, 0, 255, true, this);
-    public Setting blue = new Setting("Blue", 255, 0, 255, true, this);
-
     public ClickGui() {
         setKey(Keyboard.KEY_RSHIFT);
     }
