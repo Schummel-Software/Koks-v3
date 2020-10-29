@@ -23,7 +23,7 @@ public class PlayerESP extends Module {
 
     public final ESPUtil espUtil = new ESPUtil();
 
-    public Setting espMode = new Setting("ESP Mode", new String[]{"2D Style", "Box", "Shader"}, "Box", this);
+    public Setting espMode = new Setting("ESP Mode", new String[]{"2D Style", "Box", "Shader"}, "Shader", this);
 
     @Override
     public void onEvent(Event event) {
