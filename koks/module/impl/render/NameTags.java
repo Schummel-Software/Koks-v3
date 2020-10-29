@@ -1,6 +1,7 @@
 package koks.module.impl.render;
 
 import koks.Koks;
+import koks.api.settings.Setting;
 import koks.event.Event;
 import koks.event.impl.EventRender3D;
 import koks.module.Module;
@@ -19,6 +20,9 @@ import org.lwjgl.opengl.GL11;
 
 @ModuleInfo(name = "NameTags", description = "Its show the name tags from other players", category = Module.Category.RENDER)
 public class NameTags extends Module {
+
+    public Setting bac = new Setting("Show BAC", true, this);
+    public Setting bacBrandmark = new Setting("BAC Brandmark", "&cHURENSOHN", this);
 
     @Override
     public void onEvent(Event event) {
@@ -40,14 +44,14 @@ public class NameTags extends Module {
                     double height = (defaultScale + scale) * 75;
 
                     boolean isFriend = Koks.getKoks().friendManager.isFriend(entity.getName());
-                    String name = (isFriend ? "§bFriend §7| " : "") + entity.getName();
+                    boolean isHurensohn = bac.isToggled() && entity.getDisplayName().getUnformattedText().contains("✔");
+                    String name = (isHurensohn ? "§7[" + bacBrandmark.getTyped().replace("&", "§") + "§7] " : "") + (isFriend ? "§bFriend §7| " : "") + entity.getDisplayName().getFormattedText();
                     float finalHealth = Float.isNaN(((EntityLivingBase) entity).getHealth()) ? -1 : Math.round(((EntityLivingBase) entity).getHealth() * 5);
                     String colorPrefix = finalHealth == -1 ? "" : (finalHealth >= 80 ? "§a" : finalHealth < 80 && finalHealth >= 60 ? "§e" : finalHealth < 60 && finalHealth >= 40 ? "§6" : finalHealth < 40 && finalHealth >= 20 ? "§c" : finalHealth < 20 ? "§4" : "§f");
                     String health = finalHealth == -1 ? " §cNaN" : " " + colorPrefix + Math.round(finalHealth) + "%";
                     String tagText = name + " " + health;
 
                     GL11.glPushMatrix();
-                    GL11.glDisable(GL11.GL_LIGHTING);
                     GL11.glTranslated(x, y + 2.1 - height, z);
                     GL11.glScaled(-(defaultScale + scale), -(defaultScale + scale), -(defaultScale + scale));
                     GL11.glRotated(mc.getRenderManager().playerViewY, 0, -1, 0);
@@ -57,7 +61,6 @@ public class NameTags extends Module {
                     mc.fontRendererObj.drawString(tagText, -mc.fontRendererObj.getStringWidth(tagText) / 2, -90, 0xFFFFFFFF);
 
                     GlStateManager.enableDepth();
-                    GL11.glEnable(GL11.GL_LIGHTING);
                     GL11.glPopMatrix();
                 }
             }

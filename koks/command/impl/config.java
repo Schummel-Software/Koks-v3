@@ -16,6 +16,7 @@ public class config extends Command {
     @Override
     public void execute(String[] args) {
         if (args.length <= 1) {
+            sendError("Usage", ".config online [Name]");
             sendError("Usage", ".config load [Name]");
             sendError("Usage", ".config save [Name]");
         } else {

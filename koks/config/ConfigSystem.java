@@ -68,16 +68,18 @@ public class ConfigSystem {
                         module = Koks.getKoks().moduleManager.getModule(args[1]);
                         Setting setting = Koks.getKoks().settingsManager.getSetting(module, args[2]);
                         if (setting != null && module != null) {
-                            switch (setting.getType()) {
-                                case SLIDER:
-                                    setting.setCurrentValue(Float.parseFloat(args[3]));
-                                    break;
-                                case CHECKBOX:
-                                    setting.setToggled(Boolean.parseBoolean(args[3]));
-                                    break;
-                                case COMBOBOX:
-                                    setting.setCurrentMode(args[3]);
-                                    break;
+                            if (module.getCategory() != Module.Category.GUI && module.getCategory() != Module.Category.RENDER && module.getCategory() != Module.Category.DEBUG) {
+                                switch (setting.getType()) {
+                                    case SLIDER:
+                                        setting.setCurrentValue(Float.parseFloat(args[3]));
+                                        break;
+                                    case CHECKBOX:
+                                        setting.setToggled(Boolean.parseBoolean(args[3]));
+                                        break;
+                                    case COMBOBOX:
+                                        setting.setCurrentMode(args[3]);
+                                        break;
+                                }
                             }
                         }
                         break;
@@ -107,16 +109,18 @@ public class ConfigSystem {
                         module = Koks.getKoks().moduleManager.getModule(args[1]);
                         Setting setting = Koks.getKoks().settingsManager.getSetting(module, args[2]);
                         if (setting != null && module != null) {
-                            switch (setting.getType()) {
-                                case SLIDER:
-                                    setting.setCurrentValue(Float.parseFloat(args[3]));
-                                    break;
-                                case CHECKBOX:
-                                    setting.setToggled(Boolean.parseBoolean(args[3]));
-                                    break;
-                                case COMBOBOX:
-                                    setting.setCurrentMode(args[3]);
-                                    break;
+                            if (module.getCategory() != Module.Category.GUI && module.getCategory() != Module.Category.RENDER && module.getCategory() != Module.Category.DEBUG) {
+                                switch (setting.getType()) {
+                                    case SLIDER:
+                                        setting.setCurrentValue(Float.parseFloat(args[3]));
+                                        break;
+                                    case CHECKBOX:
+                                        setting.setToggled(Boolean.parseBoolean(args[3]));
+                                        break;
+                                    case COMBOBOX:
+                                        setting.setCurrentMode(args[3]);
+                                        break;
+                                }
                             }
                         }
                         break;

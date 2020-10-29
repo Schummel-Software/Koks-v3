@@ -38,14 +38,13 @@ public class RayCastUtil {
         if (entity != null && this.mc.theWorld != null) {
             this.mc.mcProfiler.startSection("pick");
             this.mc.pointedEntity = null;
-            double d0 = (double) this.mc.playerController.getBlockReachDistance();
-            this.mc.objectMouseOver = entity.rayTrace(d0, 1F);
+            float d0 = (float) range;
+            this.mc.objectMouseOver = rayTrace(mc.thePlayer, yaw, pitch, d0);
 
             Vec3 vec3 = entity.getPositionEyes(1F);
             boolean flag = false;
             boolean flag1 = true;
 
-            d0 = range;
             double d1 = d0;
 
             if (this.mc.objectMouseOver != null) {
@@ -118,6 +117,13 @@ public class RayCastUtil {
             this.mc.mcProfiler.endSection();
         }
         return pointedEntity;
+    }
+
+    public MovingObjectPosition rayTrace(Entity entity,float yaw, float pitch, float reach) {
+        Vec3 vec3 = entity.getPositionEyes(1F);
+        Vec3 vec31 = getLook(yaw, pitch);
+        Vec3 vec32 = vec3.addVector(vec31.xCoord * reach, vec31.yCoord * reach, vec31.zCoord * reach);
+        return mc.theWorld.rayTraceBlocks(vec3, vec32, false, false, true);
     }
 
     public Vec3 getLook(float yaw, float pitch) {

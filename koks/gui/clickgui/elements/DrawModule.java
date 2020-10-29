@@ -90,7 +90,7 @@ public class DrawModule {
 
             if (element.setting.getType() == Setting.Type.TYPE) {
                 String typed = element.setting.getTyped();
-                int offset = 50;
+                int offset = fr.getStringWidth(element.setting.getName()) + 12;
                 if (settingWidth < fr.getStringWidth(typed) + offset) {
                     settingWidth = fr.getStringWidth(typed) + offset;
                 }

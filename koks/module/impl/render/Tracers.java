@@ -6,8 +6,10 @@ import koks.event.Event;
 import koks.event.impl.EventRender3D;
 import koks.module.Module;
 import koks.module.ModuleInfo;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.scoreboard.ScorePlayerTeam;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
@@ -49,6 +51,26 @@ public class Tracers extends Module {
     public void drawLine(Entity entity, Color color) {
         GL11.glLoadIdentity();
         mc.entityRenderer.orientCamera(mc.timer.renderPartialTicks);
+
+        if(entity instanceof EntityPlayer) {
+            int i = 16777215;
+            ScorePlayerTeam scoreplayerteam = (ScorePlayerTeam) ((EntityPlayer) entity).getTeam();
+
+            if (scoreplayerteam != null) {
+                String s = FontRenderer.getFormatFromString(scoreplayerteam.getColorPrefix());
+
+                if (s.length() >= 2) {
+                    i = mc.getRenderManager().getFontRenderer().getColorCode(s.charAt(1));
+                }
+                float f1 = (float) (i >> 16 & 255) / 255.0F;
+                float f2 = (float) (i >> 8 & 255) / 255.0F;
+                float f = (float) (i & 255) / 255.0F;
+
+                color = new Color(f1,f2,f);
+            }
+
+        }
+
 
         double distance = entity.getDistanceToEntity(getPlayer());
         if (distance <= 10)

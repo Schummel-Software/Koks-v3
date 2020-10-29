@@ -126,10 +126,9 @@ public class KillAura extends Module {
 
         if (event instanceof EventAttack) {
             if (finalEntity != null) {
-                if (getPlayer().getCurrentEquippedItem() != null) {
-                    if (canBlock() && autoBlock.isToggled() && blockMode.getCurrentMode().equals("Full"))
-                        mc.playerController.sendUseItem(mc.thePlayer, mc.theWorld, mc.thePlayer.getCurrentEquippedItem());
-                }
+                if (canBlock() && autoBlock.isToggled() && blockMode.getCurrentMode().equals("Full"))
+                    mc.playerController.sendUseItem(mc.thePlayer, mc.theWorld, mc.thePlayer.getHeldItem());
+
 
                 long cps = (long) this.cps.getCurrentValue();
 
@@ -207,7 +206,7 @@ public class KillAura extends Module {
     }
 
     boolean canBlock() {
-        return mc.thePlayer.getHeldItem() != null && mc.thePlayer.getHeldItem().getItem() != null && mc.thePlayer.getHeldItem().getItem() instanceof ItemSword;
+        return getPlayer().getCurrentEquippedItem() != null && mc.thePlayer.getHeldItem().getItem() instanceof ItemSword;
     }
 
     public void manageEntities() {
