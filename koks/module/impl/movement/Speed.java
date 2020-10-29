@@ -76,7 +76,7 @@ public class Speed extends Module {
                         if (getPlayer().onGround) {
                             getPlayer().jump();
                         } else {
-                            getPlayer().motionY -= 0.024;
+                            getPlayer().motionY -= 0.022;
                             getPlayer().jumpMovementFactor = 0.032F;
                         }
                     }
