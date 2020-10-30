@@ -203,6 +203,8 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
                                 loginUtil.status = "§aUpdated Altening API Token";
                             } else if (email.getText().contains("@alt.com")) {
                                 loginUtil.login(email.getText());
+                            } else {
+                                loginUtil.loginCracked(email.getText());
                             }
 
                         }
