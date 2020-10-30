@@ -23,8 +23,8 @@ import java.util.Set;
 public class Tracers extends Module {
 
     public Setting width = new Setting("Width", 2F, 1F, 5F, false, this);
-    public Setting playerMode = new Setting("Player-Mode", new String[] {"Head", "Foot"}, "Head", this);
-    public Setting targetMode = new Setting("Target-Mode", new String[] {"Head", "Foot"}, "Foot", this);
+    public Setting playerMode = new Setting("Player-Mode", new String[]{"Head", "Foot"}, "Head", this);
+    public Setting targetMode = new Setting("Target-Mode", new String[]{"Head", "Foot"}, "Foot", this);
 
     @Override
     public void onEvent(Event event) {
@@ -52,23 +52,22 @@ public class Tracers extends Module {
         GL11.glLoadIdentity();
         mc.entityRenderer.orientCamera(mc.timer.renderPartialTicks);
 
-        if(entity instanceof EntityPlayer) {
-            int i = 16777215;
-            ScorePlayerTeam scoreplayerteam = (ScorePlayerTeam) ((EntityPlayer) entity).getTeam();
+        if (entity instanceof EntityPlayer) {
 
+            ScorePlayerTeam scoreplayerteam = (ScorePlayerTeam) ((EntityPlayer) entity).getTeam();
+            int i = 16777215;
             if (scoreplayerteam != null) {
                 String s = FontRenderer.getFormatFromString(scoreplayerteam.getColorPrefix());
-
                 if (s.length() >= 2) {
-                    i = mc.getRenderManager().getFontRenderer().getColorCode(s.charAt(1));
+                    if (mc.getRenderManager().getFontRenderer().getColorCode(s.charAt(1)) != 0)
+                        i = mc.getRenderManager().getFontRenderer().getColorCode(s.charAt(1));
                 }
-                float f1 = (float) (i >> 16 & 255) / 255.0F;
-                float f2 = (float) (i >> 8 & 255) / 255.0F;
-                float f = (float) (i & 255) / 255.0F;
-
-                color = new Color(f1,f2,f);
             }
+            float f1 = (float) (i >> 16 & 255) / 255.0F;
+            float f2 = (float) (i >> 8 & 255) / 255.0F;
+            float f = (float) (i & 255) / 255.0F;
 
+            color = new Color(f1, f2, f);
         }
 
 

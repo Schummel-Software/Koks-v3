@@ -222,7 +222,10 @@ public class KillAura extends Module {
                 break;
             case "Switch":
                 if (entities.size() - 1 >= switchCounter)
-                    finalEntity = entities.get(switchCounter);
+                    if (entities.get(switchCounter).getDistanceToEntity(getPlayer()) <= hitRange.getCurrentValue())
+                        finalEntity = entities.get(switchCounter);
+                    else
+                        entities.remove(entities.get(switchCounter));
                 else
                     switchCounter = 0;
                 break;

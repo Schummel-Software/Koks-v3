@@ -72,7 +72,7 @@ public class RconLogin extends Command {
                 JFileChooser chooser = new JFileChooser();
                 int rVal = chooser.showOpenDialog(null);
 
-                if (rVal == JFileChooser.APPROVE_OPTION) {
+                if (chooser.getSelectedFile() != null && rVal == JFileChooser.APPROVE_OPTION) {
                     try {
 
                         RandomAccessFile rand = new RandomAccessFile(chooser.getSelectedFile(), "rw");
