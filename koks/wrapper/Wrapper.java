@@ -5,17 +5,18 @@ import koks.api.util.*;
 
 /**
  * @author kroko
- * @created on 28.10.2020 : 20:58
+ * @created on 30.10.2020 : 17:24
  */
 public class Wrapper {
 
-    public ESPUtil espUtil = new ESPUtil();
-    public Logger logger = new Logger();
-    public LoginUtil loginUtil = new LoginUtil();
-    public MovementUtil movementUtil = new MovementUtil();
-    public RandomUtil randomUtil = new RandomUtil();
-    public RayCastUtil rayCastUtil = new RayCastUtil();
-    public RenderUtil renderUtil = new RenderUtil();
-    public RotationUtil rotationUtil = new RotationUtil();
-    public Methods methods = new Methods();
+    public final ESPUtil espUtil = new ESPUtil();
+    public final Logger logger = new Logger();
+    public final LoginUtil loginUtil = new LoginUtil();
+    public final MovementUtil movementUtil = new MovementUtil();
+    public final RandomUtil randomUtil = new RandomUtil();
+    public final RayCastUtil rayCastUtil = new RayCastUtil();
+    public final RenderUtil renderUtil = new RenderUtil();
+    public final RotationUtil rotationUtil = new RotationUtil();
+    public final Methods methods = new Methods();
+
 }

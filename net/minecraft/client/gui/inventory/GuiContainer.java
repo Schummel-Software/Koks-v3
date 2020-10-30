@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.util.Set;
 
 import koks.Koks;
-import koks.api.Methods;
 import koks.module.ModuleManager;
 import koks.module.impl.combat.KillAura;
 import net.minecraft.client.Minecraft;

@@ -45,6 +45,7 @@ import koks.event.impl.EventTick;
 import koks.module.Module;
 
 import koks.module.impl.gui.ClickGui;
+import koks.wrapper.Wrapper;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.audio.MusicTicker;
@@ -1573,7 +1574,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
 
         if (theWorld != null) {
             if (Koks.getKoks().isNew) {
-                Methods methods = new Methods();
+                Methods methods = Koks.getKoks().wrapper.methods;
                 methods.sendmsg("§aWelcome to Koks!", true);
                 methods.sendURL("§aPlease join the Discord server! §7(§cClick§7)", "https://discord.gg/SeKKV5G", false, true);
                 methods.sendmsg("§aYou can open the ClickGUI with §e" + Keyboard.getKeyName(Koks.getKoks().moduleManager.getModule(ClickGui.class).getKey()).toUpperCase(), true);

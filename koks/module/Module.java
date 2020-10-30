@@ -3,7 +3,7 @@ package koks.module;
 import koks.Koks;
 import koks.api.Methods;
 import koks.api.settings.SettingInfo;
-import koks.api.util.TimeHelper;
+import koks.api.util.*;
 import koks.event.Event;
 import koks.api.settings.Setting;
 import koks.module.impl.player.SendPublic;
@@ -24,11 +24,29 @@ public abstract class Module extends Methods {
 
     public TimeHelper timeHelper = new TimeHelper();
 
+    public ESPUtil espUtil;
+    public Logger logger;
+    public LoginUtil loginUtil;
+    public MovementUtil movementUtil;
+    public RandomUtil randomUtil;
+    public RayCastUtil rayCastUtil;
+    public RenderUtil renderUtil;
+    public RotationUtil rotationUtil;
+
     public Module() {
         ModuleInfo moduleInfo = getClass().getAnnotation(ModuleInfo.class);
         this.category = moduleInfo.category();
         this.name = moduleInfo.name();
         this.description = moduleInfo.description();
+
+        espUtil = Koks.getKoks().wrapper.espUtil;
+        logger = Koks.getKoks().wrapper.logger;
+        loginUtil = Koks.getKoks().wrapper.loginUtil;
+        movementUtil = Koks.getKoks().wrapper.movementUtil;
+        randomUtil = Koks.getKoks().wrapper.randomUtil;
+        rayCastUtil = Koks.getKoks().wrapper.rayCastUtil;
+        renderUtil = Koks.getKoks().wrapper.renderUtil;
+        rotationUtil = Koks.getKoks().wrapper.rotationUtil;
 
         /* for(Field field : getClass().getDeclaredFields()) {
             try{

@@ -9,16 +9,17 @@ import com.thealtening.api.retriever.BasicDataRetriever;
 import com.thealtening.auth.TheAlteningAuthentication;
 import com.thealtening.auth.service.AlteningServiceType;
 import koks.Koks;
-import koks.api.Methods;
+import net.minecraft.client.Minecraft;
 import net.minecraft.util.Session;
 
+import javax.sound.midi.MidiChannel;
 import java.net.Proxy;
 
 /**
  * @author kroko
  * @created on 07.10.2020 : 17:14
  */
-public class LoginUtil extends Methods {
+public class LoginUtil {
 
     public String status = "waiting...";
 
@@ -33,7 +34,7 @@ public class LoginUtil extends Methods {
 
                 service.logIn();
                 status = "Logged into §e" + service.getSelectedProfile().getName();
-                mc.session = new Session(service.getSelectedProfile().getName(), service.getSelectedProfile().getId().toString(), service.getAuthenticatedToken(), "LEGACY");
+                Minecraft.getMinecraft().session = new Session(service.getSelectedProfile().getName(), service.getSelectedProfile().getId().toString(), service.getAuthenticatedToken(), "LEGACY");
             } catch (Exception e) {
                 status = "§c§lError: §cAccount doesn't working";
             }
@@ -49,31 +50,38 @@ public class LoginUtil extends Methods {
             service.logIn();
             theAlteningAuthentication.updateService(AlteningServiceType.MOJANG);
             status = "Logged into §e" + service.getSelectedProfile().getName();
-            mc.session = new Session(service.getSelectedProfile().getName(), service.getSelectedProfile().getId().toString(), service.getAuthenticatedToken(), "LEGACY");
+            Minecraft.getMinecraft().session = new Session(service.getSelectedProfile().getName(), service.getSelectedProfile().getId().toString(), service.getAuthenticatedToken(), "LEGACY");
         } catch (Exception e) {
             status = "§c§lError: §cAccount doesn't working";
         }
     }
 
     public void generate(String apiToken) {
-        try {
-            BasicDataRetriever basicDataRetriever = new BasicDataRetriever(apiToken);
-            TheAlteningAuthentication theAlteningAuthentication = TheAlteningAuthentication.theAltening();
-            basicDataRetriever.updateKey(apiToken);
-            theAlteningAuthentication.updateService(AlteningServiceType.THEALTENING);
-            AsynchronousDataRetriever asynchronousDataRetriever = basicDataRetriever.toAsync();
-            Account account = asynchronousDataRetriever.getAccount();
-            YggdrasilUserAuthentication service = (YggdrasilUserAuthentication) new YggdrasilAuthenticationService(Proxy.NO_PROXY, "").createUserAuthentication(Agent.MINECRAFT);
+        Thread generateAlt = new Thread("generateAlt") {
+            public void run(){
+                try {
+                    BasicDataRetriever basicDataRetriever = new BasicDataRetriever(apiToken);
+                    TheAlteningAuthentication theAlteningAuthentication = TheAlteningAuthentication.theAltening();
+                    basicDataRetriever.updateKey(apiToken);
+                    theAlteningAuthentication.updateService(AlteningServiceType.THEALTENING);
+                    AsynchronousDataRetriever asynchronousDataRetriever = basicDataRetriever.toAsync();
+                    Account account = asynchronousDataRetriever.getAccount();
+                    YggdrasilUserAuthentication service = (YggdrasilUserAuthentication) new YggdrasilAuthenticationService(Proxy.NO_PROXY, "").createUserAuthentication(Agent.MINECRAFT);
 
 
-            service.setUsername(account.getToken());
-            service.setPassword(Koks.getKoks().NAME);
+                    service.setUsername(account.getToken());
+                    service.setPassword(Koks.getKoks().NAME);
 
-            service.logIn();
-            status = "Logged into §e" + service.getSelectedProfile().getName();
-            mc.session = new Session(service.getSelectedProfile().getName(), service.getSelectedProfile().getId().toString(), service.getAuthenticatedToken(), "LEGACY");
-        } catch (Exception e) {
-            status = "§c§lError: §cAccount doesn't working";
-        }
+                    service.logIn();
+                    status = "Logged into §e" + service.getSelectedProfile().getName();
+                    Minecraft.getMinecraft().session = new Session(service.getSelectedProfile().getName(), service.getSelectedProfile().getId().toString(), service.getAuthenticatedToken(), "LEGACY");
+                    this.stop();
+                } catch (Exception e) {
+                    status = "§c§lError: §cAccount doesn't working";
+                    this.stop();
+                }
+            }
+        };
+        generateAlt.start();
     }
 }

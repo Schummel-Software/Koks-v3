@@ -4,6 +4,7 @@ import club.minnced.discord.rpc.DiscordEventHandlers;
 import club.minnced.discord.rpc.DiscordRPC;
 import club.minnced.discord.rpc.DiscordRichPresence;
 import koks.Koks;
+import org.lwjgl.Sys;
 
 /**
  * @author kroko
@@ -24,7 +25,9 @@ public class DiscordUtil {
             presence = new DiscordRichPresence();
             String steamId = "";
             DiscordEventHandlers handlers = new DiscordEventHandlers();
+
             handlers.ready = (user) -> Koks.getKoks().wrapper.logger.log("Initialized Discord RPC");
+
             lib.Discord_Initialize(applicationID, handlers, true, steamId);
 
             presence.startTimestamp = System.currentTimeMillis() / 1000;

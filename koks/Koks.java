@@ -1,7 +1,6 @@
 package koks;
 
 import koks.api.util.DiscordUtil;
-import koks.cl.User;
 import koks.command.CommandManager;
 import koks.config.ConfigSystem;
 import koks.event.EventManager;
@@ -14,7 +13,6 @@ import koks.module.ModuleManager;
 import koks.api.settings.SettingsManager;
 
 import java.awt.*;
-import java.io.File;
 
 import koks.cl.CLManager;
 import koks.wrapper.Wrapper;
@@ -64,9 +62,9 @@ public class Koks {
     public CLManager CLManager;
     public FriendManager friendManager;
 
-    public DiscordUtil discordUtil;
-
     public Wrapper wrapper;
+
+    public DiscordUtil discordUtil;
 
     public void startClient() {
         wrapper = new Wrapper();
@@ -101,9 +99,5 @@ public class Koks {
 
     public void stopClient() {
         fileManager.writeAllFiles();
-    }
-
-    public Wrapper getWrapper() {
-        return wrapper;
     }
 }

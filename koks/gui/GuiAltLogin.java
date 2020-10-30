@@ -10,6 +10,7 @@ import com.thealtening.auth.TheAlteningAuthentication;
 import com.thealtening.auth.service.AlteningServiceType;
 import koks.Koks;
 import koks.api.util.GLSLSandboxShader;
+import koks.api.util.LoginUtil;
 import koks.filemanager.impl.AlteningToken;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -37,10 +38,13 @@ public class GuiAltLogin extends GuiScreen {
 
     private GLSLSandboxShader shader;
 
+    LoginUtil loginUtil;
+
     public GuiScreen oldScreen;
 
     public GuiAltLogin(GuiScreen oldScreen) {
         this.oldScreen = oldScreen;
+        loginUtil = Koks.getKoks().wrapper.loginUtil;
         try {
             this.shader = new GLSLSandboxShader("/alts.fsh");
         } catch (IOException e) {
@@ -79,14 +83,14 @@ public class GuiAltLogin extends GuiScreen {
 
         email.drawTextBox();
         password.drawTextBox();
-        drawString(fontRendererObj, Koks.getKoks().wrapper.loginUtil.status, 5, 5, Color.white.getRGB());
+        drawString(fontRendererObj, loginUtil.status, 5, 5, Color.white.getRGB());
 
-        if(email.getText().isEmpty()) {
+        if (email.getText().isEmpty()) {
             String email = "Email / TheAltening";
             drawString(fontRendererObj, email, sr.getScaledWidth() / 2 - fontRendererObj.getStringWidth(email) / 2, sr.getScaledHeight() / 3 + 6, Color.gray.getRGB());
         }
 
-        if(password.getText().isEmpty()) {
+        if (password.getText().isEmpty()) {
             String password = "Password";
             drawString(fontRendererObj, password, sr.getScaledWidth() / 2 - fontRendererObj.getStringWidth(password) / 2, sr.getScaledHeight() / 3 + 33, Color.gray.getRGB());
         }
@@ -104,7 +108,7 @@ public class GuiAltLogin extends GuiScreen {
 
 
                 if (!Koks.getKoks().alteningApiKey.equals("") && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-                    Koks.getKoks().wrapper.loginUtil.generate(Koks.getKoks().alteningApiKey);
+                    loginUtil.generate(Koks.getKoks().alteningApiKey);
                 } else {
                     if (password.getText().isEmpty() && email.getText().isEmpty()) {
                         try {
@@ -112,33 +116,33 @@ public class GuiAltLogin extends GuiScreen {
                             String[] args = clipboard.split(":");
                             if (args.length == 1) {
                                 if (args[0].contains("@alt")) {
-                                    Koks.getKoks().wrapper.loginUtil.login(clipboard);
+                                    loginUtil.login(clipboard);
                                 } else if (args[0].startsWith("api-")) {
                                     Koks.getKoks().alteningApiKey = clipboard;
                                     Koks.getKoks().fileManager.writeFile(AlteningToken.class);
-                                    Koks.getKoks().wrapper.loginUtil.status = "§aUpdated Altening API Token";
+                                    loginUtil.status = "§aUpdated Altening API Token";
                                 } else {
                                     if (Koks.getKoks().alteningApiKey != null) {
-                                        Koks.getKoks().wrapper.loginUtil.generate(Koks.getKoks().alteningApiKey);
+                                        loginUtil.generate(Koks.getKoks().alteningApiKey);
                                     }
                                 }
                             } else if (args.length == 2) {
                                 if (args[0].contains("@") && clipboard.contains(":")) {
-                                    Koks.getKoks().wrapper.loginUtil.login(args[0], args[1]);
+                                    loginUtil.login(args[0], args[1]);
                                 }
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
                     } else if (!password.getText().isEmpty() && !email.getText().isEmpty()) {
-                        Koks.getKoks().wrapper.loginUtil.login(email.getText(), password.getText());
+                        loginUtil.login(email.getText(), password.getText());
                     } else if (!email.getText().isEmpty() && password.getText().isEmpty()) {
                         if (email.getText().startsWith("api-")) {
                             Koks.getKoks().alteningApiKey = email.getText();
                             Koks.getKoks().fileManager.writeFile(AlteningToken.class);
-                            Koks.getKoks().wrapper.loginUtil.status = "§aUpdated Altening API Token";
+                            loginUtil.status = "§aUpdated Altening API Token";
                         } else if (email.getText().contains("@alt.com")) {
-                            Koks.getKoks().wrapper.loginUtil.login(email.getText());
+                            loginUtil.login(email.getText());
                         }
 
                     }
@@ -154,30 +158,29 @@ public class GuiAltLogin extends GuiScreen {
         Keyboard.enableRepeatEvents(true);
         if (email.isFocused()) {
             email.textboxKeyTyped(typedChar, keyCode);
-            if(keyCode == Keyboard.KEY_RETURN) {
+            if (keyCode == Keyboard.KEY_RETURN) {
                 password.setFocused(true);
                 email.setFocused(false);
-            }else if(keyCode == Keyboard.KEY_DOWN){
+            } else if (keyCode == Keyboard.KEY_DOWN) {
                 password.setFocused(true);
                 email.setFocused(false);
-            }else if(keyCode == Keyboard.KEY_ESCAPE) {
+            } else if (keyCode == Keyboard.KEY_ESCAPE) {
                 email.setFocused(false);
             }
-        }else
-        if (password.isFocused()) {
+        } else if (password.isFocused()) {
             password.textboxKeyTyped(typedChar, keyCode);
-            if(keyCode == Keyboard.KEY_RETURN) {
+            if (keyCode == Keyboard.KEY_RETURN) {
                 actionPerformed(buttonList.get(1));
-            }else if(keyCode == Keyboard.KEY_UP){
+            } else if (keyCode == Keyboard.KEY_UP) {
                 password.setFocused(false);
                 email.setFocused(true);
-            }else if(keyCode == Keyboard.KEY_ESCAPE) {
+            } else if (keyCode == Keyboard.KEY_ESCAPE) {
                 password.setFocused(false);
             }
-        }else{
-            if(keyCode == Keyboard.KEY_ESCAPE) {
+        } else {
+            if (keyCode == Keyboard.KEY_ESCAPE) {
                 mc.displayGuiScreen(oldScreen);
-            }else if(keyCode == Keyboard.KEY_RETURN) {
+            } else if (keyCode == Keyboard.KEY_RETURN) {
                 actionPerformed(buttonList.get(1));
             }
         }

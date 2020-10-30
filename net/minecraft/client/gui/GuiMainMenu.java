@@ -9,20 +9,12 @@ import java.util.*;
 
 import koks.Koks;
 import koks.api.util.GLSLSandboxShader;
+import koks.api.util.*;
 import koks.api.util.fonts.GlyphPageFontRenderer;
 import koks.filemanager.impl.AlteningToken;
-import net.minecraft.client.audio.PositionedSoundRecord;
-import net.minecraft.client.audio.SoundCategory;
-import net.minecraft.client.audio.SoundEventAccessorComposite;
-import net.minecraft.client.audio.SoundHandler;
-import net.minecraft.client.gui.stream.GuiStreamOptions;
-import net.minecraft.client.gui.stream.GuiStreamUnavailable;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.client.settings.GameSettings;
-import net.minecraft.client.stream.IStream;
 import net.minecraft.util.*;
 import org.apache.commons.io.FileUtils;
 import org.lwjgl.input.Keyboard;
@@ -33,6 +25,9 @@ import org.lwjgl.opengl.GL20;
 public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
 
     public GuiTextField email, password;
+
+    public LoginUtil loginUtil;
+    public RenderUtil renderUtil;
 
     public boolean windowShowed = true, showOptions, showColorPicker, showBackgrounds, showRight, drag = false, dragOptions = false, dragColor = false, dragBackground = false;
 
@@ -53,8 +48,6 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
 
     public GlyphPageFontRenderer fontRenderer = GlyphPageFontRenderer.create("Arial", 120, true, true, true);
 
-    public LoginUtil loginUtil = Koks.getKoks().wrapper.loginUtil;
-    private RenderUtil renderUtil = Koks.getKoks().wrapper.renderUtil;
     private GLSLSandboxShader shader;
 
     public ArrayList<File> backgrounds = new ArrayList<>();
@@ -65,6 +58,8 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
     public String curBackground = "DEFAULT";
 
     public GuiMainMenu() {
+        renderUtil = Koks.getKoks().wrapper.renderUtil;
+        loginUtil = Koks.getKoks().wrapper.loginUtil;
         try {
             this.shader = new GLSLSandboxShader("/mainmenu.fsh");
         } catch (IOException e) {
@@ -274,7 +269,6 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
 
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         ScaledResolution sr = new ScaledResolution(mc);
-        RenderUtil renderUtil = new RenderUtil();
 
         for (GuiButton button : buttonList) {
             if ((!saveY.containsKey(button.id) && !saveX.containsKey(button.id)) || (scaleY != sr.getScaledHeight() || scaleX != sr.getScaledWidth())) {

@@ -4,7 +4,6 @@ import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import koks.Koks;
 import koks.api.settings.Setting;
-import koks.api.util.RandomUtil;
 import koks.gui.clickgui.elements.Element;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.util.ChatAllowedCharacters;
@@ -21,8 +20,6 @@ public class DrawType extends Element {
     }
 
     boolean isKeyTyped = false;
-
-    public RandomUtil randomUtil = Koks.getKoks().wrapper.randomUtil;
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {

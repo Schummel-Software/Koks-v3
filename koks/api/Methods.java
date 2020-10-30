@@ -20,17 +20,6 @@ import net.minecraft.world.World;
  */
 public class Methods {
 
-    public ESPUtil espUtil = Koks.getKoks().wrapper.espUtil;
-    public Logger logger = Koks.getKoks().wrapper.logger;
-    public LoginUtil loginUtil = Koks.getKoks().wrapper.loginUtil;
-    public MovementUtil movementUtil = Koks.getKoks().wrapper.movementUtil;
-    public RandomUtil randomUtil = Koks.getKoks().wrapper.randomUtil;
-    public RayCastUtil rayCastUtil = Koks.getKoks().wrapper.rayCastUtil;
-    public RenderUtil renderUtil = Koks.getKoks().wrapper.renderUtil;
-    public RotationUtil rotationUtil = Koks.getKoks().wrapper.rotationUtil;
-
-    public static Methods INSTANCE = new Methods();
-
     public final Console console = new Console();
 
     public final Minecraft mc = Minecraft.getMinecraft();

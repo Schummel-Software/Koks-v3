@@ -1,6 +1,7 @@
 package koks.gui.tabgui;
 
 import koks.Koks;
+import koks.api.util.RenderUtil;
 import koks.event.impl.EventKeyPress;
 import koks.module.Module;
 import net.minecraft.client.Minecraft;
@@ -34,6 +35,7 @@ public class DrawCategory {
     }
 
     public void drawScreen(int x, int y, int width, int height) {
+        RenderUtil renderUtil = new RenderUtil();
         this.x = x;
         this.y = y;
         this.width = width;
@@ -50,8 +52,8 @@ public class DrawCategory {
                 animateCat+=0.5;
             if(animateCat > shouldRender)
                 animateCat-=0.5;
-            Koks.getKoks().wrapper.renderUtil.drawRect(x + width, y, x + width * 2, y + height * drawModules.size(), 0xBB000000);
-            Koks.getKoks().wrapper.renderUtil.drawRect(x + width, animateCat, x + width * 2, animateCat + height, Koks.getKoks().clientColor.getRGB());
+            renderUtil.drawRect(x + width, y, x + width * 2, y + height * drawModules.size(), 0xBB000000);
+            renderUtil.drawRect(x + width, animateCat, x + width * 2, animateCat + height, Koks.getKoks().clientColor.getRGB());
         }
         int y2 = y;
         if (extended && Koks.getKoks().tabGUI.extendedCat == category) {
