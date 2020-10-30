@@ -37,6 +37,8 @@ public class LoginUtil {
                         service.logIn();
                         status = "Logged into §e" + service.getSelectedProfile().getName();
                         Minecraft.getMinecraft().session = new Session(service.getSelectedProfile().getName(), service.getSelectedProfile().getId().toString(), service.getAuthenticatedToken(), "LEGACY");
+                        this.destroy();
+                        this.stop();
                     } catch (Exception e) {
                         status = "§c§lError: §cAccount doesn't working";
                     }
@@ -53,6 +55,7 @@ public class LoginUtil {
                 theAlteningAuthentication.updateService(AlteningServiceType.MOJANG);
                 status = "Logged into §e" + name + " §7(§cCracked§7)";
                 Minecraft.getMinecraft().session = new Session(name, "", "", "LEGACY");
+                this.destroy();
                 this.stop();
             }
         };
@@ -71,6 +74,7 @@ public class LoginUtil {
                     theAlteningAuthentication.updateService(AlteningServiceType.MOJANG);
                     status = "Logged into §e" + service.getSelectedProfile().getName();
                     Minecraft.getMinecraft().session = new Session(service.getSelectedProfile().getName(), service.getSelectedProfile().getId().toString(), service.getAuthenticatedToken(), "LEGACY");
+                    this.destroy();
                     this.stop();
                 } catch (Exception e) {
                     status = "§c§lError: §cAccount doesn't working";
@@ -100,6 +104,7 @@ public class LoginUtil {
                     service.logIn();
                     status = "Logged into §e" + service.getSelectedProfile().getName();
                     Minecraft.getMinecraft().session = new Session(service.getSelectedProfile().getName(), service.getSelectedProfile().getId().toString(), service.getAuthenticatedToken(), "LEGACY");
+                    this.destroy();
                     this.stop();
                 } catch (Exception e) {
                     status = "§c§lError: §cAccount doesn't working";

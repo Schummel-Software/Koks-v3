@@ -4,9 +4,12 @@ import god.buddy.aot.BCompiler;
 import koks.api.util.TimeHelper;
 import koks.event.Event;
 import koks.event.impl.EventTick;
+import koks.event.impl.EventUpdate;
 import koks.module.Module;
 import koks.api.settings.Setting;
 import koks.module.ModuleInfo;
+import net.minecraft.network.play.client.C03PacketPlayer;
+import net.minecraft.network.play.client.C0CPacketInput;
 
 /**
  * @author deleteboys | lmao | kroko
@@ -25,8 +28,7 @@ public class Debug extends Module {
     @Override
     public void onEvent(Event event) {
 
-        if (event instanceof EventTick) {
-
+        if (event instanceof EventUpdate) {
         }
 
         if (event instanceof EventTick) {

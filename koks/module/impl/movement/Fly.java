@@ -8,6 +8,7 @@ import koks.event.Event;
 import koks.event.impl.EventUpdate;
 import koks.module.Module;
 import koks.module.ModuleInfo;
+import net.minecraft.network.play.client.C0CPacketInput;
 
 /**
  * @author avox | lmao | kroko
@@ -18,7 +19,7 @@ import koks.module.ModuleInfo;
 public class Fly extends Module {
 
     public Setting aac3312boost = new Setting("AAC3.3.12-Boost", 9F, 1F, 10F, true, this);
-    public Setting mode = new Setting("Mode", new String[]{"AAC3.3.12", "MCCentral", "CubeCraft"}, "AAC3.3.12", this);
+    public Setting mode = new Setting("Mode", new String[]{"AAC3.3.12", "MCCentral", "CubeCraft", "Verus"}, "AAC3.3.12", this);
     public TimeHelper damageTime = new TimeHelper();
 
     @BCompiler(aot = BCompiler.AOT.NORMAL)
@@ -29,6 +30,22 @@ public class Fly extends Module {
             setInfo(mode.getCurrentMode() + extra);
         }
         switch (mode.getCurrentMode()) {
+            case "Verus":
+                if (event instanceof EventUpdate) {
+                    sendPacket(new C0CPacketInput());
+                    if (timeHelper.hasReached(25)) {
+                        getPlayer().capabilities.isCreativeMode = true;
+                        getPlayer().capabilities.isFlying = false;
+                        if (!getPlayer().onGround) {
+                            movementUtil.setSpeed(1.1, true);
+                        }
+                    }
+                    if(timeHelper.hasReached(650)){
+                        getPlayer().motionY = 0.5;
+                        timeHelper.reset();
+                    }
+                }
+                break;
             case "AAC3.3.12":
                 if (event instanceof EventUpdate) {
                     if (mc.thePlayer.posY <= -70) {

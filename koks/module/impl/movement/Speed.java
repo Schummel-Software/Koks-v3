@@ -20,6 +20,8 @@ public class Speed extends Module {
 
     public float mineplexMotion;
 
+    public int aacSpeed;
+
     @BCompiler(aot = BCompiler.AOT.AGGRESSIVE)
     @Override
     public void onEvent(Event event) {
@@ -27,17 +29,32 @@ public class Speed extends Module {
             setInfo(mode.getCurrentMode());
             switch (mode.getCurrentMode()) {
                 case "Legit":
-                    if (getPlayer().onGround && isMoving()) {
+                    if(getPlayer().onGround)
                         getPlayer().jump();
+                    getPlayer().setSprinting(true);
+                    break;
+                case "AAC4":
+                    if (getPlayer().onGround) {
+                        aacSpeed++;
+                        getPlayer().jump();
+                        if (aacSpeed <= 3)
+                            getTimer().timerSpeed = 50;
+                        else
+                            getTimer().timerSpeed = 0.045F;
+                    } else {
+                        getTimer().timerSpeed = 1.0F;
                     }
+
+                    if(aacSpeed >= 4)
+                        aacSpeed = 0;
                     break;
                 case "Intave":
                     getPlayer().setSprinting(true);
                     getPlayer().addExhaustion(0.8F);
                     if (getPlayer().onGround && isMoving()) {
                         getPlayer().jump();
-                    }else {
-                        if(getPlayer().fallDistance >= 0.7)
+                    } else {
+                        if (getPlayer().fallDistance >= 0.7)
                             getPlayer().motionY -= 0.01955;
                     }
                     break;
@@ -69,12 +86,12 @@ public class Speed extends Module {
                 case "Mineplex FAST":
                     if (!mc.thePlayer.isInWeb) {
 
-                        if(getPlayer().isCollidedHorizontally) {
+                        if (getPlayer().isCollidedHorizontally) {
                             setMotion(0);
                             mineplexMotion = 0.02F;
                         }
 
-                        if(isMoving()) {
+                        if (isMoving()) {
                             if (getPlayer().onGround) {
                                 getPlayer().motionX = getPlayer().motionZ = 0;
                                 mineplexMotion += 0.25F;
@@ -87,7 +104,7 @@ public class Speed extends Module {
                                 mineplexMotion -= mineplexMotion / 64;
                                 movementUtil.setSpeed(mineplexMotion, false);
                             }
-                        }else{
+                        } else {
                             mineplexMotion = 0.02F;
                         }
                     }
