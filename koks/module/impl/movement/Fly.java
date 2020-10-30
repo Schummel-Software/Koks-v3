@@ -3,17 +3,11 @@ package koks.module.impl.movement;
 import god.buddy.aot.BCompiler;
 import koks.Koks;
 import koks.api.settings.Setting;
-import koks.api.util.MovementUtil;
 import koks.api.util.TimeHelper;
 import koks.event.Event;
-import koks.event.impl.EventPacket;
 import koks.event.impl.EventUpdate;
 import koks.module.Module;
 import koks.module.ModuleInfo;
-import koks.module.impl.debug.Debug;
-import net.minecraft.network.play.client.C03PacketPlayer;
-
-import java.sql.Time;
 
 /**
  * @author avox | lmao | kroko
@@ -25,8 +19,6 @@ public class Fly extends Module {
 
     public Setting aac3312boost = new Setting("AAC3.3.12-Boost", 9F, 1F, 10F, true, this);
     public Setting mode = new Setting("Mode", new String[]{"AAC3.3.12", "MCCentral", "CubeCraft"}, "AAC3.3.12", this);
-    private final MovementUtil movementUtil = new MovementUtil();
-    public TimeHelper timeHelper = new TimeHelper();
     public TimeHelper damageTime = new TimeHelper();
 
     @BCompiler(aot = BCompiler.AOT.NORMAL)

@@ -1,7 +1,6 @@
 package koks.module.impl.render;
 
 import koks.api.settings.Setting;
-import koks.api.util.ESPUtil;
 import koks.event.Event;
 import koks.event.impl.EventOutline;
 import koks.event.impl.EventRender3D;
@@ -19,8 +18,6 @@ import net.minecraft.util.AxisAlignedBB;
 
 @ModuleInfo(name = "ItemESP", description = "Its show all Items in the world", category = Module.Category.RENDER)
 public class ItemESP extends Module {
-
-    public final ESPUtil espUtil = new ESPUtil();
 
     public Setting espMode = new Setting("ESP Mode", new String[]{"2D Style", "Box", "Shader"}, "Box", this);
 

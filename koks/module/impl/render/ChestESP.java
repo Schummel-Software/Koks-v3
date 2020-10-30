@@ -2,17 +2,11 @@ package koks.module.impl.render;
 
 import koks.Koks;
 import koks.api.settings.Setting;
-import koks.api.util.ESPUtil;
-import koks.api.util.RenderUtil;
 import koks.event.Event;
 import koks.event.impl.EventRender3D;
 import koks.event.impl.EventUpdate;
 import koks.module.Module;
 import koks.module.ModuleInfo;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.tileentity.TileEntityEnderChest;
@@ -31,11 +25,7 @@ import java.awt.*;
 @ModuleInfo(name = "ChestESP", description = "Marks all chests in the world.", category = Module.Category.RENDER)
 public class ChestESP extends Module {
 
-    public final ESPUtil espUtil = new ESPUtil();
-
     public Setting espMode = new Setting("ESP Mode", new String[]{"2D Style", "Box", "Shader", "Cylinder"}, "Box", this);
-
-    private final RenderUtil renderUtil = new RenderUtil();
 
     @Override
     public void onEvent(Event event) {

@@ -33,7 +33,7 @@ public class TabGUI {
         }
     }
 
-    private final RenderUtil renderUtil = new RenderUtil();
+    private final RenderUtil renderUtil = Koks.getKoks().wrapper.renderUtil;
 
     public void drawScreen(int x, int y, int width, int height) {
         this.x = x;

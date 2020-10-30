@@ -18,8 +18,6 @@ public class MemoryCleaner extends Module {
     public Setting memorySize = new Setting("MemorySize", new String[] {"Byte","Kilobyte","Megabyte","Gigabyte","Terabyte","Petabyte","Exabyte"},"Gigabyte", this);
     public Setting minutes = new Setting("Minutes", 3, 1, 10, true, this);
 
-    public TimeHelper timeHelper = new TimeHelper();
-
     @Override
     public void onEvent(Event event) {
         if(event instanceof EventUpdate) {

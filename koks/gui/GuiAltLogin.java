@@ -10,7 +10,6 @@ import com.thealtening.auth.TheAlteningAuthentication;
 import com.thealtening.auth.service.AlteningServiceType;
 import koks.Koks;
 import koks.api.util.GLSLSandboxShader;
-import koks.api.util.LoginUtil;
 import koks.filemanager.impl.AlteningToken;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -37,8 +36,6 @@ import java.util.ArrayList;
 public class GuiAltLogin extends GuiScreen {
 
     private GLSLSandboxShader shader;
-
-    public LoginUtil loginUtil = new LoginUtil();
 
     public GuiScreen oldScreen;
 
@@ -82,7 +79,7 @@ public class GuiAltLogin extends GuiScreen {
 
         email.drawTextBox();
         password.drawTextBox();
-        drawString(fontRendererObj, loginUtil.status, 5, 5, Color.white.getRGB());
+        drawString(fontRendererObj, Koks.getKoks().wrapper.loginUtil.status, 5, 5, Color.white.getRGB());
 
         if(email.getText().isEmpty()) {
             String email = "Email / TheAltening";
@@ -107,7 +104,7 @@ public class GuiAltLogin extends GuiScreen {
 
 
                 if (!Koks.getKoks().alteningApiKey.equals("") && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-                    loginUtil.generate(Koks.getKoks().alteningApiKey);
+                    Koks.getKoks().wrapper.loginUtil.generate(Koks.getKoks().alteningApiKey);
                 } else {
                     if (password.getText().isEmpty() && email.getText().isEmpty()) {
                         try {
@@ -115,33 +112,33 @@ public class GuiAltLogin extends GuiScreen {
                             String[] args = clipboard.split(":");
                             if (args.length == 1) {
                                 if (args[0].contains("@alt")) {
-                                    loginUtil.login(clipboard);
+                                    Koks.getKoks().wrapper.loginUtil.login(clipboard);
                                 } else if (args[0].startsWith("api-")) {
                                     Koks.getKoks().alteningApiKey = clipboard;
                                     Koks.getKoks().fileManager.writeFile(AlteningToken.class);
-                                    loginUtil.status = "§aUpdated Altening API Token";
+                                    Koks.getKoks().wrapper.loginUtil.status = "§aUpdated Altening API Token";
                                 } else {
                                     if (Koks.getKoks().alteningApiKey != null) {
-                                        loginUtil.generate(Koks.getKoks().alteningApiKey);
+                                        Koks.getKoks().wrapper.loginUtil.generate(Koks.getKoks().alteningApiKey);
                                     }
                                 }
                             } else if (args.length == 2) {
                                 if (args[0].contains("@") && clipboard.contains(":")) {
-                                    loginUtil.login(args[0], args[1]);
+                                    Koks.getKoks().wrapper.loginUtil.login(args[0], args[1]);
                                 }
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
                     } else if (!password.getText().isEmpty() && !email.getText().isEmpty()) {
-                        loginUtil.login(email.getText(), password.getText());
+                        Koks.getKoks().wrapper.loginUtil.login(email.getText(), password.getText());
                     } else if (!email.getText().isEmpty() && password.getText().isEmpty()) {
                         if (email.getText().startsWith("api-")) {
                             Koks.getKoks().alteningApiKey = email.getText();
                             Koks.getKoks().fileManager.writeFile(AlteningToken.class);
-                            loginUtil.status = "§aUpdated Altening API Token";
+                            Koks.getKoks().wrapper.loginUtil.status = "§aUpdated Altening API Token";
                         } else if (email.getText().contains("@alt.com")) {
-                            loginUtil.login(email.getText());
+                            Koks.getKoks().wrapper.loginUtil.login(email.getText());
                         }
 
                     }

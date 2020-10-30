@@ -1,35 +1,12 @@
 package koks.module.impl.debug;
 
 import god.buddy.aot.BCompiler;
-import koks.api.util.MovementUtil;
-import koks.api.util.RandomUtil;
 import koks.api.util.TimeHelper;
 import koks.event.Event;
-import koks.event.impl.EventMotion;
-import koks.event.impl.EventPacket;
 import koks.event.impl.EventTick;
-import koks.event.impl.EventUpdate;
 import koks.module.Module;
 import koks.api.settings.Setting;
 import koks.module.ModuleInfo;
-import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.client.gui.GuiGameOver;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.PlayerCapabilities;
-import net.minecraft.network.Packet;
-import net.minecraft.network.play.client.*;
-import net.minecraft.network.play.server.*;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
-import net.minecraft.world.WorldSettings;
-import org.lwjgl.Sys;
-
-import java.util.UUID;
 
 /**
  * @author deleteboys | lmao | kroko
@@ -43,10 +20,7 @@ public class Debug extends Module {
     public Setting testCombo = new Setting("Combo", new String[]{"M1", "M2"}, "M1", this);
     public Setting testSlider = new Setting("Slider", 10, 5, 20, false, this);
 
-    public TimeHelper timeHelper = new TimeHelper();
-
     // Hunger Balken sind flaggs
-
     @BCompiler(aot = BCompiler.AOT.AGGRESSIVE)
     @Override
     public void onEvent(Event event) {

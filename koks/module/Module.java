@@ -3,6 +3,7 @@ package koks.module;
 import koks.Koks;
 import koks.api.Methods;
 import koks.api.settings.SettingInfo;
+import koks.api.util.TimeHelper;
 import koks.event.Event;
 import koks.api.settings.Setting;
 import koks.module.impl.player.SendPublic;
@@ -20,6 +21,8 @@ public abstract class Module extends Methods {
     private double animation;
     private Category category;
     private boolean toggled, bypass;
+
+    public TimeHelper timeHelper = new TimeHelper();
 
     public Module() {
         ModuleInfo moduleInfo = getClass().getAnnotation(ModuleInfo.class);

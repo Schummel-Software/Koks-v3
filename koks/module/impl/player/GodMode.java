@@ -4,14 +4,10 @@ import god.buddy.aot.BCompiler;
 import koks.api.util.TimeHelper;
 import koks.event.Event;
 import koks.event.impl.EventHeadLook;
-import koks.event.impl.EventPacket;
 import koks.event.impl.EventUpdate;
 import koks.module.Module;
 import koks.api.settings.Setting;
 import koks.module.ModuleInfo;
-import net.minecraft.network.play.client.*;
-import net.minecraft.network.status.client.C01PacketPing;
-import net.minecraft.util.DamageSource;
 
 /**
  * @author deleteboys | lmao | kroko
@@ -22,8 +18,6 @@ import net.minecraft.util.DamageSource;
 public class GodMode extends Module {
 
     public Setting mode = new Setting("Mode", new String[]{"Intave Border"}, "Intave Border", this);
-
-    public TimeHelper timeHelper = new TimeHelper();
 
     @BCompiler(aot = BCompiler.AOT.AGGRESSIVE)
     @Override

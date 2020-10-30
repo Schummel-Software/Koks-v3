@@ -1,13 +1,12 @@
 package koks.module.impl.combat;
 
 import koks.Koks;
-import koks.api.util.*;
+import koks.api.util.TimeHelper;
 import koks.event.Event;
 import koks.event.impl.*;
 import koks.module.Module;
 import koks.api.settings.Setting;
 import koks.module.ModuleInfo;
-import koks.module.impl.world.Scaffold;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityArmorStand;
@@ -78,11 +77,6 @@ public class KillAura extends Module {
     public Entity finalEntity;
 
     public Rotations rotations;
-    public final MovementUtil movementUtil = new MovementUtil();
-    public final RotationUtil rotationUtil = new RotationUtil();
-    public final RayCastUtil rayCastUtil = new RayCastUtil();
-    public final RandomUtil randomUtil = new RandomUtil();
-    public final TimeHelper timeHelper = new TimeHelper();
 
     public int switchCounter;
     public float yaw, pitch, curYaw, curPitch;

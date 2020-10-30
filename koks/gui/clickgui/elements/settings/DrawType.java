@@ -2,6 +2,7 @@ package koks.gui.clickgui.elements.settings;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
+import koks.Koks;
 import koks.api.settings.Setting;
 import koks.api.util.RandomUtil;
 import koks.gui.clickgui.elements.Element;
@@ -21,7 +22,7 @@ public class DrawType extends Element {
 
     boolean isKeyTyped = false;
 
-    public RandomUtil randomUtil = new RandomUtil();
+    public RandomUtil randomUtil = Koks.getKoks().wrapper.randomUtil;
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {

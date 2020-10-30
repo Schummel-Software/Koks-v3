@@ -1,24 +1,12 @@
 package koks.module.impl.movement;
 
 import god.buddy.aot.BCompiler;
+import koks.Koks;
 import koks.api.settings.Setting;
-import koks.api.util.MovementUtil;
-import koks.api.util.RandomUtil;
 import koks.event.Event;
-import koks.event.impl.EventSafeWalk;
 import koks.event.impl.EventUpdate;
 import koks.module.Module;
 import koks.module.ModuleInfo;
-import net.minecraft.block.BlockAir;
-import net.minecraft.block.BlockSlab;
-import net.minecraft.block.BlockStairs;
-import net.minecraft.network.play.client.C03PacketPlayer;
-import net.minecraft.stats.StatList;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.MathHelper;
-
-import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * @author avox | lmao | kroko
@@ -29,7 +17,6 @@ import java.util.concurrent.ThreadLocalRandom;
 public class Speed extends Module {
 
     public Setting mode = new Setting("Mode", new String[]{"Intave", "MCCentral", "Mineplex", "Mineplex FAST", "AAC3.3.12", "Tired", "Legit"}, "Intave", this);
-    private final MovementUtil EmovementUtil = new MovementUtil();
 
     public float mineplexMotion;
 
@@ -37,7 +24,6 @@ public class Speed extends Module {
     @Override
     public void onEvent(Event event) {
         if (event instanceof EventUpdate) {
-            MovementUtil movementUtil = new MovementUtil();
             setInfo(mode.getCurrentMode());
             switch (mode.getCurrentMode()) {
                 case "Legit":
@@ -60,7 +46,6 @@ public class Speed extends Module {
                     if (getPlayer().onGround && isMoving()) {
                         getPlayer().jump();
                         getPlayer().setSprinting(false);
-                        RandomUtil randomUtil = new RandomUtil();
                         movementUtil.setSpeed(0.06, true);
                         getTimer().timerSpeed = 5F;
                     } else {

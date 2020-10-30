@@ -1,6 +1,5 @@
 package net.minecraft.client.gui;
 
-import koks.api.util.RenderUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.audio.SoundHandler;

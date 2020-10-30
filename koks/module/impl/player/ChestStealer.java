@@ -1,7 +1,6 @@
 package koks.module.impl.player;
 
 import koks.Koks;
-import koks.api.util.RandomUtil;
 import koks.api.util.TimeHelper;
 import koks.event.Event;
 import koks.event.impl.EventUpdate;
@@ -21,8 +20,7 @@ public class ChestStealer extends Module {
 
     public Setting startDelay = new Setting("Start Delay", 100.0F, 0.0F, 500.0F, true, this);
     public Setting takeDelay = new Setting("Take Delay", 100.0F, 0.0F, 150.0F, true, this);
-    private final RandomUtil randomUtil = new RandomUtil();
-    private final TimeHelper startTimer = new TimeHelper();
+    private final TimeHelper startTimer = timeHelper;
     private final TimeHelper throwTimer = new TimeHelper();
     private InventoryCleaner inventoryCleaner;
 

@@ -1,15 +1,12 @@
 package koks.module.impl.player;
 
 import god.buddy.aot.BCompiler;
-import koks.api.util.MovementUtil;
 import koks.api.util.TimeHelper;
 import koks.event.Event;
 import koks.event.impl.EventUpdate;
 import koks.module.Module;
 import koks.api.settings.Setting;
 import koks.module.ModuleInfo;
-import net.minecraft.block.BlockClay;
-import net.minecraft.world.WorldSettings;
 
 /**
  * @author deleteboys | lmao | kroko
@@ -20,8 +17,6 @@ import net.minecraft.world.WorldSettings;
 public class Phase extends Module {
 
     public Setting mode = new Setting("Mode", new String[]{"Hive", "Intave"}, "Hive", this);
-
-    public TimeHelper timeHelper = new TimeHelper();
 
     public void hive() {
         if (getPlayer().isCollidedHorizontally) {

@@ -1,7 +1,6 @@
 package koks.module.impl.player;
 
 import koks.Koks;
-import koks.api.util.RandomUtil;
 import koks.api.util.TimeHelper;
 import koks.event.Event;
 import koks.event.impl.EventUpdate;
@@ -37,8 +36,7 @@ public class InventoryCleaner extends Module {
     public Setting axeSlot = new Setting("Axe Slot", 0.0F, 0.0F, 9.0F, true, this);
     public Setting shovelSlot = new Setting("Shovel Slot", 0.0F, 0.0F, 9.0F, true, this);
     private AutoArmor autoArmor;
-    private final RandomUtil randomUtil = new RandomUtil();
-    private final TimeHelper startTimer = new TimeHelper();
+    private final TimeHelper startTimer = timeHelper;
     private final TimeHelper throwTimer = new TimeHelper();
 
     public InventoryCleaner() {

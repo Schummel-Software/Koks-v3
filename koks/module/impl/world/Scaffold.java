@@ -3,9 +3,6 @@ package koks.module.impl.world;
 import god.buddy.aot.BCompiler;
 import koks.Koks;
 import koks.api.settings.Setting;
-import koks.api.util.RandomUtil;
-import koks.api.util.RayCastUtil;
-import koks.api.util.RotationUtil;
 import koks.api.util.TimeHelper;
 import koks.event.Event;
 import koks.event.impl.EventMotion;
@@ -14,6 +11,7 @@ import koks.event.impl.EventUpdate;
 import koks.module.Module;
 import koks.module.ModuleInfo;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockAir;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.init.Blocks;
@@ -42,11 +40,6 @@ public class Scaffold extends Module {
 
     public BlockPos finalPos;
     public boolean shouldBuildDown;
-
-    private final RotationUtil rotationUtil = new RotationUtil();
-    private final TimeHelper timeUtil = new TimeHelper();
-    private final RandomUtil randomutil = new RandomUtil();
-    private final RayCastUtil rayCastUtil = new RayCastUtil();
 
     public Setting delay = new Setting("Delay", 0, 0, 100, true, this);
     public Setting motion = new Setting("Motion", 1, 0, 5, false, this);
@@ -184,15 +177,15 @@ public class Scaffold extends Module {
     public void placeBlock(BlockPos pos, EnumFacing face) {
         finalPos = pos;
         ItemStack silentItemStack = null;
-        if (mc.thePlayer.getCurrentEquippedItem() == null || (!(mc.thePlayer.getCurrentEquippedItem().getItem() instanceof net.minecraft.item.ItemBlock))) {
+        if (mc.thePlayer.getCurrentEquippedItem() == null || (!(mc.thePlayer.getCurrentEquippedItem().getItem() instanceof ItemBlock))) {
             for (int i = 0; i < 9; i++) {
-                if (mc.thePlayer.inventory.getStackInSlot(i) != null && mc.thePlayer.inventory.getStackInSlot(i).getItem() instanceof net.minecraft.item.ItemBlock) {
+                if (mc.thePlayer.inventory.getStackInSlot(i) != null && mc.thePlayer.inventory.getStackInSlot(i).getItem() instanceof ItemBlock) {
                     ItemBlock itemBlock = (ItemBlock) mc.thePlayer.inventory.getStackInSlot(i).getItem();
                     if (this.blackList.contains(itemBlock.getBlock()))
                         continue;
                     mc.thePlayer.sendQueue.addToSendQueue(new C09PacketHeldItemChange(i));
                     silentItemStack = mc.thePlayer.inventory.getStackInSlot(i);
-                    if (mc.theWorld.getBlockState(new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY - 1.0D - (shouldBuildDown ? 1 : 0), mc.thePlayer.posZ)).getBlock() instanceof net.minecraft.block.BlockAir) {
+                    if (mc.theWorld.getBlockState(new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY - 1.0D - (shouldBuildDown ? 1 : 0), mc.thePlayer.posZ)).getBlock() instanceof BlockAir) {
                         if (swingItem.isToggled())
                             mc.thePlayer.swingItem();
                         else
@@ -202,8 +195,8 @@ public class Scaffold extends Module {
                 }
             }
         } else {
-            silentItemStack = (mc.thePlayer.getCurrentEquippedItem().getItem() instanceof net.minecraft.item.ItemBlock) ? mc.thePlayer.getCurrentEquippedItem() : null;
-            if (mc.theWorld.getBlockState(new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY - 1.0D - (shouldBuildDown ? 1 : 0), mc.thePlayer.posZ)).getBlock() instanceof net.minecraft.block.BlockAir) {
+            silentItemStack = (mc.thePlayer.getCurrentEquippedItem().getItem() instanceof ItemBlock) ? mc.thePlayer.getCurrentEquippedItem() : null;
+            if (mc.theWorld.getBlockState(new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY - 1.0D - (shouldBuildDown ? 1 : 0), mc.thePlayer.posZ)).getBlock() instanceof BlockAir) {
                 if (blackList.contains(((ItemBlock) silentItemStack.getItem()).getBlock()))
                     return;
                 mc.thePlayer.swingItem();
@@ -213,13 +206,13 @@ public class Scaffold extends Module {
         if (sneakCount >= sneakAfterBlocks.getCurrentValue() && sneak.isToggled())
             mc.gameSettings.keyBindSneak.pressed = true;
 
-        if (mc.theWorld.getBlockState(new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY - 1.0D - (shouldBuildDown ? 1 : 0), mc.thePlayer.posZ)).getBlock() instanceof net.minecraft.block.BlockAir) {
+        if (mc.theWorld.getBlockState(new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY - 1.0D - (shouldBuildDown ? 1 : 0), mc.thePlayer.posZ)).getBlock() instanceof BlockAir) {
             if (!simpleRotations.isToggled())
                 setYaw();
             if (silentItemStack != null) {
                 boolean rayCasted = !rayCast.isToggled() && !intave.isToggled() || rayCastUtil.isRayCastBlock(pos, rayCastUtil.rayCastedBlock(yaw, pitch, silentItemStack, intave.isToggled()));
                 if (rayCasted) {
-                    if (timeUtil.hasReached(mc.thePlayer.onGround ? (randomutil.getRandomLong((long) delay.getCurrentValue(), (long) delay.getCurrentValue() + 1)) : 20L)) {
+                    if (timeHelper.hasReached(mc.thePlayer.onGround ? (randomUtil.getRandomLong((long) delay.getCurrentValue(), (long) delay.getCurrentValue() + 1)) : 20L)) {
                         if (blackList.contains(((ItemBlock) silentItemStack.getItem()).getBlock()))
                             return;
                         if (silentItemStack != null) {
@@ -227,7 +220,7 @@ public class Scaffold extends Module {
                             if (intave.isToggled())
                                 mc.playerController.onPlayerRightClick(mc.thePlayer, mc.theWorld, silentItemStack, ray.getBlockPos(), ray.sideHit, ray.hitVec);
                             else
-                                mc.playerController.onPlayerRightClick(mc.thePlayer, mc.theWorld, silentItemStack, pos, face, new Vec3(pos.getX() + (this.randomHit.isToggled() ? randomutil.getRandomDouble(0, 0.7) : 0), pos.getY() + (this.randomHit.isToggled() ? randomutil.getRandomDouble(0, 0.7) : 0), pos.getZ() + (this.randomHit.isToggled() ? randomutil.getRandomDouble(0, 0.7) : 0)));
+                                mc.playerController.onPlayerRightClick(mc.thePlayer, mc.theWorld, silentItemStack, pos, face, new Vec3(pos.getX() + (this.randomHit.isToggled() ? randomUtil.getRandomDouble(0, 0.7) : 0), pos.getY() + (this.randomHit.isToggled() ? randomUtil.getRandomDouble(0, 0.7) : 0), pos.getZ() + (this.randomHit.isToggled() ? randomUtil.getRandomDouble(0, 0.7) : 0)));
                             sneakCount++;
 
                             mc.thePlayer.motionX *= motion.getCurrentValue();
@@ -236,7 +229,7 @@ public class Scaffold extends Module {
                             if (sneakCount > sneakAfterBlocks.getCurrentValue())
                                 sneakCount = 0;
 
-                            timeUtil.reset();
+                            timeHelper.reset();
                         }
                     }
                 } else if (intave.isToggled() && !rayCast.isToggled()) {
@@ -246,12 +239,12 @@ public class Scaffold extends Module {
                     if (sprint.isToggled())
                         getPlayer().sendQueue.addToSendQueue(new C0BPacketEntityAction(getPlayer(), C0BPacketEntityAction.Action.START_SPRINTING));
 
-                    timeUtil.reset();
+                    timeHelper.reset();
                 }
             }
         } else {
             mc.gameSettings.keyBindSneak.pressed = false;
-            timeUtil.reset();
+            timeHelper.reset();
             if (!simpleRotations.isToggled())
                 setYaw();
         }

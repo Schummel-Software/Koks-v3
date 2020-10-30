@@ -1,6 +1,5 @@
 package koks.module.impl.player;
 
-import koks.api.util.RandomUtil;
 import koks.api.util.TimeHelper;
 import koks.event.Event;
 import koks.event.impl.EventUpdate;
@@ -34,8 +33,7 @@ public class AutoArmor extends Module {
     public Setting startDelay = new Setting("Start Delay", 250.0F, 0.0F, 500.0F, true, this);
     public Setting throwDelay = new Setting("Equip Delay", 100.0F, 0.0F, 150.0F, true, this);
 
-    private final RandomUtil randomUtil = new RandomUtil();
-    private final TimeHelper startTimer = new TimeHelper();
+    private final TimeHelper startTimer = timeHelper;
     private final TimeHelper throwTimer = new TimeHelper();
 
     public AutoArmor() {

@@ -7,16 +7,7 @@ import koks.event.Event;
 import koks.event.impl.EventUpdate;
 import koks.module.Module;
 import koks.module.ModuleInfo;
-import net.minecraft.block.BlockAir;
-import net.minecraft.entity.player.PlayerCapabilities;
-import net.minecraft.init.Items;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.play.client.C00PacketKeepAlive;
-import net.minecraft.network.play.client.C02PacketUseEntity;
 import net.minecraft.network.play.client.C03PacketPlayer;
-import net.minecraft.network.play.client.C13PacketPlayerAbilities;
-import net.minecraft.util.BlockPos;
 
 /**
  * @author avox | lmao | kroko
@@ -27,8 +18,6 @@ import net.minecraft.util.BlockPos;
 public class NoFall extends Module {
     
     public Setting mode = new Setting("Mode", new String[]{"Mineplex", "Intave", "AAC4"}, "Mineplex", this);
-
-    public TimeHelper timeHelper = new TimeHelper();
 
     public void mineplex() {
         if (getPlayer().fallDistance > 2) {

@@ -20,8 +20,6 @@ import org.lwjgl.input.Keyboard;
 @ModuleInfo(name = "InvMove", description = "You can walk in the inventory", category = Module.Category.MOVEMENT)
 public class InvMove extends Module {
 
-    private final TimeHelper timeHelper = new TimeHelper();
-
     public Setting jump = new Setting("Jump", true, this);
     public Setting sprint = new Setting("Sprint", true, this);
     public Setting look = new Setting("Look", true, this);

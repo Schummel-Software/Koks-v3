@@ -1,8 +1,8 @@
 package koks.module.impl.combat;
 
 import god.buddy.aot.BCompiler;
+import koks.Koks;
 import koks.api.settings.Setting;
-import koks.api.util.RayCastUtil;
 import koks.event.Event;
 import koks.event.impl.EventBlockReach;
 import koks.event.impl.EventMouseOver;
@@ -24,8 +24,6 @@ import net.minecraft.util.MovingObjectPosition;
 public class SuperHit extends Module {
 
     public Setting reach = new Setting("Reach", 250F, 10F, 500F, true, this);
-
-    private RayCastUtil rayCastUtil = new RayCastUtil();
 
     @BCompiler(aot = BCompiler.AOT.AGGRESSIVE)
     @Override

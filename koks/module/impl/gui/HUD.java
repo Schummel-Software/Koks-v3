@@ -1,8 +1,6 @@
 package koks.module.impl.gui;
 
 import koks.Koks;
-import koks.api.util.RenderUtil;
-import koks.api.util.fonts.GlyphPage;
 import koks.api.util.fonts.GlyphPageFontRenderer;
 import koks.cl.Role;
 import koks.event.Event;
@@ -41,8 +39,6 @@ public class HUD extends Module {
     public Setting y = new Setting("Y", 30, 20, 50, true, this);
     public Setting width = new Setting("Width", 91, 80, 100, true, this);
     public Setting height = new Setting("height", 13, 10, 20, true, this);
-
-    private final RenderUtil renderUtil = new RenderUtil();
 
     public HUD() {
         setToggled(true);

@@ -9,8 +9,6 @@ import java.util.*;
 
 import koks.Koks;
 import koks.api.util.GLSLSandboxShader;
-import koks.api.util.LoginUtil;
-import koks.api.util.RenderUtil;
 import koks.api.util.fonts.GlyphPageFontRenderer;
 import koks.filemanager.impl.AlteningToken;
 import net.minecraft.client.audio.PositionedSoundRecord;
