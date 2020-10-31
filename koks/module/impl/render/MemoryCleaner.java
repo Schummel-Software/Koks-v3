@@ -38,7 +38,6 @@ public class MemoryCleaner extends Module {
                 Thread clearMemory = new Thread("clearMemory") {
                     public void run() {
                         System.gc();
-                        this.destroy();
                         this.stop();
                     }
                 };
