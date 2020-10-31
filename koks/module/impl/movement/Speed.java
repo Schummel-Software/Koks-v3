@@ -40,7 +40,7 @@ public class Speed extends Module {
                         if (aacSpeed <= 3)
                             getTimer().timerSpeed = 25;
                         else
-                            getTimer().timerSpeed = 0.045F;
+                            getTimer().timerSpeed = 0.1F;
                     } else {
                         getTimer().timerSpeed = 1.0F;
                     }

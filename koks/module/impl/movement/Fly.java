@@ -8,7 +8,9 @@ import koks.event.Event;
 import koks.event.impl.EventUpdate;
 import koks.module.Module;
 import koks.module.ModuleInfo;
+import net.minecraft.entity.player.PlayerCapabilities;
 import net.minecraft.network.play.client.C0CPacketInput;
+import net.minecraft.network.play.client.C13PacketPlayerAbilities;
 
 /**
  * @author avox | lmao | kroko
@@ -34,8 +36,11 @@ public class Fly extends Module {
                 if (event instanceof EventUpdate) {
                     sendPacket(new C0CPacketInput());
                     if (timeHelper.hasReached(25)) {
-                        getPlayer().capabilities.isCreativeMode = true;
-                        getPlayer().capabilities.isFlying = false;
+                        PlayerCapabilities capabilities = new PlayerCapabilities();
+                        capabilities.isCreativeMode = false;
+                        capabilities.allowFlying = true;
+                        capabilities.isFlying = false;
+                        sendPacket(new C13PacketPlayerAbilities(capabilities));
                         if (!getPlayer().onGround) {
                             movementUtil.setSpeed(1.1, true);
                         }
@@ -92,6 +97,10 @@ public class Fly extends Module {
     public void onEnable() {
         timeHelper.reset();
         damageTime.reset();
+
+        if(getPlayer().onGround && mode.getCurrentMode().equalsIgnoreCase("Verus")) {
+            getPlayer().motionY = 1;
+        }
 
     }
 
