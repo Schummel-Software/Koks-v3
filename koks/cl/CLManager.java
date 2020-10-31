@@ -18,13 +18,14 @@ public class CLManager {
     public Role getRole(String name) {
         if (name.equalsIgnoreCase("Kroko") || name.equalsIgnoreCase("Phantom") || name.equalsIgnoreCase("Deleteboys") || name.equalsIgnoreCase("derrealedasdirt"))
             return Role.Developer;
-        }else if (name.equalsIgnoreCase("Haze")) {
+        else if (name.equalsIgnoreCase("Haze"))
             return Role.Admin;
-        if (name.equalsIgnoreCase("CrazyMemeCoke") || name.equalsIgnoreCase("hasenpfote"))
+        else if (name.equalsIgnoreCase("CrazyMemeCoke") || name.equalsIgnoreCase("hasenpfote"))
             return Role.Friend;
-        } else
+        else
             return Role.User;
     }
+
 
     public String getPrefix() {
         String color;

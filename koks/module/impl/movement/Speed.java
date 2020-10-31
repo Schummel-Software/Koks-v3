@@ -38,7 +38,7 @@ public class Speed extends Module {
                         aacSpeed++;
                         getPlayer().jump();
                         if (aacSpeed <= 3)
-                            getTimer().timerSpeed = 50;
+                            getTimer().timerSpeed = 25;
                         else
                             getTimer().timerSpeed = 0.045F;
                     } else {
