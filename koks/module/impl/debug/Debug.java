@@ -9,6 +9,7 @@ import koks.module.Module;
 import koks.api.settings.Setting;
 import koks.module.ModuleInfo;
 import net.minecraft.network.play.client.C03PacketPlayer;
+import net.minecraft.network.play.client.C0BPacketEntityAction;
 import net.minecraft.network.play.client.C0CPacketInput;
 
 /**
@@ -29,6 +30,7 @@ public class Debug extends Module {
     public void onEvent(Event event) {
 
         if (event instanceof EventUpdate) {
+
         }
 
         if (event instanceof EventTick) {

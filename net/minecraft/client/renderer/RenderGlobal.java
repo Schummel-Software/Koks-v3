@@ -24,11 +24,8 @@ import java.util.concurrent.Callable;
 
 import koks.Koks;
 import koks.api.util.ESPUtil;
-import koks.module.ModuleManager;
-import koks.module.impl.render.BlockOverlay;
-import koks.module.impl.render.ChestESP;
-import koks.module.impl.render.ItemESP;
-import koks.module.impl.render.PlayerESP;
+import koks.event.impl.EventOutline;
+import koks.module.impl.render.*;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockChest;
 import net.minecraft.block.BlockEnderChest;
@@ -322,10 +319,8 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
         }
     }
 
-    public void renderEntityOutlineFramebuffer()
-    {
-        if (this.isRenderEntityOutlines() || isRenderChestESP() || isRenderItemESP())
-        {
+    public void renderEntityOutlineFramebuffer() {
+        if (this.isRenderEntityOutlines()) {
             GlStateManager.enableBlend();
             GlStateManager.tryBlendFuncSeparate(770, 771, 0, 1);
             this.entityOutlineFramebuffer.framebufferRenderExt(this.mc.displayWidth, this.mc.displayHeight, false);
@@ -333,23 +328,13 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
         }
     }
 
-    protected boolean isRenderEntityOutlines()
-    {
-        return (!Config.isFastRender() && !Config.isShaders() && !Config.isAntialiasing()) && ((this.entityOutlineFramebuffer != null && this.entityOutlineShader != null && this.mc.thePlayer != null && this.mc.thePlayer.isSpectator() && this.mc.gameSettings.keyBindSpectatorOutlines.isKeyDown()) || (Koks.getKoks().moduleManager.getModule(PlayerESP.class).isToggled() && Koks.getKoks().settingsManager.getSetting(Koks.getKoks().moduleManager.getModule(PlayerESP.class), "ESP Mode").getCurrentMode().equalsIgnoreCase("Shader")));
+    protected boolean isRenderEntityOutlines() {
+        EventOutline eventOutline = new EventOutline(!Config.isFastRender() && !Config.isShaders() && !Config.isAntialiasing() ? this.entityOutlineFramebuffer != null && this.entityOutlineShader != null && this.mc.thePlayer != null && this.mc.thePlayer.isSpectator() && this.mc.gameSettings.keyBindSpectatorOutlines.isKeyDown() : false);
+        Koks.getKoks().eventManager.onEvent(eventOutline);
+        return eventOutline.isOutline();
     }
 
-    protected boolean isRenderChestESP()
-    {
-        return !Config.isFastRender() && !Config.isShaders() && Koks.getKoks().moduleManager.getModule(ChestESP.class).isToggled() && Koks.getKoks().settingsManager.getSetting(Koks.getKoks().moduleManager.getModule(ChestESP.class), "ESP Mode").getCurrentMode().equalsIgnoreCase("Shader");
-    }
-
-    protected boolean isRenderItemESP()
-    {
-        return !Config.isFastRender() && !Config.isShaders() && Koks.getKoks().moduleManager.getModule(ItemESP.class).isToggled() && Koks.getKoks().settingsManager.getSetting(Koks.getKoks().moduleManager.getModule(ItemESP.class), "ESP Mode").getCurrentMode().equalsIgnoreCase("Shader");
-    }
-
-    private void generateSky2()
-    {
+    private void generateSky2() {
         Tessellator tessellator = Tessellator.getInstance();
         WorldRenderer worldrenderer = tessellator.getWorldRenderer();
 
@@ -664,8 +649,7 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
                 }
             }
 
-            if (this.isRenderEntityOutlines() || isRenderChestESP() || isRenderItemESP())
-            {
+            if (this.isRenderEntityOutlines()) {
                 GlStateManager.depthFunc(519);
                 GlStateManager.disableFog();
                 this.entityOutlineFramebuffer.framebufferClear();
@@ -675,25 +659,37 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
                 //TRUE = nur Entity FALSE = Armor
                 this.renderManager.setRenderOutlines(true);
 
-                if (isRenderEntityOutlines() ) {
-                    for (int k = 0; k < list.size(); ++k)
-                    {
-                        Entity entity3 = (Entity)list.get(k);
-
-                        if (!flag || Reflector.callBoolean(entity3, Reflector.ForgeEntity_shouldRenderInPass, new Object[] {Integer.valueOf(i)}))
-                        {
-                            boolean flag2 = this.mc.getRenderViewEntity() instanceof EntityLivingBase && ((EntityLivingBase)this.mc.getRenderViewEntity()).isPlayerSleeping();
-                            boolean flag3 = entity3.isInRangeToRender3d(d0, d1, d2) && (entity3.ignoreFrustumCheck || camera.isBoundingBoxInFrustum(entity3.getEntityBoundingBox()) || entity3.riddenByEntity == this.mc.thePlayer) && entity3 instanceof EntityPlayer;
-
-                            if ((entity3 != this.mc.getRenderViewEntity() || this.mc.gameSettings.thirdPersonView != 0 || flag2) && flag3)
-                            {
-                                this.renderManager.renderEntitySimple(entity3, partialTicks);
-                            }
+                if (Koks.getKoks().moduleManager.getModule(DormantESP.class).isToggled()) {
+                    DormantESP dormantESP = (DormantESP) Koks.getKoks().moduleManager.getModule(DormantESP.class);
+                    for (int k = 0; k < dormantESP.dormant.size(); ++k) {
+                        Entity entity3 = (Entity) dormantESP.dormant.keySet().toArray()[k];
+                        if (!flag || Reflector.callBoolean(entity3, Reflector.ForgeEntity_shouldRenderInPass, new Object[]{Integer.valueOf(i)})) {
+                            this.renderManager.renderEntitySimple(entity3, partialTicks);
                         }
                     }
                 }
 
-                if (isRenderChestESP()){
+                for (int k = 0; k < list.size(); ++k) {
+                    Entity entity3 = (Entity) list.get(k);
+
+                    if (!flag || Reflector.callBoolean(entity3, Reflector.ForgeEntity_shouldRenderInPass, new Object[]{Integer.valueOf(i)})) {
+                        boolean flag2 = this.mc.getRenderViewEntity() instanceof EntityLivingBase && ((EntityLivingBase) this.mc.getRenderViewEntity()).isPlayerSleeping();
+                        boolean flag3 = entity3.isInRangeToRender3d(d0, d1, d2) && (entity3.ignoreFrustumCheck || camera.isBoundingBoxInFrustum(entity3.getEntityBoundingBox()) || entity3.riddenByEntity == this.mc.thePlayer);
+                        ItemESP itemESP = (ItemESP) Koks.getKoks().moduleManager.getModule(ItemESP.class);
+                        boolean item = itemESP.isToggled() && itemESP.espMode.getCurrentMode().equalsIgnoreCase("Shader") && entity3 instanceof EntityItem;
+
+                        PlayerESP playerESP = (PlayerESP) Koks.getKoks().moduleManager.getModule(PlayerESP.class);
+                        boolean player = playerESP.isToggled() && playerESP.espMode.getCurrentMode().equalsIgnoreCase("Shader") && entity3 instanceof EntityPlayer;
+
+                        if ((entity3 != this.mc.getRenderViewEntity() || this.mc.gameSettings.thirdPersonView != 0 || flag2) && flag3 && (item || player)) {
+                            this.renderManager.renderEntitySimple(entity3, partialTicks);
+                        }
+                    }
+                }
+
+                ChestESP chestESP = (ChestESP) Koks.getKoks().moduleManager.getModule(ChestESP.class);
+                boolean isChest = chestESP.isToggled() && chestESP.espMode.getCurrentMode().equalsIgnoreCase("Shader");
+                if (isChest){
                     for (int k = 0; k < mc.theWorld.loadedTileEntityList.size(); k++) {
                         final TileEntity chest = mc.theWorld.loadedTileEntityList.get(k);
                         if (!flag || Reflector.callBoolean(chest, Reflector.ForgeEntity_shouldRenderInPass, new Object[]{Integer.valueOf(i)})) {
@@ -701,22 +697,6 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
                                 GlStateManager.disableTexture2D();
                                 TileEntityRendererDispatcher.instance.renderTileEntity(chest, partialTicks, 1);
                                 GlStateManager.enableTexture2D();
-                            }
-                        }
-                    }
-                }
-
-                if (isRenderItemESP()){
-                    for (int k = 0; k < mc.theWorld.loadedEntityList.size(); k++) {
-                        final Entity item = mc.theWorld.loadedEntityList.get(k);
-                        if (!flag || Reflector.callBoolean(item, Reflector.ForgeEntity_shouldRenderInPass, new Object[]{Integer.valueOf(i)})) {
-                            if (item instanceof EntityItem) {
-                                if (!flag || Reflector.callBoolean(item, Reflector.ForgeEntity_shouldRenderInPass, i)) {
-                                    boolean flag3 = item.isInRangeToRender3d(d0, d1, d2) && (item.ignoreFrustumCheck || camera.isBoundingBoxInFrustum(item.getEntityBoundingBox()) || item.riddenByEntity == this.mc.thePlayer);
-                                    if (flag3) {
-                                        mc.getRenderManager().renderEntitySimple(item, partialTicks);
-                                    }
-                                }
                             }
                         }
                     }

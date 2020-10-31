@@ -59,6 +59,7 @@ public class GodMode extends Module {
                 if (event instanceof EventUpdate) {
                     getPlayer().ridingEntity = null;
                 }
+                break;
         }
     }
 

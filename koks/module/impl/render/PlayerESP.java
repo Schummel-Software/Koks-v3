@@ -26,7 +26,7 @@ public class PlayerESP extends Module {
     public void onEvent(Event event) {
 
         if(event instanceof EventOutline) {
-            ((EventOutline) event).setOutline(espMode.getCurrentMode().equalsIgnoreCase("Glow"));
+            ((EventOutline) event).setOutline(espMode.getCurrentMode().equalsIgnoreCase("Shader"));
         }
 
         if (event instanceof EventUpdate) {

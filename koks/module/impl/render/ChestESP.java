@@ -3,6 +3,7 @@ package koks.module.impl.render;
 import koks.Koks;
 import koks.api.settings.Setting;
 import koks.event.Event;
+import koks.event.impl.EventOutline;
 import koks.event.impl.EventRender3D;
 import koks.event.impl.EventUpdate;
 import koks.module.Module;
@@ -29,6 +30,10 @@ public class ChestESP extends Module {
 
     @Override
     public void onEvent(Event event) {
+        if(event instanceof EventOutline) {
+            ((EventOutline) event).setOutline(espMode.getCurrentMode().equalsIgnoreCase("Shader"));
+        }
+
         if (event instanceof EventUpdate) {
             setInfo(espMode.getCurrentMode());
         }
