@@ -235,7 +235,7 @@ public class GameSettings
     public boolean ofCustomItems = true;
     public boolean ofNaturalTextures = false;
     public boolean ofFastMath = false;
-    public boolean ofFastRender = true;
+    public boolean ofFastRender = false;
     public int ofTranslucentBlocks = 0;
     public boolean ofDynamicFov = true;
     public int ofDynamicLights = 3;
@@ -1815,7 +1815,7 @@ public class GameSettings
                 return;
             }
 
-            this.ofFastRender = !this.ofFastRender;
+            this.ofFastRender = false;
 
             if (this.ofFastRender)
             {

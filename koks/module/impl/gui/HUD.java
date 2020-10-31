@@ -54,6 +54,9 @@ public class HUD extends Module {
         }
 
         if (event instanceof EventRender2D) {
+
+            renderUtil.drawPlayerHead(getPlayer().getGameProfile(), 120 , 60 , 70, 70);
+
             if (tabGUI.isToggled())
                 Koks.getKoks().tabGUI.drawScreen((int) x.getCurrentValue(), (int) y.getCurrentValue(), (int) width.getCurrentValue(), (int) height.getCurrentValue());
             if (waterMark.isToggled())

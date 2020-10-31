@@ -16,7 +16,7 @@ import koks.module.ModuleInfo;
 @ModuleInfo(name = "Speed", description = "In germany we call it rasant", category = Module.Category.MOVEMENT)
 public class Speed extends Module {
 
-    public Setting mode = new Setting("Mode", new String[]{"Intave", "MCCentral", "Mineplex", "Mineplex FAST", "AAC3.3.12", "Tired", "Legit"}, "Intave", this);
+    public Setting mode = new Setting("Mode", new String[]{"Intave", "MCCentral", "Mineplex", "Mineplex FAST", "AAC3.3.12", "AAC4", "Tired", "Legit"}, "Intave", this);
 
     public float mineplexMotion;
 

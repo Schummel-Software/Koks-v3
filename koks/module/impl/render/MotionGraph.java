@@ -24,8 +24,6 @@ public class MotionGraph extends Module {
 
         if (event instanceof EventRender2D) {
             ScaledResolution sr = new ScaledResolution(mc);
-
-            GL11.glPopMatrix();
             GL11.glPushMatrix();
             GL11.glColor3f(0, 0, 0);
             GL11.glLineWidth(4);
@@ -55,6 +53,7 @@ public class MotionGraph extends Module {
             }
             GL11.glEnd();
             GL11.glEnable(GL11.GL_TEXTURE_2D);
+            GL11.glPopMatrix();
         }
         if (event instanceof EventTick) {
             motionSpeed.add(Math.hypot(getPlayer().motionX, getPlayer().motionZ) * 100);

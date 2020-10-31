@@ -60,7 +60,7 @@ public abstract class AbstractClientPlayer extends EntityPlayer
         return this.getPlayerInfo() != null;
     }
 
-    protected NetworkPlayerInfo getPlayerInfo()
+    public NetworkPlayerInfo getPlayerInfo()
     {
         if (this.playerInfo == null)
         {
