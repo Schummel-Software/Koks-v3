@@ -25,12 +25,10 @@ public class GodMode extends Module {
         switch (mode.getCurrentMode()) {
             case "Intave Border":
                 if (event instanceof EventHeadLook) {
-                    if (mode.getCurrentMode().equalsIgnoreCase("Intave Border")) {
-                        if (mc.thePlayer.isOutsideBorder()) {
-                            EventHeadLook eventHeadLook = (EventHeadLook) event;
-                            ((EventHeadLook) event).setF1(mc.thePlayer.rotationYaw);
-                            ((EventHeadLook) event).setF2(mc.thePlayer.rotationPitch);
-                        }
+                    if (mc.thePlayer.isOutsideBorder()) {
+                        EventHeadLook eventHeadLook = (EventHeadLook) event;
+                        ((EventHeadLook) event).setF1(mc.thePlayer.rotationYaw);
+                        ((EventHeadLook) event).setF2(mc.thePlayer.rotationPitch);
                     }
                 }
 

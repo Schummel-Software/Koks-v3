@@ -3,6 +3,7 @@ package koks.module.impl.debug;
 import god.buddy.aot.BCompiler;
 import koks.api.util.TimeHelper;
 import koks.event.Event;
+import koks.event.impl.EventHeadLook;
 import koks.event.impl.EventTick;
 import koks.event.impl.EventUpdate;
 import koks.module.Module;
@@ -29,8 +30,12 @@ public class Debug extends Module {
     @Override
     public void onEvent(Event event) {
 
+        if(event instanceof EventHeadLook) {
+
+        }
+
         if (event instanceof EventUpdate) {
-            if (getPlayer().isOnLadder() && !getPlayer().onGround) {
+            if (getPlayer().isOnLadder() && getPlayer().isCollidedHorizontally && !getPlayer().onGround) {
                 if (timeHelper.hasReached(550)) {
                     getPlayer().motionY = 0.55F;
                     timeHelper.reset();

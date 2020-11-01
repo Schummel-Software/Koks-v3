@@ -244,6 +244,7 @@ public class Scaffold extends Module {
                         if (blackList.contains(((ItemBlock) silentItemStack.getItem()).getBlock()))
                             return;
                         if (silentItemStack != null) {
+                            mc.objectMouseOver = new MovingObjectPosition(rayCastUtil.getLook(yaw, pitch), face, finalPos);
                             mc.rightClickMouse();
                         }
                     }

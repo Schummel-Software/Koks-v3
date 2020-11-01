@@ -33,6 +33,8 @@ public class V3_0_0 extends Changelog{
         added("Safewalk");
         added("GommeMode");
         added("Changelog");
+        added("NoRotate");
+        fixed("Intave Scaffold");
         fixed("Block Bug");
         removed("ClickGUI Settings");
     }
