@@ -20,7 +20,7 @@ public class CLManager {
             return Role.Developer;
         else if (name.equalsIgnoreCase("Haze"))
             return Role.Admin;
-        else if (name.equalsIgnoreCase("CrazyMemeCoke") || name.equalsIgnoreCase("hasenpfote"))
+        else if (name.equalsIgnoreCase("CrazyMemeCoke") || name.equalsIgnoreCase("hasenpfote") || name.equalsIgnoreCase("vCryzeDer2te"))
             return Role.Friend;
         else
             return Role.User;

@@ -81,6 +81,7 @@ public class ModuleManager {
         addModule(new DormantESP());
         addModule(new Scoreboard());
         addModule(new Tracers());
+        addModule(new WallSpeed());
         
         modules.sort(Comparator.comparing(Module::getName));
     }

@@ -247,6 +247,27 @@ public class Scaffold extends Module {
                             mc.rightClickMouse();
                         }
                     }
+                } else {
+                    if (timeHelper.hasReached(mc.thePlayer.onGround ? (randomUtil.getRandomLong((long) delay.getCurrentValue(), (long) delay.getCurrentValue() + 1)) : 20L)) {
+                        if (blackList.contains(((ItemBlock) silentItemStack.getItem()).getBlock()))
+                            return;
+                        if (silentItemStack != null) {
+                            mc.playerController.onPlayerRightClick(mc.thePlayer, mc.theWorld, silentItemStack, pos, face, new Vec3(pos.getX() + (this.randomHit.isToggled() ? randomUtil.getRandomDouble(0, 0.7) : 0), pos.getY() + (this.randomHit.isToggled() ? randomUtil.getRandomDouble(0, 0.7) : 0), pos.getZ() + (this.randomHit.isToggled() ? randomUtil.getRandomDouble(0, 0.7) : 0)));
+                            sneakCount++;
+
+                            mc.thePlayer.motionX *= motion.getCurrentValue();
+                            mc.thePlayer.motionZ *= motion.getCurrentValue();
+
+                            if (sneakCount > sneakAfterBlocks.getCurrentValue())
+                                sneakCount = 0;
+
+                            timeHelper.reset();
+                        }
+                    }
+                    if (sprint.isToggled())
+                        getPlayer().sendQueue.addToSendQueue(new C0BPacketEntityAction(getPlayer(), C0BPacketEntityAction.Action.START_SPRINTING));
+
+                    timeHelper.reset();
                 }
             } else {
                 mc.gameSettings.keyBindSneak.pressed = false;

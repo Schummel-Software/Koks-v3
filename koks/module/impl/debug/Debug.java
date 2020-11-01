@@ -30,7 +30,12 @@ public class Debug extends Module {
     public void onEvent(Event event) {
 
         if (event instanceof EventUpdate) {
-
+            if (getPlayer().isOnLadder() && !getPlayer().onGround) {
+                if (timeHelper.hasReached(550)) {
+                    getPlayer().motionY = 0.55F;
+                    timeHelper.reset();
+                }
+            }
         }
 
         if (event instanceof EventTick) {
