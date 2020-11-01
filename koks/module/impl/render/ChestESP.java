@@ -55,7 +55,6 @@ public class ChestESP extends Module {
                     if (espMode.getCurrentMode().equalsIgnoreCase("Cylinder")) {
 
                         GL11.glPushMatrix();
-                        GL11.glDisable(GL11.GL_LIGHTING);
                         GL11.glTranslated(x + 0.5,y + 0.9,z + 0.5);
                         GL11.glRotated(90,1,0,0);
                         GL11.glDisable(GL11.GL_TEXTURE_2D);
@@ -79,7 +78,6 @@ public class ChestESP extends Module {
 
                         GL11.glDisable(GL11.GL_BLEND);
                         GL11.glEnable(GL11.GL_TEXTURE_2D);
-                        GL11.glEnable(GL11.GL_LIGHTING);
                         GL11.glEnable(GL11.GL_DEPTH_TEST);
                         GL11.glPopMatrix();
                     }
