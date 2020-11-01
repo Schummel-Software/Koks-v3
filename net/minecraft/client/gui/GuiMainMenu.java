@@ -11,6 +11,7 @@ import koks.Koks;
 import koks.api.util.GLSLSandboxShader;
 import koks.api.util.*;
 import koks.api.util.fonts.GlyphPageFontRenderer;
+import koks.changelog.Changelog;
 import koks.filemanager.impl.AlteningToken;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
@@ -562,6 +563,29 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
                             drawString(fontRendererObj, password, sr.getScaledWidth() / 2 + x - fontRendererObj.getStringWidth(password) / 2, sr.getScaledHeight() / 3 + y + (25 + 27 + 6), Color.gray.getRGB());
                         }
 
+                        break;
+                    case 6:
+                        int yPos = -2;
+                        for(Changelog changelog : Koks.getKoks().changelogManager.changelogs) {
+                            drawRect(sr.getScaledWidth() / 2 + x - wwidth,sr.getScaledHeight() / 3 + y + yPos - 3, sr.getScaledWidth() / 2 + x + wwidth,sr.getScaledHeight() / 3 + y + yPos + fontRendererObj.FONT_HEIGHT, outlineColor.getRGB());
+                            drawString(fontRendererObj, changelog.getVersion(), sr.getScaledWidth() / 2 + x - fontRendererObj.getStringWidth(changelog.getVersion()) / 2, sr.getScaledHeight() / 3 + y + yPos, Color.white.getRGB());
+                            y += fontRendererObj.FONT_HEIGHT + 5;
+                            for(String added : changelog.addedList) {
+                                drawString(fontRendererObj, "§a+§r" + added, sr.getScaledWidth() / 2 + x - wwidth + dicke, sr.getScaledHeight() / 3 + y + yPos, Color.white.getRGB());
+                                y+= fontRendererObj.FONT_HEIGHT + 1;
+                            }
+                            y+= 5;
+                            for(String fixed : changelog.fixedList) {
+                                drawString(fontRendererObj, "§b*§r" + fixed, sr.getScaledWidth() / 2 + x - wwidth + dicke, sr.getScaledHeight() / 3 + y + yPos, Color.white.getRGB());
+                                y+= fontRendererObj.FONT_HEIGHT + 1;
+                            }
+
+                            y+= 5;
+                            for(String removed : changelog.removedList) {
+                                drawString(fontRendererObj, "§c-§r" + removed, sr.getScaledWidth() / 2 + x - wwidth + dicke, sr.getScaledHeight() / 3 + y + yPos, Color.white.getRGB());
+                                y+= fontRendererObj.FONT_HEIGHT + 1;
+                            }
+                        }
                         break;
                 }
             }

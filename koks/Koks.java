@@ -1,6 +1,7 @@
 package koks;
 
 import koks.api.util.DiscordUtil;
+import koks.changelog.ChangelogManager;
 import koks.command.CommandManager;
 import koks.config.ConfigSystem;
 import koks.event.EventManager;
@@ -61,6 +62,7 @@ public class Koks {
     public ConfigSystem configSystem;
     public CLManager CLManager;
     public FriendManager friendManager;
+    public ChangelogManager changelogManager;
 
     public Wrapper wrapper;
 
@@ -82,6 +84,7 @@ public class Koks {
         fileManager.readAllFiles();
         friendManager = new FriendManager();
         configSystem = new ConfigSystem();
+        changelogManager = new ChangelogManager();
 
         new DiscordUtil();
         discordUtil = DiscordUtil.getSingleton();
