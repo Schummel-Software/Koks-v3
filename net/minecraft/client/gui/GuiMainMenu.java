@@ -31,9 +31,7 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
 
     public boolean windowShowed = true, showOptions, showColorPicker, showBackgrounds, showRight, drag = false, dragOptions = false, dragColor = false, dragBackground = false;
 
-    public int currentIndex = 0, size = 40, indexSize = 6,wheight = 120, wwidth = 200, dicke = 5,drawIndexSize = currentIndex, lastIndex = 0
-            ,optionSize = 4, optionWidth = 125, optionHeight = 25
-            ,rightWidth = 20, rightHeight = 30, rightOutline = 2, rightOptions = 2,
+    public int currentIndex = 0, size = 40, indexSize = 7, wheight = 120, wwidth = 200, dicke = 5, drawIndexSize = currentIndex, lastIndex = 0, optionSize = 4, optionWidth = 125, optionHeight = 25, rightWidth = 20, rightHeight = 30, rightOutline = 2, rightOptions = 2,
             colorSize = 150, pixel = 60,
             backgroundWidth = 70, backgroundHeight = 23,
             rightX, rightY;
@@ -241,6 +239,8 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
             case 5:
                 return "Settings";
             case 6:
+                return "Changelog";
+            case 7:
                 return "Exit";
         }
         return "";
@@ -454,7 +454,7 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
             if (currentIndex == 0) {
                 for (int index = 1; index <= indexSize; index++) {
                     drawRect(sr.getScaledWidth() / 2 + x - wwidth / 2 + size * (index - 1), sr.getScaledHeight() / 2 + y + wheight - size, sr.getScaledWidth() / 2 + x - wwidth / 2 + size * (index - 1) + size, sr.getScaledHeight() / 2 + y + wheight, wColor.getRGB());
-                    renderUtil.drawPicture(sr.getScaledWidth() / 2 + x - wwidth / 2 + size * (index - 1), sr.getScaledHeight() / 2 + y + wheight - picHeight, picWidth, picHeight, new ResourceLocation("client/icons/MainMenu/" + getIndexName(index) + ".png"));
+                    renderUtil.drawPicture(sr.getScaledWidth() / 2 + x - wwidth / 2 - size + size * (index - 1), sr.getScaledHeight() / 2 + y + wheight - picHeight, picWidth, picHeight, new ResourceLocation("client/icons/MainMenu/" + getIndexName(index) + ".png"));
                 }
             }
 
@@ -525,7 +525,7 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
                 float xPos = sr.getScaledWidth() / 2 + x - fontRendererObj.getStringWidth("Welcome " + Koks.getKoks().CLManager.getPrefix()) / 2;
                 float yPos = sr.getScaledHeight() / 2 + y - fontRenderer.getFontHeight() - 10;
 
-                renderUtil.drawPicture((int)sr.getScaledWidth() / 2 + x - (wwidth - size + 5) / 2, (int)yPos + 1, 160, 60, new ResourceLocation("client/logo.png"));
+                renderUtil.drawPicture((int) sr.getScaledWidth() / 2 + x - (wwidth - size + 5) / 2, (int) yPos + 1, 160, 60, new ResourceLocation("client/logo.png"));
                 fontRendererObj.drawString("Welcome " + Koks.getKoks().CLManager.getPrefix(), xPos, sr.getScaledHeight() / 2 + y - 14, Color.gray.getRGB(), true);
             } else {
                 wheight = 120;
@@ -787,7 +787,7 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
                         if (!(showOptions && isHoverOptions(mouseX, mouseY))) {
                             if (!(currentIndex == 3 && isHoverEmail(mouseX, mouseY))) {
                                 if (!(currentIndex == 3 && isHoverPassword(mouseX, mouseY))) {
-                                    if (!(currentIndex == 0 && mouseX >= sr.getScaledWidth() / 2 + x - wwidth / 2 + size * (1 - 1) && mouseX <= sr.getScaledWidth() / 2 + x - wwidth / 2 + size * (indexSize - 1) + size && mouseY >= sr.getScaledHeight() / 2 + y + wheight - size && mouseY <= sr.getScaledHeight() / 2 + y + wheight)) {
+                                    if (!(currentIndex == 0 && mouseX >= sr.getScaledWidth() / 2 + x - wwidth / 2 - size + size * (1 - 1) && mouseX <= sr.getScaledWidth() / 2 + x - wwidth / 2 - size + size * (indexSize - 1) + size && mouseY >= sr.getScaledHeight() / 2 + y + wheight - size && mouseY <= sr.getScaledHeight() / 2 + y + wheight)) {
                                         drag = true;
                                         dragX = x - mouseX;
                                         dragY = y - mouseY;
@@ -817,10 +817,11 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
                     lastIndex = currentIndex;
 
                     if (currentIndex == 0) {
-                        for (int index = 1; index <= indexSize; index++)
-                            if (mouseX >= sr.getScaledWidth() / 2 + x - wwidth / 2 + size * (index - 1) && mouseX <= sr.getScaledWidth() / 2 + x - wwidth / 2 + size * (index - 1) + size && mouseY >= sr.getScaledHeight() / 2 + y + wheight - size && mouseY <= sr.getScaledHeight() / 2 + y + wheight) {
+                        for (int index = 1; index <= indexSize; index++) {
+                            if (mouseX >= sr.getScaledWidth() / 2 + x - wwidth / 2 - size + size * (index - 1) && mouseX <= sr.getScaledWidth() / 2 + x - wwidth / 2 - size + size * (index - 1) + size && mouseY >= sr.getScaledHeight() / 2 + y + wheight - size && mouseY <= sr.getScaledHeight() / 2 + y + wheight) {
                                 currentIndex = index;
                             }
+                        }
                     }
 
                     for (int index = 0; index <= drawIndexSize; index++) {
@@ -829,10 +830,10 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
                         }
                     }
 
-                    //0: HOME 1: SinglePlayer 2: MultiPlayer 3: ALTS 4: Language 5: Options 6: Shutdown
+                    //0: HOME 1: SinglePlayer 2: MultiPlayer 3: ALTS 4: Language 5: Options 7: Shutdown
 
                     switch (currentIndex) {
-                        case 6:
+                        case 7:
                             currentIndex = lastIndex;
                             this.mc.shutdown();
                             break;
