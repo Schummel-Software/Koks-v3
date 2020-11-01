@@ -4,6 +4,7 @@ import koks.Koks;
 import koks.api.settings.Setting;
 import koks.event.Event;
 import koks.event.impl.EventRender3D;
+import koks.event.impl.EventTick;
 import koks.module.Module;
 import koks.module.ModuleInfo;
 import net.minecraft.client.gui.Gui;
@@ -26,6 +27,9 @@ public class NameTags extends Module {
 
     @Override
     public void onEvent(Event event) {
+        if (event instanceof EventTick) {
+            bacBrandmark.setTyped(bacBrandmark.getTyped().replace("§", "&"));
+        }
         if (event instanceof EventRender3D) {
             for (Entity entity : mc.theWorld.loadedEntityList) {
                 if (isValid(entity)) {
