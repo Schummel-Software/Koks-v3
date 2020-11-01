@@ -129,7 +129,7 @@ public class Scaffold extends Module {
 
     public void setYaw() {
         float[] rotations = rotationUtil.faceBlock(finalPos, yaw, pitch, 360);
-        yaw = rotations[0] + 15;
+        yaw = rotations[0];
     }
 
 
@@ -281,6 +281,8 @@ public class Scaffold extends Module {
 
     @Override
     public void onEnable() {
+        yaw = getPlayer().rotationYaw;
+        pitch = getPlayer().rotationPitch;
     }
 
     @Override

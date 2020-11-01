@@ -4,6 +4,8 @@ import com.google.common.base.Objects;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
+import koks.Koks;
+import koks.module.impl.render.GommeMode;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.client.resources.SkinManager;
@@ -89,14 +91,25 @@ public class NetworkPlayerInfo
         return this.skinType == null ? DefaultPlayerSkin.getSkinType(this.gameProfile.getId()) : this.skinType;
     }
 
-    public ResourceLocation getLocationSkin()
-    {
-        if (this.locationSkin == null)
-        {
-            this.loadPlayerTextures();
-        }
+    public ResourceLocation getLocationSkin() {
+        boolean gommeMode = Koks.getKoks().moduleManager.getModule(GommeMode.class).isToggled();
+        if (!gommeMode) {
+            if (this.locationSkin == null) {
+                this.loadPlayerTextures();
+            }
 
-        return (ResourceLocation)Objects.firstNonNull(this.locationSkin, DefaultPlayerSkin.getDefaultSkin(this.gameProfile.getId()));
+            return (ResourceLocation) Objects.firstNonNull(this.locationSkin, DefaultPlayerSkin.getDefaultSkin(this.gameProfile.getId()));
+        }else{
+            if(Minecraft.getMinecraft().theWorld.getPlayerEntityByUUID(this.gameProfile.getId()) != Minecraft.getMinecraft().thePlayer) {
+                return new ResourceLocation("client/skins/Gomme.png");
+            }else{
+                if (this.locationSkin == null) {
+                    this.loadPlayerTextures();
+                }
+
+                return (ResourceLocation) Objects.firstNonNull(this.locationSkin, DefaultPlayerSkin.getDefaultSkin(this.gameProfile.getId()));
+            }
+        }
     }
 
     public ResourceLocation getLocationCape()

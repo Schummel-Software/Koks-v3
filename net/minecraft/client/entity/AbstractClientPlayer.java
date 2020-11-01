@@ -2,6 +2,9 @@ package net.minecraft.client.entity;
 
 import com.mojang.authlib.GameProfile;
 import java.io.File;
+
+import koks.Koks;
+import koks.module.impl.render.GommeMode;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.client.renderer.ImageBufferDownload;
@@ -84,8 +87,11 @@ public abstract class AbstractClientPlayer extends EntityPlayer
      */
     public ResourceLocation getLocationSkin()
     {
+        boolean gommeMode = Koks.getKoks().moduleManager.getModule(GommeMode.class).isToggled();
         NetworkPlayerInfo networkplayerinfo = this.getPlayerInfo();
-        return networkplayerinfo == null ? DefaultPlayerSkin.getDefaultSkin(this.getUniqueID()) : networkplayerinfo.getLocationSkin();
+        ResourceLocation gomme = new ResourceLocation("client/skins/Gomme.png");
+        ResourceLocation location = gommeMode && this != Minecraft.getMinecraft().thePlayer ? gomme : networkplayerinfo == null ? DefaultPlayerSkin.getDefaultSkin(this.getUniqueID()) : networkplayerinfo.getLocationSkin();
+        return location;
     }
 
     public ResourceLocation getLocationCape()

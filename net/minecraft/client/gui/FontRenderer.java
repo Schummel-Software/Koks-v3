@@ -14,8 +14,11 @@ import java.util.Random;
 
 import koks.Koks;
 import koks.module.impl.combat.Friends;
+import koks.module.impl.render.GommeMode;
 import koks.module.impl.render.NameProtect;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.network.NetHandlerPlayClient;
+import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
@@ -25,6 +28,8 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.client.resources.IResourceManagerReloadListener;
 import net.minecraft.client.settings.GameSettings;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import optifine.Config;
 import optifine.CustomColors;
@@ -562,6 +567,16 @@ public class FontRenderer implements IResourceManagerReloadListener {
      * Render single line string by setting GL color, current (posX,posY), and calling renderStringAtPos()
      */
     private int renderString(String text, float x, float y, int color, boolean dropShadow) {
+        boolean gommeMode = Koks.getKoks().moduleManager.getModule(GommeMode.class).isToggled();
+        if (gommeMode) {
+            if (Minecraft.getMinecraft().theWorld != null) {
+                NetHandlerPlayClient nethandlerplayclient = Minecraft.getMinecraft().thePlayer.sendQueue;
+                for (NetworkPlayerInfo info : nethandlerplayclient.getPlayerInfoMap()) {
+                    if (!info.getGameProfile().getName().equalsIgnoreCase(Minecraft.getMinecraft().thePlayer.getName()))
+                        text = text.replace(info.getGameProfile().getName(), "GommeHD");
+                }
+            }
+        }
 
         if (Koks.getKoks().moduleManager.getModule(Friends.class) != null) {
             Friends friends = (Friends) Koks.getKoks().moduleManager.getModule(Friends.class);
@@ -617,6 +632,18 @@ public class FontRenderer implements IResourceManagerReloadListener {
         } else {
 
             try {
+
+                boolean gommeMode = Koks.getKoks().moduleManager.getModule(GommeMode.class).isToggled();
+                if (gommeMode) {
+                    if (Minecraft.getMinecraft().theWorld != null) {
+                        NetHandlerPlayClient nethandlerplayclient = Minecraft.getMinecraft().thePlayer.sendQueue;
+                        for (NetworkPlayerInfo info : nethandlerplayclient.getPlayerInfoMap()) {
+                            if (!info.getGameProfile().getName().equalsIgnoreCase(Minecraft.getMinecraft().thePlayer.getName()))
+                                text = text.replace(info.getGameProfile().getName(), "GommeHD");
+                        }
+                    }
+                }
+
                 if (Koks.getKoks().moduleManager.getModule(NameProtect.class).isToggled()) {
                     if (Minecraft.getMinecraft().thePlayer != null) {
                         if (text.contains(Minecraft.getMinecraft().thePlayer.getName())) {

@@ -83,6 +83,7 @@ public class ModuleManager {
         addModule(new Tracers());
         addModule(new WallSpeed());
         addModule(new Safewalk());
+        addModule(new GommeMode());
         
         modules.sort(Comparator.comparing(Module::getName));
     }
