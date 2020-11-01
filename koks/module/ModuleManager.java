@@ -82,6 +82,7 @@ public class ModuleManager {
         addModule(new Scoreboard());
         addModule(new Tracers());
         addModule(new WallSpeed());
+        addModule(new Safewalk());
         
         modules.sort(Comparator.comparing(Module::getName));
     }
