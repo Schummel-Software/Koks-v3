@@ -1,5 +1,6 @@
 package koks.changelog;
 
+import koks.changelog.impl.V1_0_0;
 import koks.changelog.impl.V2_1_2;
 import koks.changelog.impl.V2_1_3;
 import koks.changelog.impl.V3_0_0;
@@ -19,6 +20,7 @@ public class ChangelogManager {
         addChangelog(new V3_0_0());
         addChangelog(new V2_1_3());
         addChangelog(new V2_1_2());
+        addChangelog(new V1_0_0());
 
         changelogs.sort(Comparator.comparing(Changelog::getVersion));
         for(Changelog changelog : changelogs) {
