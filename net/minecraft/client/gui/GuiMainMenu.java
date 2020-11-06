@@ -583,7 +583,7 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
                             y+= 5;
                             for(String removed : changelog.removedList) {
                                 drawString(fontRendererObj, "§c-§r" + removed, sr.getScaledWidth() / 2 + x - wwidth + dicke, sr.getScaledHeight() / 3 + y + yPos, Color.white.getRGB());
-                                y+= fontRendererObj.FONT_HEIGHT + 1;
+                                y+= fontRendererObj.FONT_HEIGHT + 5;
                             }
                         }
                         break;

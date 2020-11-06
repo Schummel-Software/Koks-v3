@@ -22,7 +22,7 @@ public class ChangelogManager {
         addChangelog(new V2_1_2());
         addChangelog(new V1_0_0());
 
-        changelogs.sort(Comparator.comparing(Changelog::getVersion));
+        changelogs.sort(Comparator.comparing(Changelog::getVersion).reversed());
         for(Changelog changelog : changelogs) {
             changelog.addedList.sort(Comparator.comparing(String::toString));
             changelog.fixedList.sort(Comparator.comparing(String::toString));
