@@ -26,6 +26,7 @@ public class V3_0_0 extends Changelog{
         added("Online Configs");
         added("AAC4 Speed");
         added("Intave GodMode for DBD (Dead By Daylight)");
+        added("Discord Rich Presents");
         added("FastBow Timer Mode");
         added("WallSpeed");
         added("Step Modes");

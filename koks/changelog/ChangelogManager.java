@@ -1,5 +1,7 @@
 package koks.changelog;
 
+import koks.changelog.impl.V2_1_2;
+import koks.changelog.impl.V2_1_3;
 import koks.changelog.impl.V3_0_0;
 
 import java.util.ArrayList;
@@ -15,6 +17,8 @@ public class ChangelogManager {
 
     public ChangelogManager() {
         addChangelog(new V3_0_0());
+        addChangelog(new V2_1_3());
+        addChangelog(new V2_1_2());
 
         changelogs.sort(Comparator.comparing(Changelog::getVersion));
         for(Changelog changelog : changelogs) {
