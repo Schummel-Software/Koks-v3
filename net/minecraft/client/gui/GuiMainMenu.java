@@ -30,6 +30,8 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
     public LoginUtil loginUtil;
     public RenderUtil renderUtil;
 
+    private int currentScroll;
+
     public boolean windowShowed = true, showOptions, showColorPicker, showBackgrounds, showRight, drag = false, dragOptions = false, dragColor = false, dragBackground = false;
 
     public int currentIndex = 0, size = 40, indexSize = 7, wheight = 120, wwidth = 200, dicke = 5, drawIndexSize = currentIndex, lastIndex = 0, optionSize = 4, optionWidth = 125, optionHeight = 25, rightWidth = 20, rightHeight = 30, rightOutline = 2, rightOptions = 2,
@@ -415,7 +417,6 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
                 drawRect(rightX, rightY + rightHeight * ix, rightX + rightWidth, rightY + rightHeight * (ix + 1), hover ? outlineColor.darker().getRGB() : wColor.getRGB());
 
                 drawCenteredString(fontRendererObj, getRightName(ix, false), rightX + rightWidth / 2, rightY + rightHeight * ix + 6, hover ? Koks.getKoks().clientColor.getRGB() : -1);
-
             }
         }
 
@@ -565,7 +566,8 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
 
                         break;
                     case 6:
-                        int yPos = -2;
+
+                        int yPos = -2 + currentScroll;
                         for (Changelog changelog : Koks.getKoks().changelogManager.changelogs) {
                             drawRect(sr.getScaledWidth() / 2 + x - wwidth, sr.getScaledHeight() / 3 + y + yPos - 3, sr.getScaledWidth() / 2 + x + wwidth, sr.getScaledHeight() / 3 + y + yPos + fontRendererObj.FONT_HEIGHT, outlineColor.getRGB());
                             drawString(fontRendererObj, changelog.getVersion(), sr.getScaledWidth() / 2 + x - fontRendererObj.getStringWidth(changelog.getVersion()) / 2, sr.getScaledHeight() / 3 + y + yPos, Color.white.getRGB());
@@ -589,6 +591,7 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
                             }
                             y+= 5;
                         }
+
                         break;
                 }
             }
@@ -660,6 +663,24 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
             }
         }
         return false;
+    }
+
+    @Override
+    public void handleMouseInput() throws IOException {
+        if (Mouse.isCreated()) {
+            int wheel = Mouse.getEventDWheel();
+            if (wheel != 0) {
+                if (wheel < 0) {
+                    wheel = -1;
+                } else {
+                    wheel = 1;
+                }
+                if (currentScroll + (float) (wheel * 30) <= 0) {
+                    currentScroll += (float) (wheel * 30);
+                }
+            }
+        }
+        super.handleMouseInput();
     }
 
     public boolean isHoverColorClose(int mouseX, int mouseY) {
