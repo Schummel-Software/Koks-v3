@@ -566,25 +566,28 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
                         break;
                     case 6:
                         int yPos = -2;
-                        for(Changelog changelog : Koks.getKoks().changelogManager.changelogs) {
-                            drawRect(sr.getScaledWidth() / 2 + x - wwidth,sr.getScaledHeight() / 3 + y + yPos - 3, sr.getScaledWidth() / 2 + x + wwidth,sr.getScaledHeight() / 3 + y + yPos + fontRendererObj.FONT_HEIGHT, outlineColor.getRGB());
+                        for (Changelog changelog : Koks.getKoks().changelogManager.changelogs) {
+                            drawRect(sr.getScaledWidth() / 2 + x - wwidth, sr.getScaledHeight() / 3 + y + yPos - 3, sr.getScaledWidth() / 2 + x + wwidth, sr.getScaledHeight() / 3 + y + yPos + fontRendererObj.FONT_HEIGHT, outlineColor.getRGB());
                             drawString(fontRendererObj, changelog.getVersion(), sr.getScaledWidth() / 2 + x - fontRendererObj.getStringWidth(changelog.getVersion()) / 2, sr.getScaledHeight() / 3 + y + yPos, Color.white.getRGB());
-                            y += fontRendererObj.FONT_HEIGHT + 5;
-                            for(String added : changelog.addedList) {
+                            if (!changelog.addedList.isEmpty())
+                                y += fontRendererObj.FONT_HEIGHT + 5;
+                            for (String added : changelog.addedList) {
                                 drawString(fontRendererObj, "§a+§r" + added, sr.getScaledWidth() / 2 + x - wwidth + dicke, sr.getScaledHeight() / 3 + y + yPos, Color.white.getRGB());
-                                y+= fontRendererObj.FONT_HEIGHT + 1;
+                                y += fontRendererObj.FONT_HEIGHT + 1;
                             }
-                            y+= 5;
-                            for(String fixed : changelog.fixedList) {
+                            if (!changelog.fixedList.isEmpty())
+                                y += 5;
+                            for (String fixed : changelog.fixedList) {
                                 drawString(fontRendererObj, "§b*§r" + fixed, sr.getScaledWidth() / 2 + x - wwidth + dicke, sr.getScaledHeight() / 3 + y + yPos, Color.white.getRGB());
-                                y+= fontRendererObj.FONT_HEIGHT + 1;
+                                y += fontRendererObj.FONT_HEIGHT + 1;
                             }
-
-                            y+= 5;
-                            for(String removed : changelog.removedList) {
+                            if (!changelog.removedList.isEmpty())
+                                y += 5;
+                            for (String removed : changelog.removedList) {
                                 drawString(fontRendererObj, "§c-§r" + removed, sr.getScaledWidth() / 2 + x - wwidth + dicke, sr.getScaledHeight() / 3 + y + yPos, Color.white.getRGB());
-                                y+= fontRendererObj.FONT_HEIGHT + 5;
+                                y += fontRendererObj.FONT_HEIGHT + 1;
                             }
+                            y+= 5;
                         }
                         break;
                 }
