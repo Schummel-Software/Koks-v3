@@ -100,7 +100,7 @@ public class NetworkPlayerInfo
 
             return (ResourceLocation) Objects.firstNonNull(this.locationSkin, DefaultPlayerSkin.getDefaultSkin(this.gameProfile.getId()));
         }else{
-            if(Minecraft.getMinecraft().theWorld.getPlayerEntityByUUID(this.gameProfile.getId()) != Minecraft.getMinecraft().thePlayer) {
+            if(!Koks.getKoks().friendManager.isFriend(this.getGameProfile().getName()) && Minecraft.getMinecraft().theWorld.getPlayerEntityByUUID(this.gameProfile.getId()) != Minecraft.getMinecraft().thePlayer) {
                 return new ResourceLocation("client/skins/Gomme.png");
             }else{
                 if (this.locationSkin == null) {

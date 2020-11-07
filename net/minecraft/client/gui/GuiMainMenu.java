@@ -568,6 +568,11 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
                     case 6:
 
                         int yPos = -2 + currentScroll;
+
+                        renderUtil.scissor(x, sr.getScaledHeight() / 2 + y - wheight, sr.getScaledWidth() / 2 + x + wwidth + dicke, sr.getScaledHeight() / 2 + y + wheight);
+
+                        GL11.glEnable(GL11.GL_SCISSOR_TEST);
+
                         for (Changelog changelog : Koks.getKoks().changelogManager.changelogs) {
                             drawRect(sr.getScaledWidth() / 2 + x - wwidth, sr.getScaledHeight() / 3 + y + yPos - 3, sr.getScaledWidth() / 2 + x + wwidth, sr.getScaledHeight() / 3 + y + yPos + fontRendererObj.FONT_HEIGHT, outlineColor.getRGB());
                             drawString(fontRendererObj, changelog.getVersion(), sr.getScaledWidth() / 2 + x - fontRendererObj.getStringWidth(changelog.getVersion()) / 2, sr.getScaledHeight() / 3 + y + yPos, Color.white.getRGB());
@@ -589,9 +594,10 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
                                 drawString(fontRendererObj, "§c-§r" + removed, sr.getScaledWidth() / 2 + x - wwidth + dicke, sr.getScaledHeight() / 3 + y + yPos, Color.white.getRGB());
                                 y += fontRendererObj.FONT_HEIGHT + 1;
                             }
-                            y+= 5;
-                        }
+                            y += 5;
 
+                        }
+                        GL11.glDisable(GL11.GL_SCISSOR_TEST);
                         break;
                 }
             }
@@ -667,7 +673,7 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
 
     @Override
     public void handleMouseInput() throws IOException {
-        if (Mouse.isCreated()) {
+        if (Mouse.isCreated() && currentIndex == 6) {
             int wheel = Mouse.getEventDWheel();
             if (wheel != 0) {
                 if (wheel < 0) {
@@ -675,8 +681,8 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
                 } else {
                     wheel = 1;
                 }
-                if (currentScroll + (float) (wheel * 30) <= 0) {
-                    currentScroll += (float) (wheel * 30);
+                if (currentScroll + (float) (wheel * 25) <= 0) {
+                    currentScroll += (float) (wheel * 25);
                 }
             }
         }

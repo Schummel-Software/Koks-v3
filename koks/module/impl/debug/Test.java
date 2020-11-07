@@ -28,12 +28,7 @@ public class Test extends Module {
                 getPlayer().sendQueue.addToSendQueue(new C03PacketPlayer(true));
             }*/
 
-            getPlayer().noClip = true;
-
-
-            getPlayer().sendQueue.addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(getX(), getY(), getZ(), true));
-
-            getPlayer().onGround = true;
+            getPlayer().motionY = 0;
 
             /*getPlayer().isInWeb = false;*/
         }

@@ -90,7 +90,7 @@ public abstract class AbstractClientPlayer extends EntityPlayer
         boolean gommeMode = Koks.getKoks().moduleManager.getModule(GommeMode.class).isToggled();
         NetworkPlayerInfo networkplayerinfo = this.getPlayerInfo();
         ResourceLocation gomme = new ResourceLocation("client/skins/Gomme.png");
-        ResourceLocation location = gommeMode && this != Minecraft.getMinecraft().thePlayer ? gomme : networkplayerinfo == null ? DefaultPlayerSkin.getDefaultSkin(this.getUniqueID()) : networkplayerinfo.getLocationSkin();
+        ResourceLocation location = gommeMode && !Koks.getKoks().friendManager.isFriend(this.getName()) && this != Minecraft.getMinecraft().thePlayer ? gomme : networkplayerinfo == null ? DefaultPlayerSkin.getDefaultSkin(this.getUniqueID()) : networkplayerinfo.getLocationSkin();
         return location;
     }
 

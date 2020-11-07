@@ -7,6 +7,7 @@ import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
@@ -130,6 +131,12 @@ public class RenderUtil {
             }
         }
         GL11.glPopMatrix();
+    }
+
+    public void scissor(int x, int y, int x2, int y2) {
+        ScaledResolution scaledResolution = new ScaledResolution(mc);
+        double factor = scaledResolution.getScaleFactor();
+        GL11.glScissor((int) (x * factor), (int) ((scaledResolution.getScaledHeight() - y2) * factor), (int) ((x2 - x) * factor), (int) ((y2 - y) * factor));
     }
 
     public void drawPicture(int x, int y, int width, int height, ResourceLocation resourceLocation) {

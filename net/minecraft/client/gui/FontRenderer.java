@@ -567,16 +567,6 @@ public class FontRenderer implements IResourceManagerReloadListener {
      * Render single line string by setting GL color, current (posX,posY), and calling renderStringAtPos()
      */
     private int renderString(String text, float x, float y, int color, boolean dropShadow) {
-        boolean gommeMode = Koks.getKoks().moduleManager.getModule(GommeMode.class).isToggled();
-        if (gommeMode) {
-            if (Minecraft.getMinecraft().theWorld != null) {
-                NetHandlerPlayClient nethandlerplayclient = Minecraft.getMinecraft().thePlayer.sendQueue;
-                for (NetworkPlayerInfo info : nethandlerplayclient.getPlayerInfoMap()) {
-                    if (!info.getGameProfile().getName().equalsIgnoreCase(Minecraft.getMinecraft().thePlayer.getName()))
-                        text = text.replace(info.getGameProfile().getName(), "GommeHD");
-                }
-            }
-        }
 
         if (Koks.getKoks().moduleManager.getModule(Friends.class) != null) {
             Friends friends = (Friends) Koks.getKoks().moduleManager.getModule(Friends.class);
@@ -592,6 +582,19 @@ public class FontRenderer implements IResourceManagerReloadListener {
                     for (String name : Koks.getKoks().friendManager.friends.keySet()) {
                         text = text.replace(name, Koks.getKoks().friendManager.getName(name));
                     }
+                }
+            }
+        }
+
+        boolean gommeMode = Koks.getKoks().moduleManager.getModule(GommeMode.class).isToggled();
+        if (gommeMode) {
+            if (Minecraft.getMinecraft().theWorld != null) {
+                NetHandlerPlayClient nethandlerplayclient = Minecraft.getMinecraft().thePlayer.sendQueue;
+                for (NetworkPlayerInfo info : nethandlerplayclient.getPlayerInfoMap()) {
+                    EntityPlayer player = Minecraft.getMinecraft().theWorld.getPlayerEntityByName(info.getGameProfile().getName());
+                    if (!Koks.getKoks().friendManager.isFriend(info.getGameProfile().getName()) && !info.getGameProfile().getName().equalsIgnoreCase(Minecraft.getMinecraft().thePlayer.getName()))
+                        text = text.replace(info.getGameProfile().getName(), "GommeHD");
+
                 }
             }
         }
@@ -633,17 +636,6 @@ public class FontRenderer implements IResourceManagerReloadListener {
 
             try {
 
-                boolean gommeMode = Koks.getKoks().moduleManager.getModule(GommeMode.class).isToggled();
-                if (gommeMode) {
-                    if (Minecraft.getMinecraft().theWorld != null) {
-                        NetHandlerPlayClient nethandlerplayclient = Minecraft.getMinecraft().thePlayer.sendQueue;
-                        for (NetworkPlayerInfo info : nethandlerplayclient.getPlayerInfoMap()) {
-                            if (!info.getGameProfile().getName().equalsIgnoreCase(Minecraft.getMinecraft().thePlayer.getName()))
-                                text = text.replace(info.getGameProfile().getName(), "GommeHD");
-                        }
-                    }
-                }
-
                 if (Koks.getKoks().moduleManager.getModule(NameProtect.class).isToggled()) {
                     if (Minecraft.getMinecraft().thePlayer != null) {
                         if (text.contains(Minecraft.getMinecraft().thePlayer.getName())) {
@@ -657,6 +649,17 @@ public class FontRenderer implements IResourceManagerReloadListener {
                 }
             } catch (Exception e) {
 
+            }
+
+            boolean gommeMode = Koks.getKoks().moduleManager.getModule(GommeMode.class).isToggled();
+            if (gommeMode) {
+                if (Minecraft.getMinecraft().theWorld != null) {
+                    NetHandlerPlayClient nethandlerplayclient = Minecraft.getMinecraft().thePlayer.sendQueue;
+                    for (NetworkPlayerInfo info : nethandlerplayclient.getPlayerInfoMap()) {
+                        if (!info.getGameProfile().getName().equalsIgnoreCase(Minecraft.getMinecraft().thePlayer.getName()))
+                            text = text.replace(info.getGameProfile().getName(), "GommeHD");
+                    }
+                }
             }
 
             float f = 0.0F;

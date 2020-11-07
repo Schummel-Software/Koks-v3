@@ -1,6 +1,7 @@
 package koks.module.impl.gui;
 
 import koks.Koks;
+import koks.api.util.Animation;
 import koks.api.util.fonts.GlyphPageFontRenderer;
 import koks.cl.Role;
 import koks.event.Event;
@@ -11,8 +12,10 @@ import koks.module.Module;
 import koks.api.settings.Setting;
 import koks.module.ModuleInfo;
 import koks.module.impl.combat.KillAura;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.ScaledResolution;
 import org.lwjgl.opengl.GL11;
 
@@ -32,9 +35,10 @@ public class HUD extends Module {
     public Setting waterMark = new Setting("Watermark", true, this);
     public Setting waterMarkFont = new Setting("Font", "NONE", this);
     public Setting arrayList = new Setting("ArrayList", true, this);
+    public Setting hotbar = new Setting("Hotbar", true, this);
     public Setting showTags = new Setting("Show Tags", true, this);
     public Setting tabGUI = new Setting("TabGUI", true, this);
-    public Setting arrayListMode = new Setting("ArrayListMode", new String[]{"Mode1", "Mode2"}, "Mode1",this);
+    public Setting arrayListMode = new Setting("ArrayListMode", new String[]{"Mode1", "Mode2"}, "Mode1", this);
     public Setting x = new Setting("X", 5, 0, 20, true, this);
     public Setting y = new Setting("Y", 30, 20, 50, true, this);
     public Setting width = new Setting("Width", 91, 80, 100, true, this);
@@ -47,14 +51,15 @@ public class HUD extends Module {
     @Override
     public void onEvent(Event event) {
 
-        if(event instanceof EventTick) {
-            if(Koks.getKoks().CLManager.getUser().getRole() != Role.Developer) {
+        if (event instanceof EventTick) {
+            if (Koks.getKoks().CLManager.getUser().getRole() != Role.Developer) {
                 waterMarkFont.setTyped("NONE");
             }
         }
 
         if (event instanceof EventRender2D) {
 
+            drawHotbar();
             if (tabGUI.isToggled())
                 Koks.getKoks().tabGUI.drawScreen((int) x.getCurrentValue(), (int) y.getCurrentValue(), (int) width.getCurrentValue(), (int) height.getCurrentValue());
             if (waterMark.isToggled())
@@ -75,6 +80,66 @@ public class HUD extends Module {
 
     public GlyphPageFontRenderer waterFont;
 
+    public ScaledResolution sr = new ScaledResolution(Minecraft.getMinecraft());
+
+    public Animation hotbarAnimation = new Animation(0, 0, sr.getScaledHeight() - 22, sr.getScaledHeight() - 22, 0.4F);
+
+    public Animation fpsAnimation = new Animation(0, 0, 0, 0, 0.4F);
+
+    public void drawHotbar() {
+        FontRenderer fr = Minecraft.getMinecraft().fontRendererObj;
+        ScaledResolution sr = new ScaledResolution(Minecraft.getMinecraft());
+
+        long ping = 0;
+        if(mc.getCurrentServerData() != null)
+            ping = mc.getCurrentServerData().pingToServer;
+
+        double x = Math.round(mc.thePlayer.posX * 10);
+        double y = Math.round(mc.thePlayer.posY * 10);
+        double z = Math.round(mc.thePlayer.posZ * 10);
+
+        String fps = "FPS: §7" + mc.getDebugFPS() + " §rPing: §7" + ping;
+        /*String xPos = "X: §7" + (x / 10);
+        String yPos = "Y: §7" + (y / 10);
+        String zPos = "Z: §7" + (z / 10);*/
+
+
+        if (mc.currentScreen instanceof GuiChat || !hotbar.isToggled()) {
+            fpsAnimation.setGoalX(-fr.getStringWidth(fps));
+            fpsAnimation.setSpeed((float) (Math.cos(Math.toRadians(Math.abs(fpsAnimation.getGoalX() - fpsAnimation.getAnimationX()))) * 45 / Math.PI));
+            if (fpsAnimation.hasXReached(-fr.getStringWidth(fps))) {
+                if (timeHelper.hasReached(350))
+                    hotbarAnimation.setGoalY(sr.getScaledHeight());
+            } else {
+                timeHelper.reset();
+            }
+        } else {
+            hotbarAnimation.setGoalY(sr.getScaledHeight() - 22);
+
+            if (hotbarAnimation.hasYReached(sr.getScaledHeight() - 22)) {
+                if(timeHelper.hasReached(350)) {
+                    fpsAnimation.setSpeed((float) (Math.cos(Math.toRadians(Math.abs(fpsAnimation.getGoalX() - fpsAnimation.getX()))) * 45 / Math.PI));
+                    fpsAnimation.setGoalX(5);
+                }
+            }else{
+                timeHelper.reset();
+            }
+        }
+
+        hotbarAnimation.setSpeed((float) Math.toRadians(Math.abs(hotbarAnimation.getGoalY() - hotbarAnimation.getY())));
+
+
+        renderUtil.drawRect(0, hotbarAnimation.getAnimationY(), sr.getScaledWidth(), sr.getScaledHeight(), Integer.MIN_VALUE);
+
+        fr.drawString(fps, fpsAnimation.getAnimationX(), sr.getScaledHeight() - 20, -1, true);
+
+        /*fr.drawString(xPos, fpsAnimation.getAnimationX(), sr.getScaledHeight() - 10, -1, true);
+        fr.drawString(yPos, fpsAnimation.getAnimationX() + fr.getStringWidth(xPos) + 3, sr.getScaledHeight() - 10, -1, true);
+        fr.drawString(zPos, fpsAnimation.getAnimationX() + fr.getStringWidth(xPos) + fr.getStringWidth(yPos) + 6, sr.getScaledHeight() - 10, -1, true);*/
+
+
+    }
+
     public void drawWaterMark() {
         GL11.glPushMatrix();
         double scale = 2.5;
@@ -84,7 +149,6 @@ public class HUD extends Module {
             fr.drawStringWithShadow(clientName.getTyped(), 3, 3, Koks.getKoks().clientColor.getRGB());
         } else {
             waterFont = GlyphPageFontRenderer.create(waterMarkFont.getTyped(), 50, true, true, true);
-            console.log(waterFont.getFontHeight());
             waterFont.drawString(Koks.getKoks().NAME, 3, 3, Koks.getKoks().clientColor.getRGB(), true);
         }
         GL11.glPopMatrix();
@@ -97,7 +161,7 @@ public class HUD extends Module {
 
     public void drawArrayList() {
         ScaledResolution sr = new ScaledResolution(mc);
-        if(arrayListMode.getCurrentMode().equalsIgnoreCase("mode1")) {
+        if (arrayListMode.getCurrentMode().equalsIgnoreCase("mode1")) {
             int[] offset = {fr.FONT_HEIGHT + 2};
             int[] y = {0};
             Koks.getKoks().moduleManager.getModules().stream().sorted(Comparator.comparingDouble(module -> -fr.getStringWidth(module.getArrayName("§7", showTags.isToggled())))).forEach(module -> {
@@ -114,7 +178,7 @@ public class HUD extends Module {
                 }
             });
         }
-        if(arrayListMode.getCurrentMode().equalsIgnoreCase("Mode2")) {
+        if (arrayListMode.getCurrentMode().equalsIgnoreCase("Mode2")) {
 
             int[] offset = {fr.FONT_HEIGHT + 2};
             int[] y = {0};
@@ -128,7 +192,7 @@ public class HUD extends Module {
                         module.setAnimation(module.getAnimation() - 0.5);
 
                     renderUtil.drawRect(sr.getScaledWidth() - 1.5, y[0], sr.getScaledWidth(), y[0] + offset[0], renderUtil.getRainbow(currentOffset[0], 3000, 1, 1).getRGB());
-                    renderUtil.drawRect(sr.getScaledWidth()- (module.getName() != null ? 2 : 0) - 3 - module.getAnimation(), y[0], sr.getScaledWidth() - 1.5, y[0] + offset[0], renderUtil.getAlphaColor(new Color(25, 25, 25), 170).getRGB());
+                    renderUtil.drawRect(sr.getScaledWidth() - (module.getName() != null ? 2 : 0) - 3 - module.getAnimation(), y[0], sr.getScaledWidth() - 1.5, y[0] + offset[0], renderUtil.getAlphaColor(new Color(25, 25, 25), 170).getRGB());
 
                     fr.drawStringWithShadow(module.getArrayName("§7", showTags.isToggled()), (float) (sr.getScaledWidth() - module.getAnimation() - 2), y[0] + 1.5F, Color.white.getRGB());
 

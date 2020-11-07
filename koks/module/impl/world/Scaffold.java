@@ -61,6 +61,9 @@ public class Scaffold extends Module {
     public Setting rayCast = new Setting("RayCast", true, this);
 
     public Setting simpleRotations = new Setting("Simple Rotations", true, this);
+
+    public Setting staticPitch = new Setting("StaticPitch", false, this);
+
     public Setting intave = new Setting("Intave", false, this);
 
     public Setting alwaysLook = new Setting("AlwaysLook", true, this);
@@ -121,7 +124,8 @@ public class Scaffold extends Module {
                 }
             }
             if (safeWalk.isToggled()) {
-                ((EventSafeWalk) event).setSafe(true);
+                if (getPlayer().onGround || !onGround.isToggled())
+                    ((EventSafeWalk) event).setSafe(true);
             }
         }
     }
@@ -166,7 +170,7 @@ public class Scaffold extends Module {
     }
 
     public float getPitch(int speed) {
-        if (mc.thePlayer.onGround) {
+        if (mc.thePlayer.onGround || staticPitch.isToggled()) {
             return pitchVal.getCurrentValue();
         } else {
             return rotationUtil.faceBlock(finalPos, yaw, pitch, speed)[1];
@@ -177,6 +181,7 @@ public class Scaffold extends Module {
     public void placeBlock(BlockPos pos, EnumFacing face) {
         finalPos = pos;
         ItemStack silentItemStack = null;
+        int silentSlot = mc.thePlayer.inventory.currentItem;
         if (mc.thePlayer.getCurrentEquippedItem() == null || (!(mc.thePlayer.getCurrentEquippedItem().getItem() instanceof ItemBlock))) {
             for (int i = 0; i < 9; i++) {
                 if (mc.thePlayer.inventory.getStackInSlot(i) != null && mc.thePlayer.inventory.getStackInSlot(i).getItem() instanceof ItemBlock) {
@@ -184,6 +189,7 @@ public class Scaffold extends Module {
                     if (this.blackList.contains(itemBlock.getBlock()))
                         continue;
                     mc.thePlayer.sendQueue.addToSendQueue(new C09PacketHeldItemChange(i));
+                    silentSlot = i;
                     silentItemStack = mc.thePlayer.inventory.getStackInSlot(i);
                     if (mc.theWorld.getBlockState(new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY - 1.0D - (shouldBuildDown ? 1 : 0), mc.thePlayer.posZ)).getBlock() instanceof BlockAir) {
                         if (swingItem.isToggled())
@@ -244,8 +250,23 @@ public class Scaffold extends Module {
                         if (blackList.contains(((ItemBlock) silentItemStack.getItem()).getBlock()))
                             return;
                         if (silentItemStack != null) {
+                            getPlayerController().sendSlotPacket(silentItemStack, silentSlot);
                             mc.objectMouseOver = new MovingObjectPosition(rayCastUtil.getLook(yaw, pitch), face, finalPos);
-                            mc.rightClickMouse();
+                          /*  mc.rightClickMouse();
+
+
+                            if(mc.playerController.onPlayerRightClick(mc.thePlayer, mc.theWorld, silentItemStack, pos, face, new Vec3(pos.getX() + (this.randomHit.isToggled() ? randomUtil.getRandomDouble(0, 0.7) : 0), pos.getY() + (this.randomHit.isToggled() ? randomUtil.getRandomDouble(0, 0.7) : 0), pos.getZ() + (this.randomHit.isToggled() ? randomUtil.getRandomDouble(0, 0.7) : 0)))) {
+                                getPlayer().swingItem();
+                            }*/
+                            sneakCount++;
+
+                            mc.thePlayer.motionX *= motion.getCurrentValue();
+                            mc.thePlayer.motionZ *= motion.getCurrentValue();
+
+                            if (sneakCount > sneakAfterBlocks.getCurrentValue())
+                                sneakCount = 0;
+
+                            timeHelper.reset();
                         }
                     }
                 } else {
