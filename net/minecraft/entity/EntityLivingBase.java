@@ -2174,11 +2174,11 @@ public abstract class EntityLivingBase extends Entity
     {
         if (partialTicks == 1.0F)
         {
-            return this.getVectorForRotation(this.rotationPitch, this.rotationYawHead);
+            return this.getVectorForRotation(this.rotationPitchHead, this.rotationYawHead);
         }
         else
         {
-            float f = this.prevRotationPitch + (this.rotationPitch - this.prevRotationPitch) * partialTicks;
+            float f = this.prevRotationPitch + (this.rotationPitchHead - this.prevRotationPitchHead) * partialTicks;
             float f1 = this.prevRotationYawHead + (this.rotationYawHead - this.prevRotationYawHead) * partialTicks;
             return this.getVectorForRotation(f, f1);
         }

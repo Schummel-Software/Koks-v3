@@ -1497,6 +1497,7 @@ public abstract class Entity implements ICommandSender {
             this.prevRotationYaw = this.rotationYaw = nbttaglist2.getFloatAt(0);
             this.prevRotationPitch = this.rotationPitch = nbttaglist2.getFloatAt(1);
             this.setRotationYawHead(this.rotationYaw);
+
             this.func_181013_g(this.rotationYaw);
             this.fallDistance = tagCompund.getFloat("FallDistance");
             this.fire = tagCompund.getShort("Fire");

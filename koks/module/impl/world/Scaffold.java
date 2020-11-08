@@ -252,12 +252,13 @@ public class Scaffold extends Module {
                         if (silentItemStack != null) {
                             getPlayerController().sendSlotPacket(silentItemStack, silentSlot);
                             mc.objectMouseOver = new MovingObjectPosition(rayCastUtil.getLook(yaw, pitch), face, finalPos);
-                          /*  mc.rightClickMouse();
+                            mc.rightClickMouse();
 
 
                             if(mc.playerController.onPlayerRightClick(mc.thePlayer, mc.theWorld, silentItemStack, pos, face, new Vec3(pos.getX() + (this.randomHit.isToggled() ? randomUtil.getRandomDouble(0, 0.7) : 0), pos.getY() + (this.randomHit.isToggled() ? randomUtil.getRandomDouble(0, 0.7) : 0), pos.getZ() + (this.randomHit.isToggled() ? randomUtil.getRandomDouble(0, 0.7) : 0)))) {
                                 getPlayer().swingItem();
-                            }*/
+                            }
+
                             sneakCount++;
 
                             mc.thePlayer.motionX *= motion.getCurrentValue();
