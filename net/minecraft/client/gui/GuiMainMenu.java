@@ -555,9 +555,11 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
                 renderUtil.drawPicture((int) sr.getScaledWidth() / 2 + x - (wwidth - size + 5) / 2, (int) yPos + 1, 160, 60, new ResourceLocation("client/logo.png"));
                 fontRendererObj.drawString("Welcome " + Koks.getKoks().CLManager.getPrefix(), xPos, sr.getScaledHeight() / 2 + y - 14, Color.gray.getRGB(), true);
             } else {
-                resizeAnimation.setGoalY(120F);
-                resizeAnimation.setSpeed((float) (Math.toRadians(Math.abs(resizeAnimation.getGoalY() - resizeAnimation.getAnimationY())) / 1.5 * Math.PI));
-                wheight = (int) resizeAnimation.getAnimationY();
+                if(currentIndex != 3 && currentIndex != 6) {
+                    resizeAnimation.setGoalY(120F);
+                    resizeAnimation.setSpeed((float) (Math.toRadians(Math.abs(resizeAnimation.getGoalY() - resizeAnimation.getAnimationY())) / 1.5 * Math.PI));
+                    wheight = (int) resizeAnimation.getAnimationY();
+                }
                 switch (currentIndex) {
                     case 1:
                         //SINGLEPLAYER
@@ -571,6 +573,10 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
                         break;
                     case 3:
                         //ALTS
+
+                        resizeAnimation.setGoalY(220);
+                        resizeAnimation.setSpeed((float) (Math.toRadians(Math.abs(resizeAnimation.getGoalY() - resizeAnimation.getAnimationY())) / 1.5 * Math.PI));
+                        wheight = (int) resizeAnimation.getAnimationY();
 
                         email.drawTextBox();
                         password.drawTextBox();
@@ -594,6 +600,10 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
                         break;
                     case 6:
 
+                        resizeAnimation.setGoalY(180);
+                        resizeAnimation.setSpeed((float) (Math.toRadians(Math.abs(resizeAnimation.getGoalY() - resizeAnimation.getAnimationY())) / 1.5 * Math.PI));
+                        wheight = (int) resizeAnimation.getAnimationY();
+
                         int yPos = -2 + currentScroll;
 
                         renderUtil.scissor(x, sr.getScaledHeight() / 2 + y - wheight, sr.getScaledWidth() / 2 + x + wwidth + dicke, sr.getScaledHeight() / 2 + y + wheight);
@@ -601,24 +611,24 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
                         GL11.glEnable(GL11.GL_SCISSOR_TEST);
 
                         for (Changelog changelog : Koks.getKoks().changelogManager.changelogs) {
-                            drawRect(sr.getScaledWidth() / 2 + x - wwidth, sr.getScaledHeight() / 3 + y + yPos - 3, sr.getScaledWidth() / 2 + x + wwidth, sr.getScaledHeight() / 3 + y + yPos + fontRendererObj.FONT_HEIGHT, outlineColor.getRGB());
-                            drawString(fontRendererObj, changelog.getVersion(), sr.getScaledWidth() / 2 + x - fontRendererObj.getStringWidth(changelog.getVersion()) / 2, sr.getScaledHeight() / 3 + y + yPos, Color.white.getRGB());
+                            drawRect(sr.getScaledWidth() / 2 + x - wwidth, sr.getScaledHeight() / 2 + y - wheight + yPos + 1, sr.getScaledWidth() / 2 + x + wwidth, sr.getScaledHeight() / 2 + y - wheight + yPos + fontRendererObj.FONT_HEIGHT + 6, outlineColor.getRGB());
+                            drawString(fontRendererObj, changelog.getVersion(), sr.getScaledWidth() / 2 + x - fontRendererObj.getStringWidth(changelog.getVersion()) / 2, (int) (sr.getScaledHeight() / 2 + y - wheight + yPos + fontRendererObj.FONT_HEIGHT / 2 + 1), Color.white.getRGB());
                             if (!changelog.addedList.isEmpty())
                                 y += fontRendererObj.FONT_HEIGHT + 5;
                             for (String added : changelog.addedList) {
-                                drawString(fontRendererObj, "§a+§r" + added, sr.getScaledWidth() / 2 + x - wwidth + dicke, sr.getScaledHeight() / 3 + y + yPos, Color.white.getRGB());
+                                drawString(fontRendererObj, "§a+§r" + added, sr.getScaledWidth() / 2 + x - wwidth + dicke, sr.getScaledHeight() / 2 + y - wheight + yPos + fontRendererObj.FONT_HEIGHT / 2 + 1, Color.white.getRGB());
                                 y += fontRendererObj.FONT_HEIGHT + 1;
                             }
                             if (!changelog.fixedList.isEmpty())
                                 y += 5;
                             for (String fixed : changelog.fixedList) {
-                                drawString(fontRendererObj, "§b*§r" + fixed, sr.getScaledWidth() / 2 + x - wwidth + dicke, sr.getScaledHeight() / 3 + y + yPos, Color.white.getRGB());
+                                drawString(fontRendererObj, "§b*§r" + fixed, sr.getScaledWidth() / 2 + x - wwidth + dicke, sr.getScaledHeight() / 2 + y - wheight + yPos + fontRendererObj.FONT_HEIGHT / 2 + 1, Color.white.getRGB());
                                 y += fontRendererObj.FONT_HEIGHT + 1;
                             }
                             if (!changelog.removedList.isEmpty())
                                 y += 5;
                             for (String removed : changelog.removedList) {
-                                drawString(fontRendererObj, "§c-§r" + removed, sr.getScaledWidth() / 2 + x - wwidth + dicke, sr.getScaledHeight() / 3 + y + yPos, Color.white.getRGB());
+                                drawString(fontRendererObj, "§c-§r" + removed, sr.getScaledWidth() / 2 + x - wwidth + dicke, sr.getScaledHeight() / 2 + y - wheight + yPos + fontRendererObj.FONT_HEIGHT / 2 + 1, Color.white.getRGB());
                                 y += fontRendererObj.FONT_HEIGHT + 1;
                             }
                             y += 5;
