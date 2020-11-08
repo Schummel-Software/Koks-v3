@@ -14,7 +14,6 @@ import io.netty.channel.epoll.Epoll;
 import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.channel.local.LocalAddress;
-import io.netty.channel.local.LocalEventLoopGroup;
 import io.netty.channel.local.LocalServerChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.ServerSocketChannel;
@@ -52,21 +51,21 @@ public class NetworkSystem
     {
         protected NioEventLoopGroup load()
         {
-            return new NioEventLoopGroup(0, (new ThreadFactoryBuilder()).setNameFormat("Netty Server IO #%d").setDaemon(true).build());
+            return new NioEventLoopGroup();
         }
     };
     public static final LazyLoadBase<EpollEventLoopGroup> field_181141_b = new LazyLoadBase<EpollEventLoopGroup>()
     {
         protected EpollEventLoopGroup load()
         {
-            return new EpollEventLoopGroup(0, (new ThreadFactoryBuilder()).setNameFormat("Netty Epoll Server IO #%d").setDaemon(true).build());
+            return new EpollEventLoopGroup();
         }
     };
-    public static final LazyLoadBase<LocalEventLoopGroup> SERVER_LOCAL_EVENTLOOP = new LazyLoadBase<LocalEventLoopGroup>()
+    public static final LazyLoadBase<NioEventLoopGroup> SERVER_LOCAL_EVENTLOOP = new LazyLoadBase<NioEventLoopGroup>()
     {
-        protected LocalEventLoopGroup load()
+        protected NioEventLoopGroup load()
         {
-            return new LocalEventLoopGroup(0, (new ThreadFactoryBuilder()).setNameFormat("Netty Local Server IO #%d").setDaemon(true).build());
+            return new NioEventLoopGroup();
         }
     };
 

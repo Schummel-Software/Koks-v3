@@ -1027,6 +1027,16 @@ public class PacketBuffer extends ByteBuf
         return this.buf.retain();
     }
 
+    @Override
+    public ByteBuf touch() {
+        return this.buf.touch();
+    }
+
+    @Override
+    public ByteBuf touch(Object o) {
+        return this.buf.touch(o);
+    }
+
     public int refCnt()
     {
         return this.buf.refCnt();

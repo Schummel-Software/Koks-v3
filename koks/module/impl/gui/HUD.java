@@ -106,7 +106,7 @@ public class HUD extends Module {
 
         if (mc.currentScreen instanceof GuiChat || !hotbar.isToggled()) {
             fpsAnimation.setGoalX(-fr.getStringWidth(fps));
-            fpsAnimation.setSpeed((float) (Math.cos(Math.toRadians(Math.abs(fpsAnimation.getGoalX() - fpsAnimation.getAnimationX()))) * 45 / Math.PI));
+            fpsAnimation.setSpeed((float) 25);
             if (fpsAnimation.hasXReached(-fr.getStringWidth(fps))) {
                 if (timeHelper.hasReached(350))
                     hotbarAnimation.setGoalY(sr.getScaledHeight());
@@ -118,7 +118,7 @@ public class HUD extends Module {
 
             if (hotbarAnimation.hasYReached(sr.getScaledHeight() - 22)) {
                 if(timeHelper.hasReached(350)) {
-                    fpsAnimation.setSpeed((float) (Math.cos(Math.toRadians(Math.abs(fpsAnimation.getGoalX() - fpsAnimation.getX()))) * 45 / Math.PI));
+                    fpsAnimation.setSpeed(25);
                     fpsAnimation.setGoalX(5);
                 }
             }else{

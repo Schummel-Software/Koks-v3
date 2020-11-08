@@ -32,9 +32,12 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
 
     private int currentScroll;
 
+    public Animation resizeAnimation = new Animation();
+    public Animation indexAnimation = new Animation();
+
     public boolean windowShowed = true, showOptions, showColorPicker, showBackgrounds, showRight, drag = false, dragOptions = false, dragColor = false, dragBackground = false;
 
-    public int currentIndex = 0, size = 40, indexSize = 7, wheight = 120, wwidth = 200, dicke = 5, drawIndexSize = currentIndex, lastIndex = 0, optionSize = 4, optionWidth = 125, optionHeight = 25, rightWidth = 20, rightHeight = 30, rightOutline = 2, rightOptions = 2,
+    public int currentIndex = 0, size = 40, indexSize = 7, wheight = 80, wwidth = 200, dicke = 5, drawIndexSize = currentIndex, lastIndex = 0, optionSize = 4, optionWidth = 125, optionHeight = 25, rightWidth = 20, rightHeight = 30, rightOutline = 2, rightOptions = 2,
             colorSize = 150, pixel = 60,
             backgroundWidth = 70, backgroundHeight = 23,
             rightX, rightY;
@@ -59,6 +62,7 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
     public String curBackground = "DEFAULT";
 
     public GuiMainMenu() {
+        resizeAnimation.setY(80);
         renderUtil = Koks.getKoks().wrapper.renderUtil;
         loginUtil = Koks.getKoks().wrapper.loginUtil;
         try {
@@ -97,7 +101,6 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
                     int key = Integer.parseInt(Keyboard.getKeyName(keyCode));
                     if (key <= indexSize + 1 && key != 0) {
                         currentIndex = key - 1;
-                        System.out.println(currentIndex);
                         if (currentIndex == 5) {
                             mc.shutdown();
                         }
@@ -446,9 +449,28 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
             int picHeight = size - 3;
 
             for (int index = 0; index <= drawIndexSize; index++) {
-                drawRect(sr.getScaledWidth() / 2 + x - wwidth + size * index, sr.getScaledHeight() / 2 + y - wheight - size, sr.getScaledWidth() / 2 + x - wwidth + size * index + size, sr.getScaledHeight() / 2 + y - wheight, currentIndex == index ? outlineColor.getRGB() : wColor.getRGB());
-                renderUtil.drawPicture(sr.getScaledWidth() / 2 + x - wwidth + size * index, sr.getScaledHeight() / 2 + y - wheight - size, picWidth, picHeight, new ResourceLocation("client/icons/MainMenu/" + getIndexName(index) + ".png"));
+                drawRect(sr.getScaledWidth() / 2 + x - wwidth + size * index, sr.getScaledHeight() / 2 + y - wheight - size, sr.getScaledWidth() / 2 + x - wwidth + size * index + size, sr.getScaledHeight() / 2 + y - wheight, wColor.getRGB());
             }
+
+            for (int index = 0; index <= drawIndexSize; index++) {
+
+                indexAnimation.setSpeed((float) (50F));
+                indexAnimation.setGoalX(sr.getScaledWidth() / 2 + x - wwidth + size * index);
+
+                if (currentIndex == index)
+                    if (!drag && currentIndex != 0)
+                        drawRect((int) indexAnimation.getAnimationX(), sr.getScaledHeight() / 2 + y - wheight - size, (int) (indexAnimation.getAnimationX() + size), sr.getScaledHeight() / 2 + y - wheight, outlineColor.getRGB());
+                    else {
+                        drawRect((int) sr.getScaledWidth() / 2 + x - wwidth + size * index, sr.getScaledHeight() / 2 + y - wheight - size, (int) (sr.getScaledWidth() / 2 + x - wwidth + size * index + size), sr.getScaledHeight() / 2 + y - wheight, outlineColor.getRGB());
+                        indexAnimation.setX(sr.getScaledWidth() / 2 + x - wwidth + size * index);
+                    }
+            }
+
+            for (int index = 0; index <= drawIndexSize; index++) {
+                renderUtil.drawPicture(sr.getScaledWidth() / 2 + x - wwidth + size * index, sr.getScaledHeight() / 2 + y - wheight - size, picWidth, picHeight, new ResourceLocation("client/icons/MainMenu/" + getIndexName(index) + ".png"));
+
+            }
+
             drawRect(sr.getScaledWidth() / 2 + x - wwidth, sr.getScaledHeight() / 2 + y - wheight - size - dicke, sr.getScaledWidth() / 2 + x - wwidth + size * drawIndexSize + size, sr.getScaledHeight() / 2 + y - wheight - size, outlineColor.getRGB());
             drawRect(sr.getScaledWidth() / 2 + x - wwidth - dicke, sr.getScaledHeight() / 2 + y - wheight - size - dicke, sr.getScaledWidth() / 2 + x - wwidth, sr.getScaledHeight() / 2 + y - wheight, outlineColor.getRGB());
             drawRect(sr.getScaledWidth() / 2 + x - wwidth + size * drawIndexSize + size, sr.getScaledHeight() / 2 + y - wheight - size - dicke, sr.getScaledWidth() / 2 + x - wwidth + size * drawIndexSize + size + dicke, sr.getScaledHeight() / 2 + y - wheight, outlineColor.getRGB());
@@ -518,7 +540,10 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
             }
 
             if (currentIndex == 0) {
-                wheight = 80;
+
+                resizeAnimation.setGoalY(80F);
+                resizeAnimation.setSpeed((float) (Math.toRadians(Math.abs(resizeAnimation.getGoalY() - resizeAnimation.getAnimationY())) / 1.5 * Math.PI));
+                wheight = (int) resizeAnimation.getAnimationY();
                 /* GlyphPageFontRenderer fontRenderer = GlyphPageFontRenderer.create("Arial", 50, true ,true, true);
             fontRenderer.drawString(Koks.getKoks().NAME,sr.getScaledWidth() / 2 - fontRenderer.getStringWidth("Welcome " + Koks.getKoks().purvesManager.getPrefix()) / 2, sr.getScaledHeight() / 2 - 10, Color.white.getRGB(), true);
    */
@@ -530,7 +555,9 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
                 renderUtil.drawPicture((int) sr.getScaledWidth() / 2 + x - (wwidth - size + 5) / 2, (int) yPos + 1, 160, 60, new ResourceLocation("client/logo.png"));
                 fontRendererObj.drawString("Welcome " + Koks.getKoks().CLManager.getPrefix(), xPos, sr.getScaledHeight() / 2 + y - 14, Color.gray.getRGB(), true);
             } else {
-                wheight = 120;
+                resizeAnimation.setGoalY(120F);
+                resizeAnimation.setSpeed((float) (Math.toRadians(Math.abs(resizeAnimation.getGoalY() - resizeAnimation.getAnimationY())) / 1.5 * Math.PI));
+                wheight = (int) resizeAnimation.getAnimationY();
                 switch (currentIndex) {
                     case 1:
                         //SINGLEPLAYER
@@ -552,7 +579,7 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
                         password.xPosition = sr.getScaledWidth() / 2 + x - 180 / 2;
                         password.yPosition = sr.getScaledHeight() / 3 + y + (25 + 27);
 
-                        drawString(fontRendererObj, loginUtil.status, 5, 5, new Color(0xAAAAAA).getRGB());
+                        drawString(fontRendererObj, loginUtil.status, (int) (sr.getScaledWidth() / 2 + x - wwidth + 5), (int) (sr.getScaledHeight() / 2 + y + wheight - fontRendererObj.FONT_HEIGHT - 1), new Color(0xAAAAAA).getRGB());
 
                         if (email.getText().isEmpty()) {
                             String email = "Email / TheAltening";

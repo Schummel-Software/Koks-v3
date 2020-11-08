@@ -43,7 +43,10 @@ public class Koks {
 
     public Color clientColor = Color.ORANGE;
 
-    public boolean isNew = false;
+    public boolean isNew = false, isUsingProxy = false;
+
+    public String currentProxy;
+    public int currentProxyPort;
 
     public static Koks getKoks() {
         return KOKS;

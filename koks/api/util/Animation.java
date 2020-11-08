@@ -12,6 +12,9 @@ public class Animation {
     float x, goalX, y, goalY;
     float speed;
 
+    public Animation() {
+    }
+
     public Animation(float x, float goalX, float y, float goalY, float speed) {
         this.x = x;
         this.y = y;
