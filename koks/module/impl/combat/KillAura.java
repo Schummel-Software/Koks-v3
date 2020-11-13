@@ -294,7 +294,7 @@ public class KillAura extends Module {
             return false;
         if (!player.isToggled() && entity instanceof EntityPlayer)
             return false;
-        if (entity.getDistanceToEntity(mc.thePlayer) > hitRange.getCurrentValue() + 1.0D)
+        if (entity.getDistanceToEntity(mc.thePlayer) > hitRange.getCurrentValue() + 1)
             return false;
         if (entity == mc.thePlayer)
             return false;
