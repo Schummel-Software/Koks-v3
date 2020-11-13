@@ -1,8 +1,8 @@
-package koks.gui.clickgui.elements.settings;
+package koks.gui.clickgui.periodic.settings;
 
 import koks.Koks;
-import koks.gui.clickgui.elements.Element;
 import koks.api.settings.Setting;
+import koks.gui.clickgui.Element;
 import net.minecraft.client.gui.Gui;
 
 /**
@@ -19,18 +19,16 @@ public class DrawSlider extends Element {
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-        Gui.drawRect(x, y, x + width, y + height, 0xFF202020);
-        fr.drawStringWithShadow(setting.getName(), x + 3, y + height / 2 - fr.FONT_HEIGHT / 2 - 1, 0xFFFFFFFF);
-        fr.drawStringWithShadow(setting.getCurrentValue() + "", x + width - fr.getStringWidth(setting.getCurrentValue() + "") - 3, y + height / 2 - fr.FONT_HEIGHT / 2 - 1, 0xFFFFFFFF);
+        fr.drawStringWithShadow(setting.getName(), x - 3, y - 2 - fr.FONT_HEIGHT, 0xFFFFFFFF);
+        fr.drawStringWithShadow(setting.getCurrentValue() + "", x - 3 + width - fr.getStringWidth(setting.getCurrentValue() + "") - 3, y - 2 - fr.FONT_HEIGHT, 0xFFFFFFFF);
 
-        Gui.drawRect(x, y + height - 3, x + width, y + height - 1, 0xFF101010);
+        Gui.drawRect(x - 3, y + height - 3, x + width - 3, y + height - 1, 0xFF101010);
 
         double currentValue = (setting.getCurrentValue() - setting.getMinValue()) / (setting.getMaxValue() - setting.getMinValue());
-        Gui.drawRect(x, y + height - 3, (int) (x + (currentValue * width)), y + height - 1, Koks.getKoks().clientColor.getRGB());
+        Gui.drawRect(x - 3, y + height - 3, (int) (x - 3 + (currentValue * width)), y + height - 1, setting.getModule().getCategory().getCategoryColor().getRGB());
 
         if (dragging)
             updateValue(mouseX);
-        super.drawScreen(mouseX, mouseY, partialTicks);
     }
 
     public void updateValue(double mouseX) {
@@ -39,12 +37,12 @@ public class DrawSlider extends Element {
     }
 
     public boolean isHovered(int mouseX, int mouseY) {
-        return mouseX > x && mouseX < x + width && mouseY > y + height - 4 && mouseY < y + height;
+        return mouseX > x - 3 && mouseX < x - 3 + width && mouseY > y + height - 4 && mouseY < y + height;
     }
 
     @Override
     public void keyTyped(char typedChar, int keyCode) {
-        super.keyTyped(typedChar, keyCode);
+
     }
 
     @Override
@@ -54,13 +52,11 @@ public class DrawSlider extends Element {
                 dragging = true;
             }
         }
-        super.mouseClicked(mouseX, mouseY, mouseButton);
     }
 
     @Override
     public void mouseReleased(int mouseX, int mouseY, int state) {
         dragging = false;
-        super.mouseReleased(mouseX, mouseY, state);
     }
 
 }

@@ -72,7 +72,7 @@ public class Scaffold extends Module {
     public int sneakCount;
 
     public Scaffold() {
-        this.blackList = Arrays.asList(Blocks.red_flower, Blocks.yellow_flower, Blocks.grass, Blocks.crafting_table, Blocks.chest, Blocks.enchanting_table, Blocks.anvil, Blocks.sand, Blocks.gravel, Blocks.glass_pane, Blocks.stained_glass_pane, Blocks.ice, Blocks.packed_ice, Blocks.cobblestone_wall, Blocks.water, Blocks.lava, Blocks.web, Blocks.sapling, Blocks.rail, Blocks.golden_rail, Blocks.activator_rail, Blocks.detector_rail, Blocks.tnt, Blocks.red_flower, Blocks.yellow_flower, Blocks.flower_pot, Blocks.tallgrass, Blocks.red_mushroom, Blocks.brown_mushroom, Blocks.ladder, Blocks.torch, Blocks.stone_button, Blocks.wooden_button, Blocks.redstone_torch, Blocks.redstone_wire, Blocks.furnace, Blocks.cactus, Blocks.oak_fence, Blocks.acacia_fence, Blocks.nether_brick_fence, Blocks.birch_fence, Blocks.dark_oak_fence, Blocks.jungle_fence, Blocks.oak_fence, Blocks.acacia_fence_gate, Blocks.snow_layer, Blocks.trapdoor, Blocks.ender_chest, Blocks.beacon, Blocks.hopper, Blocks.daylight_detector, Blocks.daylight_detector_inverted, Blocks.carpet);
+        this.blackList = Arrays.asList(Blocks.red_flower, Blocks.yellow_flower, Blocks.crafting_table, Blocks.chest, Blocks.enchanting_table, Blocks.anvil, Blocks.sand, Blocks.gravel, Blocks.glass_pane, Blocks.stained_glass_pane, Blocks.ice, Blocks.packed_ice, Blocks.cobblestone_wall, Blocks.water, Blocks.lava, Blocks.web, Blocks.sapling, Blocks.rail, Blocks.golden_rail, Blocks.activator_rail, Blocks.detector_rail, Blocks.tnt, Blocks.red_flower, Blocks.yellow_flower, Blocks.flower_pot, Blocks.tallgrass, Blocks.red_mushroom, Blocks.brown_mushroom, Blocks.ladder, Blocks.torch, Blocks.stone_button, Blocks.wooden_button, Blocks.redstone_torch, Blocks.redstone_wire, Blocks.furnace, Blocks.cactus, Blocks.oak_fence, Blocks.acacia_fence, Blocks.nether_brick_fence, Blocks.birch_fence, Blocks.dark_oak_fence, Blocks.jungle_fence, Blocks.oak_fence, Blocks.acacia_fence_gate, Blocks.snow_layer, Blocks.trapdoor, Blocks.ender_chest, Blocks.beacon, Blocks.hopper, Blocks.daylight_detector, Blocks.daylight_detector_inverted, Blocks.carpet);
     }
 
     @BCompiler(aot = BCompiler.AOT.NORMAL)
@@ -81,8 +81,13 @@ public class Scaffold extends Module {
         if (event instanceof EventMotion) {
             if (((EventMotion) event).getType() == EventMotion.Type.PRE) {
 
-                ((EventMotion) event).setYaw(yaw);
-                ((EventMotion) event).setPitch(pitch);
+                if (!getPlayer().isSprinting()) {
+                    ((EventMotion) event).setYaw(yaw);
+                    ((EventMotion) event).setPitch(pitch);
+                } else {
+                    ((EventMotion) event).setYaw(getPlayer().rotationYaw);
+                    ((EventMotion) event).setPitch(getPlayer().rotationPitch);
+                }
 
             }
         }
@@ -99,9 +104,6 @@ public class Scaffold extends Module {
             }
             BlockPos pos = new BlockPos(mc.thePlayer.posX, (mc.thePlayer.getEntityBoundingBox()).minY - 1.0D - (shouldBuildDown ? 1 : 0), mc.thePlayer.posZ);
             getPlayer().setSprinting(sprint.isToggled());
-            if (sprint.isToggled()) {
-                getPlayer().sendQueue.addToSendQueue(new C0BPacketEntityAction(getPlayer(), C0BPacketEntityAction.Action.STOP_SPRINTING));
-            }
 
             getBlockPosToPlaceOn(pos);
 
@@ -132,8 +134,10 @@ public class Scaffold extends Module {
 
 
     public void setYaw() {
-        float[] rotations = rotationUtil.faceBlock(finalPos, yaw, pitch, 360);
-        yaw = rotations[0];
+        if (finalPos != null) {
+            float[] rotations = rotationUtil.faceBlock(finalPos, yaw, pitch, 360);
+            yaw = rotations[0];
+        }
     }
 
 
@@ -240,8 +244,6 @@ public class Scaffold extends Module {
                             }
                         }
                     } else {
-                        if (sprint.isToggled())
-                            getPlayer().sendQueue.addToSendQueue(new C0BPacketEntityAction(getPlayer(), C0BPacketEntityAction.Action.START_SPRINTING));
 
                         timeHelper.reset();
                     }
@@ -251,13 +253,7 @@ public class Scaffold extends Module {
                             return;
                         if (silentItemStack != null) {
                             getPlayerController().sendSlotPacket(silentItemStack, silentSlot);
-                            mc.objectMouseOver = new MovingObjectPosition(rayCastUtil.getLook(yaw, pitch), face, finalPos);
                             mc.rightClickMouse();
-
-
-                            if(mc.playerController.onPlayerRightClick(mc.thePlayer, mc.theWorld, silentItemStack, pos, face, new Vec3(pos.getX() + (this.randomHit.isToggled() ? randomUtil.getRandomDouble(0, 0.7) : 0), pos.getY() + (this.randomHit.isToggled() ? randomUtil.getRandomDouble(0, 0.7) : 0), pos.getZ() + (this.randomHit.isToggled() ? randomUtil.getRandomDouble(0, 0.7) : 0)))) {
-                                getPlayer().swingItem();
-                            }
 
                             sneakCount++;
 

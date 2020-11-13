@@ -1,8 +1,7 @@
-package koks.gui.clickgui.elements.settings;
+package koks.gui.clickgui.periodic.settings;
 
-import koks.Koks;
 import koks.api.settings.Setting;
-import koks.gui.clickgui.elements.Element;
+import koks.gui.clickgui.Element;
 import net.minecraft.client.gui.Gui;
 import org.lwjgl.input.Keyboard;
 
@@ -20,15 +19,13 @@ public class DrawKey extends Element {
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-        Gui.drawRect(x, y, x + width, y + height, 0xFF202020);
-        fr.drawStringWithShadow(setting.getName(), x + 3, y + height / 2 - fr.FONT_HEIGHT / 2 + 1, 0xFFFFFFFF);
+        fr.drawStringWithShadow(setting.getName(), x - 3, y + height / 2 - fr.FONT_HEIGHT / 2 + 1, 0xFFFFFFFF);
         String s = isKeyTyped ? "type...." : Keyboard.getKeyName(setting.getKey());
-        fr.drawStringWithShadow(s, x + 3 + width - fr.getStringWidth(s) - 5, y + height / 2 - fr.FONT_HEIGHT / 2 + 1, 0xFFFFFFFF);
-        super.drawScreen(mouseX, mouseY, partialTicks);
+        fr.drawStringWithShadow(s, x - 3 + width - fr.getStringWidth(s) - 5, y + height / 2 - fr.FONT_HEIGHT / 2 + 1, 0xFFFFFFFF);
     }
 
     public boolean isHovered(int mouseX, int mouseY) {
-        return mouseX > x && mouseX < x + 2 + width - 4 && mouseY > y + 2 && mouseY < y + height - 2;
+        return mouseX > x - 3 && mouseX < x + 2 + width - 4 && mouseY >= y && mouseY <= y + fr.FONT_HEIGHT;
     }
 
     @Override
@@ -36,8 +33,6 @@ public class DrawKey extends Element {
         if(isKeyTyped) {
             setting.setKey(keyCode);
             isKeyTyped = false;
-        }else {
-            super.keyTyped(typedChar, keyCode);
         }
     }
 
@@ -46,12 +41,11 @@ public class DrawKey extends Element {
         if (mouseButton == 0 && isHovered(mouseX, mouseY)) {
             isKeyTyped = !isKeyTyped;
         }
-        super.mouseClicked(mouseX, mouseY, mouseButton);
     }
 
     @Override
     public void mouseReleased(int mouseX, int mouseY, int state) {
-        super.mouseReleased(mouseX, mouseY, state);
+
     }
 
 }

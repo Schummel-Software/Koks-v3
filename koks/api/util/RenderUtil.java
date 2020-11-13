@@ -146,12 +146,39 @@ public class RenderUtil {
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
     }
 
-    public void drawOutlineRect(double left, double top, double right, double bottom, int size, int colorOutline, int color) {
+    public void drawOutlineRect(double left, double top, double right, double bottom, float size, int colorOutline, int color) {
         drawRect(left - size, top, left, bottom, colorOutline);
         drawRect(right, top, right + size, bottom, colorOutline);
         drawRect(left - size, top - size, right + size, top, colorOutline);
         drawRect(left - size, bottom, right + size, bottom + size, colorOutline);
         drawRect(left, top, right, bottom, color);
+    }
+
+    public void drawOutline(double left, double top, double right, double bottom, float size, int colorOutline) {
+        drawRect(left - size, top, left, bottom, colorOutline);
+        drawRect(right, top, right + size, bottom, colorOutline);
+        drawRect(left - size, top - size, right + size, top, colorOutline);
+        drawRect(left - size, bottom, right + size, bottom + size, colorOutline);
+    }
+
+    public void drawCircle(double x, double y, double radius, int color) {
+        GL11.glPushMatrix();
+
+        Color c = new Color(color);
+        GlStateManager.enableBlend();
+        GlStateManager.disableTexture2D();
+        GL11.glColor4f(c.getRed() / 255, c.getGreen() / 255, c.getBlue() / 255, c.getAlpha() / 255);
+        GL11.glBegin(GL11.GL_POLYGON);
+        for(int i = 0; i < 360; i++) {
+            GL11.glVertex2d(x + Math.sin(i * Math.PI / 180) * radius, y + Math.cos(i * Math.PI / 180) * radius);
+        }
+        GL11.glEnd();
+
+        GL11.glColor4f(1,1,1,1);
+        GlStateManager.disableBlend();
+        GlStateManager.enableTexture2D();
+
+        GL11.glPopMatrix();
     }
 
     public void drawRect(double left, double top, double right, double bottom, int color) {

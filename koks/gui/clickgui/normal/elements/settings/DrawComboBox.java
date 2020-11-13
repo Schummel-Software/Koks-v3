@@ -1,8 +1,8 @@
-package koks.gui.clickgui.elements.settings;
+package koks.gui.clickgui.normal.elements.settings;
 
 import koks.Koks;
-import koks.gui.clickgui.elements.Element;
 import koks.api.settings.Setting;
+import koks.gui.clickgui.Element;
 import net.minecraft.client.gui.Gui;
 
 /**
@@ -29,7 +29,6 @@ public class DrawComboBox extends Element {
                 y += this.height;
             }
         }
-        super.drawScreen(mouseX, mouseY, partialTicks);
     }
 
     public boolean isHovered(int mouseX, int mouseY) {
@@ -38,7 +37,7 @@ public class DrawComboBox extends Element {
 
     @Override
     public void keyTyped(char typedChar, int keyCode) {
-        super.keyTyped(typedChar, keyCode);
+
     }
 
     @Override
@@ -58,12 +57,11 @@ public class DrawComboBox extends Element {
                 y += this.height;
             }
         }
-        super.mouseClicked(mouseX, mouseY, mouseButton);
     }
 
     @Override
     public void mouseReleased(int mouseX, int mouseY, int state) {
-        super.mouseReleased(mouseX, mouseY, state);
+
     }
 
 }

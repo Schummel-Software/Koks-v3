@@ -1,7 +1,8 @@
-package koks.gui.clickgui.elements;
+package koks.gui.clickgui.normal.elements;
 
 import koks.Koks;
-import koks.gui.clickgui.elements.settings.*;
+import koks.gui.clickgui.Element;
+import koks.gui.clickgui.normal.elements.settings.*;
 import koks.module.Module;
 import koks.api.settings.Setting;
 import net.minecraft.client.Minecraft;

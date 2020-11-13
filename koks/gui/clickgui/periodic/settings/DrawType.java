@@ -1,17 +1,14 @@
-package koks.gui.clickgui.elements.settings;
+package koks.gui.clickgui.periodic.settings;
 
-import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
-import koks.Koks;
 import koks.api.settings.Setting;
-import koks.gui.clickgui.elements.Element;
+import koks.gui.clickgui.Element;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.util.ChatAllowedCharacters;
 import org.lwjgl.input.Keyboard;
 
 /**
- * @author deleteboys | lmao | kroko
- * @created on 13.09.2020 : 00:34
+ * @author kroko
+ * @created on 13.11.2020 : 16:06
  */
 public class DrawType extends Element {
 
@@ -19,20 +16,18 @@ public class DrawType extends Element {
         this.setting = setting;
     }
 
-    boolean isKeyTyped = false;
+    public boolean isKeyTyped = false;
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-        Gui.drawRect(x, y, x + width, y + height, 0xFF202020);
-        fr.drawStringWithShadow(setting.getName(), x + 3, y + height / 2 - fr.FONT_HEIGHT / 2 + 1, 0xFFFFFFFF);
+        fr.drawStringWithShadow(setting.getName(), x - 3, y + height / 2 - fr.FONT_HEIGHT / 2 + 1, 0xFFFFFFFF);
         String s = setting.getTyped();
         int rnd = (int) (System.currentTimeMillis() / 1000);
         fr.drawStringWithShadow(s.replace('§', '&') + (isKeyTyped ? rnd % 2 == 0 ? "§7_" : "" : ""), x + 3 + width - fr.getStringWidth(s.replace('§', '&')) - 5 - (isKeyTyped ? fr.getStringWidth("§7_") - 1 : 0), y + height / 2 - fr.FONT_HEIGHT / 2 + 1, 0xFFFFFFFF);
-        super.drawScreen(mouseX, mouseY, partialTicks);
     }
 
     public boolean isHovered(int mouseX, int mouseY) {
-        return mouseX > x && mouseX < x + 2 + width - 4 && mouseY > y + 2 && mouseY < y + height - 2;
+        return mouseX > x - 3 && mouseX < x + 3 + width - fr.getStringWidth(setting.getTyped().replace('§', '&')) - 5 - (isKeyTyped ? fr.getStringWidth("§7_") - 1 : 0) && mouseY >= y && mouseY < y + fr.FONT_HEIGHT;
     }
 
     @Override
@@ -56,14 +51,13 @@ public class DrawType extends Element {
     @Override
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) {
         if (mouseButton == 0 && isHovered(mouseX, mouseY)) {
+            System.out.println("hey");
             isKeyTyped = !isKeyTyped;
         }
-        super.mouseClicked(mouseX, mouseY, mouseButton);
     }
 
     @Override
     public void mouseReleased(int mouseX, int mouseY, int state) {
-        super.mouseReleased(mouseX, mouseY, state);
-    }
 
+    }
 }

@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
+import javafx.scene.transform.Scale;
 import koks.Koks;
 import koks.api.util.GLSLSandboxShader;
 import koks.api.util.*;
@@ -35,18 +36,20 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
     public Animation resizeAnimation = new Animation();
     public Animation indexAnimation = new Animation();
 
-    public boolean windowShowed = true, showOptions, showColorPicker, showBackgrounds, showRight, drag = false, dragOptions = false, dragColor = false, dragBackground = false;
+    public boolean windowShowed = true, showInformations, showOptions, showColorPicker, showBackgrounds, showRight, drag = false, dragOptions = false, dragColor = false, dragBackground = false, dragInformation = false;
 
     public int currentIndex = 0, size = 40, indexSize = 7, wheight = 80, wwidth = 200, dicke = 5, drawIndexSize = currentIndex, lastIndex = 0, optionSize = 4, optionWidth = 125, optionHeight = 25, rightWidth = 20, rightHeight = 30, rightOutline = 2, rightOptions = 2,
             colorSize = 150, pixel = 60,
             backgroundWidth = 70, backgroundHeight = 23,
-            rightX, rightY;
+            rightX, rightY,
+            infoWidth = 125, infoHeight = 40;
 
     public double x, y, dragX, dragY,
             dragOptionsX, dragOptionsY, optionsX, optionsY,
             colorX, colorY, dragColorX, dragColorY,
             backgroundX, backgroundY, dragBackgroundX, dragBackgroundY,
-            scaleX, scaleY;
+            scaleX, scaleY,
+            informationX = 50, informationY, dragInformationX, dragInformationY;
 
     public float hue = 1;
 
@@ -65,6 +68,7 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
         resizeAnimation.setY(80);
         renderUtil = Koks.getKoks().wrapper.renderUtil;
         loginUtil = Koks.getKoks().wrapper.loginUtil;
+
         try {
             this.shader = new GLSLSandboxShader("/mainmenu.fsh");
         } catch (IOException e) {
@@ -276,6 +280,7 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
     }
 
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+
         ScaledResolution sr = new ScaledResolution(mc);
 
         for (GuiButton button : buttonList) {
@@ -314,6 +319,11 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
             backgroundY = dragBackgroundY + mouseY;
         }
 
+        if (dragInformation) {
+            informationX = dragInformationX + mouseX;
+            informationY = dragInformationY + mouseY;
+        }
+
         int x = (int) this.x;
         int y = (int) this.y;
 
@@ -323,6 +333,8 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
         int backgroundX = (int) this.backgroundX;
         int backgroundY = (int) this.backgroundY;
 
+        int informationX = (int) this.informationX;
+        int informationY = (int) this.informationY;
 
         GlStateManager.enableAlpha();
         GlStateManager.disableCull();
@@ -482,6 +494,31 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
                 }
             }
 
+            if (showInformations) {
+                if (currentIndex == 4) {
+                    //PROXY
+
+                    /* Informations */
+
+                    renderUtil.drawOutlineRect(sr.getScaledWidth() / 2 + informationX - infoWidth, sr.getScaledHeight() / 2 + informationY - infoHeight, sr.getScaledWidth() / 2 + informationX + infoWidth, sr.getScaledHeight() / 2 + informationY + infoHeight, 4, outlineColor.getRGB(), wColor.getRGB());
+                    String proxyText = "§l§nProxy Informations";
+                    fontRendererObj.drawString(proxyText, sr.getScaledWidth() / 2 + informationX - fontRendererObj.getStringWidth(proxyText) / 2, sr.getScaledHeight() / 2 + informationY - infoHeight + fontRendererObj.FONT_HEIGHT, -1);
+
+                    String ip = "127.013.2131";
+                    String informationIp = "§lIp: §f" + ip;
+                    fontRendererObj.drawString(informationIp, sr.getScaledWidth() / 2 + informationX - infoWidth + 4, sr.getScaledHeight() / 2 + informationY - infoHeight / 2 + infoHeight / 2, Koks.getKoks().clientColor.getRGB());
+
+                    String port = "25565";
+                    String informationPort = "§lPort: §f" + port;
+                    fontRendererObj.drawString(informationPort, sr.getScaledWidth() / 2 + informationX - infoWidth + 4, sr.getScaledHeight() / 2 + informationY - infoHeight / 2 + fontRendererObj.FONT_HEIGHT + 3 + infoHeight / 2, Koks.getKoks().clientColor.getRGB());
+
+                    String ping = "20";
+                    String informationPing = "§lPing: §f" + ping + "§rms";
+                    fontRendererObj.drawString(informationPing, sr.getScaledWidth() / 2 + informationX - infoWidth + 4, sr.getScaledHeight() / 2 + informationY - infoHeight / 2 + fontRendererObj.FONT_HEIGHT * 2 + 6 + infoHeight / 2, Koks.getKoks().clientColor.getRGB());
+                }
+            }
+
+
             for (GuiButton button : this.buttonList) {
 
                 if ((button.id >= 100 && button.id <= 110) || button.id == 2 || button.id == 200 || button.id == 8675309) {
@@ -555,19 +592,24 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
                 renderUtil.drawPicture((int) sr.getScaledWidth() / 2 + x - (wwidth - size + 5) / 2, (int) yPos + 1, 160, 60, new ResourceLocation("client/logo.png"));
                 fontRendererObj.drawString("Welcome " + Koks.getKoks().CLManager.getPrefix(), xPos, sr.getScaledHeight() / 2 + y - 14, Color.gray.getRGB(), true);
             } else {
-                if(currentIndex != 3 && currentIndex != 6) {
-                    resizeAnimation.setGoalY(120F);
-                    resizeAnimation.setSpeed((float) (Math.toRadians(Math.abs(resizeAnimation.getGoalY() - resizeAnimation.getAnimationY())) / 1.5 * Math.PI));
-                    wheight = (int) resizeAnimation.getAnimationY();
-                }
                 switch (currentIndex) {
                     case 1:
                         //SINGLEPLAYER
+
+                        resizeAnimation.setGoalY(120F);
+                        resizeAnimation.setSpeed((float) (Math.toRadians(Math.abs(resizeAnimation.getGoalY() - resizeAnimation.getAnimationY())) / 1.5 * Math.PI));
+                        wheight = (int) resizeAnimation.getAnimationY();
+
                         this.mc.displayGuiScreen(new GuiSelectWorld(this));
                         currentIndex = 0;
                         break;
                     case 2:
                         //MULTIPLAYER
+
+                        resizeAnimation.setGoalY(120F);
+                        resizeAnimation.setSpeed((float) (Math.toRadians(Math.abs(resizeAnimation.getGoalY() - resizeAnimation.getAnimationY())) / 1.5 * Math.PI));
+                        wheight = (int) resizeAnimation.getAnimationY();
+
                         this.mc.displayGuiScreen(new GuiMultiplayer(this));
                         currentIndex = 0;
                         break;
@@ -597,6 +639,17 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
                             drawString(fontRendererObj, password, sr.getScaledWidth() / 2 + x - fontRendererObj.getStringWidth(password) / 2, sr.getScaledHeight() / 3 + y + (25 + 27 + 6), Color.gray.getRGB());
                         }
 
+                        break;
+                    case 4:
+                        //PROXY
+                        resizeAnimation.setGoalY(220);
+                        resizeAnimation.setSpeed((float) (Math.toRadians(Math.abs(resizeAnimation.getGoalY() - resizeAnimation.getAnimationY())) / 1.5 * Math.PI));
+                        wheight = (int) resizeAnimation.getAnimationY();
+                        break;
+                    case 5:
+                        resizeAnimation.setGoalY(120F);
+                        resizeAnimation.setSpeed((float) (Math.toRadians(Math.abs(resizeAnimation.getGoalY() - resizeAnimation.getAnimationY())) / 1.5 * Math.PI));
+                        wheight = (int) resizeAnimation.getAnimationY();
                         break;
                     case 6:
 
@@ -688,6 +741,8 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
     @Override
     protected void mouseReleased(int mouseX, int mouseY, int state) {
         drag = false;
+        dragInformation = false;
+        dragBackground = false;
         dragOptions = false;
         dragColor = false;
         super.mouseReleased(mouseX, mouseY, state);
@@ -697,6 +752,11 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
      * Called when the mouse is clicked. Args : mouseX, mouseY, clickedButton
      */
 
+
+    public boolean isHoverInfo(int mouseX, int mouseY) {
+        ScaledResolution sr = new ScaledResolution(mc);
+        return mouseX >= sr.getScaledWidth() / 2 + informationX - infoWidth - 4 && mouseY >= sr.getScaledHeight() / 2 + informationY - infoHeight - 4 && mouseX <= sr.getScaledWidth() / 2 + informationX + infoWidth + 4 && mouseY <= sr.getScaledHeight() / 2 + informationY + infoHeight + 4;
+    }
 
     public boolean isHoverBackgroundChose(int mouseX, int mouseY) {
         ScaledResolution sr = new ScaledResolution(mc);
@@ -840,6 +900,12 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
                 }
             }
 
+            if (showInformations && isHoverInfo(mouseX, mouseY)) {
+                dragInformation = true;
+                dragInformationX = informationX - mouseX;
+                dragInformationY = informationY - mouseY;
+            }
+
             if (showColorPicker) {
                 int xC = (int) (sr.getScaledWidth() / 2 + colorX);
                 int yC = (int) (sr.getScaledHeight() / 2 + colorY);
@@ -874,18 +940,21 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
 
             if (windowShowed) {
                 if (isHover(mouseX, mouseY)) {
-                    if (!(showColorPicker && isHoverColor(mouseX, mouseY)))
-                        if (!(showOptions && isHoverOptions(mouseX, mouseY))) {
-                            if (!(currentIndex == 3 && isHoverEmail(mouseX, mouseY))) {
-                                if (!(currentIndex == 3 && isHoverPassword(mouseX, mouseY))) {
-                                    if (!(currentIndex == 0 && mouseX >= sr.getScaledWidth() / 2 + x - wwidth / 2 - size + size * (1 - 1) && mouseX <= sr.getScaledWidth() / 2 + x - wwidth / 2 - size + size * (indexSize - 1) + size && mouseY >= sr.getScaledHeight() / 2 + y + wheight - size && mouseY <= sr.getScaledHeight() / 2 + y + wheight)) {
-                                        drag = true;
-                                        dragX = x - mouseX;
-                                        dragY = y - mouseY;
+                    if (!(isHoverInfo(mouseX, mouseY) && showInformations)) {
+                        if (!(showColorPicker && isHoverColor(mouseX, mouseY))) {
+                            if (!(showOptions && isHoverOptions(mouseX, mouseY))) {
+                                if (!(currentIndex == 3 && isHoverEmail(mouseX, mouseY))) {
+                                    if (!(currentIndex == 3 && isHoverPassword(mouseX, mouseY))) {
+                                        if (!(currentIndex == 0 && mouseX >= sr.getScaledWidth() / 2 + x - wwidth / 2 - size + size * (1 - 1) && mouseX <= sr.getScaledWidth() / 2 + x - wwidth / 2 - size + size * (indexSize - 1) + size && mouseY >= sr.getScaledHeight() / 2 + y + wheight - size && mouseY <= sr.getScaledHeight() / 2 + y + wheight)) {
+                                            drag = true;
+                                            dragX = x - mouseX;
+                                            dragY = y - mouseY;
+                                        }
                                     }
                                 }
                             }
                         }
+                    }
                 }
 
                 if (!drag) {
@@ -923,7 +992,14 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
 
                     //0: HOME 1: SinglePlayer 2: MultiPlayer 3: ALTS 4: Language 5: Options 7: Shutdown
 
+                    if (currentIndex != 4) {
+                        showInformations = false;
+                    }
+
                     switch (currentIndex) {
+                        case 4:
+                            showInformations = true;
+                            break;
                         case 7:
                             currentIndex = lastIndex;
                             this.mc.shutdown();

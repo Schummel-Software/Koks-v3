@@ -14,7 +14,7 @@ public class DiscordUtil {
 
     private static DiscordUtil SINGLETON;
     private DiscordRichPresence presence;
-    private DiscordRPC lib ;
+    private DiscordRPC lib;
     public DiscordUtil(){
         SINGLETON = this;
     }

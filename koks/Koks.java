@@ -7,9 +7,10 @@ import koks.config.ConfigSystem;
 import koks.event.EventManager;
 import koks.filemanager.FileManager;
 import koks.friends.FriendManager;
+import koks.gui.clickgui.periodic.ClickGUIPE;
 import koks.gui.tabgui.TabGUI;
 import koks.module.KeyBindManager;
-import koks.gui.clickgui.ClickGUI;
+import koks.gui.clickgui.normal.ClickGUI;
 import koks.module.ModuleManager;
 import koks.api.settings.SettingsManager;
 
@@ -58,7 +59,6 @@ public class Koks {
     public ModuleManager moduleManager;
     public EventManager eventManager;
     public CommandManager commandManager;
-    public ClickGUI clickGUI;
     public KeyBindManager keyBindManager;
     public FileManager fileManager;
     public TabGUI tabGUI;
@@ -68,6 +68,9 @@ public class Koks {
     public ChangelogManager changelogManager;
 
     public Wrapper wrapper;
+
+    public ClickGUI clickGUI;
+    public ClickGUIPE clickGUIPE;
 
     public DiscordUtil discordUtil;
 
@@ -80,6 +83,7 @@ public class Koks {
         eventManager = new EventManager();
         commandManager = new CommandManager();
         clickGUI = new ClickGUI();
+        clickGUIPE = new ClickGUIPE();
         keyBindManager = new KeyBindManager();
         keyBindManager.readKeyBinds();
         fileManager = new FileManager();

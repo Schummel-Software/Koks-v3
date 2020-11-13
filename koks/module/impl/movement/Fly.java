@@ -1,5 +1,6 @@
 package koks.module.impl.movement;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import god.buddy.aot.BCompiler;
 import koks.Koks;
 import koks.api.settings.Setting;
@@ -8,9 +9,10 @@ import koks.event.Event;
 import koks.event.impl.EventUpdate;
 import koks.module.Module;
 import koks.module.ModuleInfo;
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerCapabilities;
-import net.minecraft.network.play.client.C0CPacketInput;
-import net.minecraft.network.play.client.C13PacketPlayerAbilities;
+import net.minecraft.network.play.client.*;
 
 /**
  * @author avox | lmao | kroko
@@ -34,20 +36,23 @@ public class Fly extends Module {
         switch (mode.getCurrentMode()) {
             case "Verus":
                 if (event instanceof EventUpdate) {
-                    sendPacket(new C0CPacketInput());
-                    if (timeHelper.hasReached(25)) {
-                        PlayerCapabilities capabilities = new PlayerCapabilities();
-                        capabilities.isCreativeMode = false;
-                        capabilities.allowFlying = true;
-                        capabilities.isFlying = false;
-                        sendPacket(new C13PacketPlayerAbilities(capabilities));
-                        if (!getPlayer().onGround) {
-                            movementUtil.setSpeed(1.1, true);
+                    if(!getPlayer().onGround) {
+                        getPlayer().motionY = 0;
+                        getPlayer().motionY = randomUtil.getRandomFloat(-0.05F, 0.05F);
+                        getPlayer().capabilities.isFlying = false;
+                        getPlayer().capabilities.isCreativeMode = true;
+                        getPlayer().cameraYaw = 0.05F;
+
+
+                        if(timeHelper.hasReached(250)) {
+                            float speed = 0.9F;
+                            double motionX = -Math.sin(Math.toRadians(movementUtil.getDirection(mc.thePlayer.rotationYaw))) * speed;
+                            double motionZ = Math.cos(Math.toRadians(movementUtil.getDirection(mc.thePlayer.rotationYaw))) * speed;
+
+                            getPlayer().setPosition(getX() + motionX, getY(), getZ() + motionZ);
+                            timeHelper.reset();
                         }
-                    }
-                    if(timeHelper.hasReached(650)){
-                        getPlayer().motionY = 0.5;
-                        timeHelper.reset();
+
                     }
                 }
                 break;
@@ -71,7 +76,32 @@ public class Fly extends Module {
                 break;
             case "CubeCraft":
                 if (event instanceof EventUpdate) {
-                    mc.thePlayer.motionY = 0.0;
+
+                    getPlayer().motionY = 0;
+                    getTimer().timerSpeed = 1F;
+
+                    switch (mc.thePlayer.ticksExisted % 10) {
+                        case 0:
+                        case 6:
+                            getPlayer().motionY -= randomUtil.getRandomFloat(0.01F, 0.05F);
+                            break;
+                        case 2:
+                        case 3:
+                        case 4:
+                            float speed = 0.9F;
+                            double motionX = -Math.sin(Math.toRadians(mc.thePlayer.rotationYaw)) * speed;
+                            double motionZ = Math.cos(Math.toRadians(mc.thePlayer.rotationYaw)) * speed;
+
+                            getPlayer().setPosition(getX() + motionX, getY(), getZ() + motionZ);
+                            getPlayer().motionY += 0.2F;
+                            break;
+                        case 9:
+                            getPlayer().motionX = 0;
+                            getPlayer().motionZ = 0;
+                            break;
+                    }
+
+                   /* mc.thePlayer.motionY = 0.0;
                     mc.timer.timerSpeed = 0.3F;
                     if (mc.thePlayer.ticksExisted % 2 == 0) {
                         mc.thePlayer.motionY -= 0.01;
@@ -86,7 +116,7 @@ public class Fly extends Module {
                     if (timeHelper.hasReached(800)) {
                         movementUtil.setSpeed(0.4, false);
                         timeHelper.reset();
-                    }
+                    }*/
                 }
                 break;
         }
@@ -98,8 +128,8 @@ public class Fly extends Module {
         timeHelper.reset();
         damageTime.reset();
 
-        if(getPlayer().onGround && mode.getCurrentMode().equalsIgnoreCase("Verus")) {
-            getPlayer().motionY = 1;
+        if (getPlayer().onGround && mode.getCurrentMode().equalsIgnoreCase("Verus")) {
+            getPlayer().motionY = 0.7;
         }
 
     }

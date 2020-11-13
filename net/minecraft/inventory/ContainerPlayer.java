@@ -1,5 +1,7 @@
 package net.minecraft.inventory;
 
+import koks.Koks;
+import koks.module.impl.player.OverArmor;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Blocks;
@@ -44,7 +46,7 @@ public class ContainerPlayer extends Container
                 }
                 public boolean isItemValid(ItemStack stack)
                 {
-                    return stack == null ? false : (stack.getItem() instanceof ItemArmor ? ((ItemArmor)stack.getItem()).armorType == k_f : (stack.getItem() != Item.getItemFromBlock(Blocks.pumpkin) && stack.getItem() != Items.skull ? false : k_f == 0));
+                    return Koks.getKoks().moduleManager.getModule(OverArmor.class).isToggled() || (stack == null ? false : (stack.getItem() instanceof ItemArmor ? ((ItemArmor)stack.getItem()).armorType == k_f : (stack.getItem() != Item.getItemFromBlock(Blocks.pumpkin) && stack.getItem() != Items.skull ? false : k_f == 0)));
                 }
                 public String getSlotTexture()
                 {

@@ -33,19 +33,22 @@ public class ChestStealer extends Module {
                     return;
                 ContainerChest chest = (ContainerChest) mc.thePlayer.openContainer;
                 boolean empty = true;
-                for (int i = 0; i < chest.getLowerChestInventory().getSizeInventory(); i++) {
-                    if (chest.getSlot(i).getHasStack() && chest.getSlot(i).getStack() != null && !inventoryCleaner.trashItems.contains(chest.getSlot(i).getStack().getItem())) {
-                        if (throwTimer.hasReached((long) ((long) takeDelay.getCurrentValue() + randomUtil.getRandomGaussian(20)))) {
-                            mc.playerController.windowClick(chest.windowId, i, 0, 1, mc.thePlayer);
-                            throwTimer.reset();
+                if(chest.getLowerChestInventory().getDisplayName().getFormattedText().contains("Chest")) {
+                    for (int i = 0; i < chest.getLowerChestInventory().getSizeInventory(); i++) {
+                        if (chest.getSlot(i).getHasStack() && chest.getSlot(i).getStack() != null && !inventoryCleaner.trashItems.contains(chest.getSlot(i).getStack().getItem())) {
+                            if (throwTimer.hasReached((long) ((long) takeDelay.getCurrentValue() + randomUtil.getRandomGaussian(20)))) {
+                                mc.playerController.windowClick(chest.windowId, i, 0, 1, mc.thePlayer);
+                                throwTimer.reset();
+                            }
+                            empty = false;
+                            break;
                         }
-                        empty = false;
-                        break;
+                    }
+                    if (empty) {
+                        mc.thePlayer.closeScreen();
                     }
                 }
-                if (empty) {
-                    mc.thePlayer.closeScreen();
-                }
+
             } else {
                 startTimer.reset();
             }

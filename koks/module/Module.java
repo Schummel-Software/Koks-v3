@@ -8,6 +8,7 @@ import koks.event.Event;
 import koks.api.settings.Setting;
 import koks.module.impl.player.SendPublic;
 
+import java.awt.*;
 import java.lang.reflect.Field;
 
 /**
@@ -161,6 +162,29 @@ public abstract class Module extends Methods {
     }
 
     public enum Category {
-        COMBAT, MOVEMENT, RENDER, GUI, UTILITIES, PLAYER, DEBUG, WORLD
+        COMBAT, MOVEMENT, RENDER, GUI, UTILITIES, PLAYER, DEBUG, WORLD;
+
+
+        public Color getCategoryColor() {
+            switch (this) {
+                case COMBAT:
+                    return new Color(0xFF555D);
+                case MOVEMENT:
+                    return new Color(0xDEE955);
+                case RENDER:
+                    return new Color(0xFC56FF);
+                case GUI:
+                    return new Color(0xFF8056);
+                case UTILITIES:
+                    return new Color(0xCCCCCC);
+                case PLAYER:
+                    return new Color(0x52EE61);
+                case DEBUG:
+                    return new Color(0x3AEFB6);
+                case WORLD:
+                    return new Color(0x4CDDF3);
+            }
+            return Color.white;
+        }
     }
 }

@@ -38,8 +38,6 @@ public class Debug extends Module {
 
             getPlayer().isInWeb = false;
 
-            console.log(getPlayer().rotationPitch);
-
             if (getPlayer().isOnLadder() && getPlayer().isCollidedHorizontally && !getPlayer().onGround) {
                 if (timeHelper.hasReached(550)) {
                     getPlayer().motionY = 0.55F;

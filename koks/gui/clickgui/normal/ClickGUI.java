@@ -1,5 +1,6 @@
-package koks.gui.clickgui;
+package koks.gui.clickgui.normal;
 
+import koks.api.settings.Setting;
 import koks.module.Module;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;

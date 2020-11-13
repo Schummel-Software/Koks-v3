@@ -28,6 +28,7 @@ public class V3_0_0 extends Changelog{
         added("Intave GodMode for DBD (Dead By Daylight)");
         added("Discord Rich Presents");
         added("FastBow Timer Mode");
+        added("Added new ClickGUI (Periodic Table)");
         added("WallSpeed");
         added("Step Modes");
         added("Friends");

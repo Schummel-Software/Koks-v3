@@ -21,7 +21,7 @@ public class CivBreak extends Module {
     @Override
     public void onEvent(Event event) {
         if (event instanceof EventUpdate) {
-            if (mc.objectMouseOver.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
+            if (mc.objectMouseOver != null && mc.objectMouseOver.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
                 if (getGameSettings().keyBindAttack.pressed) {
                     getPlayer().sendQueue.addToSendQueue(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.START_DESTROY_BLOCK, mc.objectMouseOver.getBlockPos(), EnumFacing.DOWN));
                     getPlayer().sendQueue.addToSendQueue(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.STOP_DESTROY_BLOCK, mc.objectMouseOver.getBlockPos(), EnumFacing.DOWN));

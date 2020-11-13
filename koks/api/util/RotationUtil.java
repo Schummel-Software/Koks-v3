@@ -64,9 +64,9 @@ public class RotationUtil {
         float yawAngle = (float) (MathHelper.func_181159_b(z + zDiff, x + xDiff) * 180.0D / Math.PI) - 90.0F;
         float pitchAngle = (float) (-(MathHelper.func_181159_b(y, angle) * 180.0D / Math.PI));
         float finalPitch = pitchAngle >= 90 ? 90 : pitchAngle;
-        //lmao thx
-        float f = mc.gameSettings.mouseSensitivity * 0.8F + 0.2F;
-        float f1 = f * f * f * 1.5F;
+
+        float f = mc.gameSettings.mouseSensitivity * 0.6F + 0.2F;
+        float f1 = f * f * f * 8.0F;
 
         float f2 = (float) ((yawAngle - currentYaw) * f1);
         float f3 = (float) ((finalPitch - currentPitch) * f1);

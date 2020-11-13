@@ -69,6 +69,8 @@ public class ModuleManager {
         addModule(new MemoryCleaner());
         addModule(new NameProtect());
         addModule(new NameTags());
+        addModule(new NoRotate());
+        addModule(new OverArmor());
         addModule(new NoBob());
         addModule(new NoFov());
         addModule(new NoHurtCam());

@@ -366,8 +366,15 @@ public class FontRenderer implements IResourceManagerReloadListener {
     /**
      * Draws the specified string.
      */
-    public int drawString(String text, int x, int y, int color) {
-        return !this.enabled ? 0 : this.drawString(text, (float) x, (float) y, color, false);
+    public int drawString(String text, float x, float y, int color) {
+        return !this.enabled ? 0 : this.drawString(text, x, y, color, false);
+    }
+
+    public void drawString(String text, int x, int y, float size, int color) {
+        GL11.glScalef(size,size,size);
+        float mSize = (float)Math.pow(size,-1);
+        drawString(text,Math.round(x / size),Math.round(y / size),color);
+        GL11.glScalef(mSize,mSize,mSize);
     }
 
     /**
