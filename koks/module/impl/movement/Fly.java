@@ -36,21 +36,19 @@ public class Fly extends Module {
         switch (mode.getCurrentMode()) {
             case "Verus":
                 if (event instanceof EventUpdate) {
+                    getTimer().timerSpeed = 0.9F;
                     if(!getPlayer().onGround) {
-                        getPlayer().motionY = 0;
-                        getPlayer().motionY = randomUtil.getRandomFloat(-0.05F, 0.05F);
                         getPlayer().capabilities.isFlying = false;
                         getPlayer().capabilities.isCreativeMode = true;
                         getPlayer().cameraYaw = 0.05F;
 
-
-                        if(timeHelper.hasReached(250)) {
-                            float speed = 0.9F;
+                        if(getPlayer().motionY < -0.4) {
+                            float speed = 3F;
                             double motionX = -Math.sin(Math.toRadians(movementUtil.getDirection(mc.thePlayer.rotationYaw))) * speed;
                             double motionZ = Math.cos(Math.toRadians(movementUtil.getDirection(mc.thePlayer.rotationYaw))) * speed;
 
                             getPlayer().setPosition(getX() + motionX, getY(), getZ() + motionZ);
-                            timeHelper.reset();
+                            getPlayer().motionY *= -1.01;
                         }
 
                     }
@@ -129,7 +127,7 @@ public class Fly extends Module {
         damageTime.reset();
 
         if (getPlayer().onGround && mode.getCurrentMode().equalsIgnoreCase("Verus")) {
-            getPlayer().motionY = 0.7;
+            getPlayer().jump();
         }
 
     }

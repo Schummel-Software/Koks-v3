@@ -45,7 +45,7 @@ public class RotationUtil {
     }
 
     @BCompiler(aot = BCompiler.AOT.AGGRESSIVE)
-    public float[] faceEntity(Entity entity, float currentYaw, float currentPitch, boolean smooth, float accuracy, float precision, float predictionMultiplier) {
+    public float[] faceEntity(Entity entity, boolean mouseFix, float currentYaw, float currentPitch, boolean smooth, float accuracy, float precision, float predictionMultiplier) {
         Vec3 rotations = getBestVector(entity, accuracy, precision);
 
         double x = rotations.xCoord - mc.thePlayer.posX;
@@ -63,24 +63,25 @@ public class RotationUtil {
         double angle = MathHelper.sqrt_double(x * x + z * z);
         float yawAngle = (float) (MathHelper.func_181159_b(z + zDiff, x + xDiff) * 180.0D / Math.PI) - 90.0F;
         float pitchAngle = (float) (-(MathHelper.func_181159_b(y, angle) * 180.0D / Math.PI));
-        float finalPitch = pitchAngle >= 90 ? 90 : pitchAngle;
 
         float f = mc.gameSettings.mouseSensitivity * 0.6F + 0.2F;
         float f1 = f * f * f * 8.0F;
 
         float f2 = (float) ((yawAngle - currentYaw) * f1);
-        float f3 = (float) ((finalPitch - currentPitch) * f1);
+        float f3 = (float) ((pitchAngle - currentPitch) * f1);
 
         float difYaw = yawAngle - currentYaw;
-        float difPitch = finalPitch - currentPitch;
+        float difPitch = pitchAngle - currentPitch;
 
-        float yaw = updateRotation(currentYaw + f2, yawAngle, smooth ? Math.abs(MathHelper.wrapAngleTo180_float(difYaw)) * 0.1F : 360);
-        float pitch = updateRotation(currentPitch + f3, finalPitch, smooth ? Math.abs(MathHelper.wrapAngleTo180_float(difPitch)) * 0.1F : 360);
+        float yaw = updateRotation(currentYaw + (mouseFix ? f2 : 0), yawAngle, smooth ? Math.abs(MathHelper.wrapAngleTo180_float(difYaw)) * 0.1F : 360);
+        float pitch = updateRotation(currentPitch + (mouseFix ? f3 : 0), pitchAngle, smooth ? Math.abs(MathHelper.wrapAngleTo180_float(difPitch)) * 0.1F : 360);
 
-        yaw -= yaw % f1;
-        pitch -= pitch % f1;
+        if(mouseFix) {
+            yaw -= yaw % f1;
+            pitch -= pitch % f1;
+        }
 
-        return new float[]{yaw, pitch};
+        return new float[]{yaw, pitch >= 90 ? 90 : pitch <= -90 ? -90 : pitch};
     }
 
     @BCompiler(aot = BCompiler.AOT.AGGRESSIVE)
@@ -92,21 +93,20 @@ public class RotationUtil {
         double calculate = MathHelper.sqrt_double(x * x + z * z);
         float calcYaw = (float) (MathHelper.func_181159_b(z, x) * 180.0D / Math.PI) - 90.0F;
         float calcPitch = (float) -(MathHelper.func_181159_b(y, calculate) * 180.0D / Math.PI);
-        float finalPitch = calcPitch >= 90 ? 90 : calcPitch;
 
         float f = mc.gameSettings.mouseSensitivity * 0.8F + 0.2F;
         float f1 = f * f * f * 1.5F;
 
         float f2 = (float) ((calcYaw - currentYaw) * f1);
-        float f3 = (float) ((finalPitch - currentPitch) * f1);
+        float f3 = (float) ((calcPitch - currentPitch) * f1);
 
         float yaw = updateRotation(currentYaw + f2, calcYaw, speed);
-        float pitch = updateRotation(currentPitch + f3, finalPitch, speed);
+        float pitch = updateRotation(currentPitch + f3, calcPitch, speed);
 
         yaw -= yaw % f1;
         pitch -= pitch % f1;
 
-        return new float[]{yaw, pitch};
+        return new float[]{yaw, pitch >= 90 ? 90 : pitch <= -90 ? -90 : pitch};
     }
 
     public float updateRotation(float curRot, float destination, float speed)

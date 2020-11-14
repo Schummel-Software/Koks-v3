@@ -35,6 +35,9 @@ import java.util.Random;
 @ModuleInfo(name = "KillAura", description = "Its damage the entitys arround you", category = Module.Category.COMBAT)
 public class KillAura extends Module {
 
+    float hasenRange;
+    long lastAttack;
+
     // TARGET SETTINGS
     public Setting attackType = new Setting("Attack Type", new String[]{"Single", "Switch", "Hybrid"}, "Single", this);
     public Setting preferType = new Setting("Prefer", new String[]{"Health", "Distance"}, "Distance", this);
@@ -45,6 +48,8 @@ public class KillAura extends Module {
     public Setting mobs = new Setting("Mobs", false, this);
 
     // BASIC ATTACK SETTINGS
+    public Setting hazeRange = new Setting("Haze Range", false, this);
+    public Setting maxHazeRangeDistance = new Setting("Max Haze Range Distance", 1.0F, 0.0F, 3.0F, false, this);
     public Setting hitRange = new Setting("Hit Range", 3.0F, 3.0F, 6.0F, false, this);
     public Setting cps = new Setting("CPS", 5.0F, 5.0F, 20.0F, true, this);
     public Setting hurtTime = new Setting("HurtTime", 10.0F, 0.0F, 10.0F, true, this);
@@ -56,6 +61,7 @@ public class KillAura extends Module {
     public Setting blockMode = new Setting("BlockMode", new String[]{"On Attack", "Half", "Full"}, "On Attack", this);
 
     // MOVEMENT SETTINGS
+    public Setting mouseFix = new Setting("MouseFix", true, this);
     public Setting fixMovement = new Setting("Fix Movement", true, this);
     public Setting stopSprinting = new Setting("Stop Sprinting", true, this);
     public Setting usePlayerController = new Setting("Use PlayerController", true, this);
@@ -100,7 +106,7 @@ public class KillAura extends Module {
         if (event instanceof EventMotion) {
             if (((EventMotion) event).getType() == EventMotion.Type.PRE) {
                 if (finalEntity != null) {
-                    float[] rotations = rotationUtil.faceEntity(finalEntity, curYaw, curPitch, this.rotations.smooth.isToggled(), this.rotations.accuracy.getCurrentValue(), this.rotations.precision.getCurrentValue(), this.rotations.predictionMultiplier.getCurrentValue());
+                    float[] rotations = rotationUtil.faceEntity(finalEntity,mouseFix.isToggled(), curYaw, curPitch, this.rotations.smooth.isToggled(), this.rotations.accuracy.getCurrentValue(), this.rotations.precision.getCurrentValue(), this.rotations.predictionMultiplier.getCurrentValue());
                     yaw = rotations[0];
                     pitch = rotations[1];
 
@@ -119,12 +125,26 @@ public class KillAura extends Module {
         }
 
         if (event instanceof EventAttack) {
+
             if (finalEntity != null) {
+
+                if(finalEntity.hurtResistantTime == 10 && hasenRange < maxHazeRangeDistance.getCurrentValue() && hazeRange.isToggled()) {
+                    hasenRange += 0.5F;
+                    lastAttack = System.currentTimeMillis() / 1000;
+                }
+
+                if(!hazeRange.isToggled())
+                    hasenRange = 0;
+
+                if(System.currentTimeMillis() / 1000 - lastAttack >= 2) {
+                    hasenRange = 0;
+                }
+
                 if (canBlock() && autoBlock.isToggled() && blockMode.getCurrentMode().equals("Full"))
                     mc.playerController.sendUseItem(mc.thePlayer, mc.theWorld, mc.thePlayer.getHeldItem());
 
 
-                long cps = (long) this.cps.getCurrentValue();
+                long cps = (long) this.cps.getCurrentValue() + randomUtil.getRandomInt(-1, 1);
 
                 cps = cps < 10 ? cps : cps + 5;
                 if (((EntityLivingBase) finalEntity).hurtTime <= hurtTime.getCurrentValue()) {
@@ -142,6 +162,8 @@ public class KillAura extends Module {
                     if (canBlock() && autoBlock.isToggled() && blockMode.getCurrentMode().equals("Half"))
                         mc.playerController.sendUseItem(mc.thePlayer, mc.theWorld, mc.thePlayer.getCurrentEquippedItem());
                 }
+            }else{
+                hasenRange = 0;
             }
         }
 
@@ -156,7 +178,7 @@ public class KillAura extends Module {
     }
 
     public void attackEntity() {
-        Entity rayCastEntity = rayCastUtil.rayCastedEntity(hitRange.getCurrentValue(), yaw, pitch);
+        Entity rayCastEntity = rayCastUtil.rayCastedEntity(hitRange.getCurrentValue() + hasenRange, yaw, pitch);
 
         if (!failing && rayCastEntity != null) {
 
@@ -171,7 +193,9 @@ public class KillAura extends Module {
                 getPlayer().closeScreen();*/
 
             if (usePlayerController.isToggled()) {
-                mc.playerController.attackEntity(mc.thePlayer, rayCastEntity);
+
+                mc.clickMouse();
+                /*mc.playerController.attackEntity(mc.thePlayer, rayCastEntity);*/
             } else {
                 mc.thePlayer.sendQueue.addToSendQueue(new C02PacketUseEntity(rayCastEntity, C02PacketUseEntity.Action.ATTACK));
             }
@@ -222,7 +246,7 @@ public class KillAura extends Module {
                 break;
             case "Switch":
                 if (entities.size() - 1 >= switchCounter)
-                    if (entities.get(switchCounter).getDistanceToEntity(getPlayer()) <= hitRange.getCurrentValue())
+                    if (entities.get(switchCounter).getDistanceToEntity(getPlayer()) <= hitRange.getCurrentValue() + hasenRange)
                         finalEntity = entities.get(switchCounter);
                     else
                         entities.remove(entities.get(switchCounter));
@@ -294,7 +318,7 @@ public class KillAura extends Module {
             return false;
         if (!player.isToggled() && entity instanceof EntityPlayer)
             return false;
-        if (entity.getDistanceToEntity(mc.thePlayer) > hitRange.getCurrentValue() + 1.0D)
+        if (entity.getDistanceToEntity(mc.thePlayer) > hitRange.getCurrentValue() + hasenRange + 1.0D)
             return false;
         if (entity == mc.thePlayer)
             return false;
@@ -326,6 +350,7 @@ public class KillAura extends Module {
 
     @Override
     public void onEnable() {
+        hasenRange = 0;
         rotations = (Rotations) Koks.getKoks().moduleManager.getModule(Rotations.class);
         finalEntity = null;
         curYaw = getPlayer().rotationYaw;

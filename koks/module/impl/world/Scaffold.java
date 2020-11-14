@@ -80,14 +80,8 @@ public class Scaffold extends Module {
     public void onEvent(Event event) {
         if (event instanceof EventMotion) {
             if (((EventMotion) event).getType() == EventMotion.Type.PRE) {
-
-                if (!getPlayer().isSprinting()) {
-                    ((EventMotion) event).setYaw(yaw);
-                    ((EventMotion) event).setPitch(pitch);
-                } else {
-                    ((EventMotion) event).setYaw(getPlayer().rotationYaw);
-                    ((EventMotion) event).setPitch(getPlayer().rotationPitch);
-                }
+                ((EventMotion) event).setYaw(yaw);
+                ((EventMotion) event).setPitch(pitch);
 
             }
         }

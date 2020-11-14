@@ -22,7 +22,7 @@ import java.util.ArrayList;
  * @author kroko
  * @created on 12.11.2020 : 15:46
  */
-public class ClickGUIPE extends GuiScreen {
+public class ClickGUIPSE extends GuiScreen {
 
     boolean bindModule, settingMenu;
     Module bindMod, curMod;
@@ -33,7 +33,7 @@ public class ClickGUIPE extends GuiScreen {
     int size = 50, outline = 2, lineSize = 18, curScroll, catX = 0, settingScroll;
     ScaledResolution sr;
 
-    public ClickGUIPE() {
+    public ClickGUIPSE() {
         sr = new ScaledResolution(Minecraft.getMinecraft());
         for (int i = 0; i < Koks.getKoks().moduleManager.getModules().size(); i++) {
             Module module = Koks.getKoks().moduleManager.getModules().get(i);
@@ -42,7 +42,10 @@ public class ClickGUIPE extends GuiScreen {
             int indexX = i - (lineSize * length);
             int x;
             int y;
-            if (i == 0) {
+
+            int position = Math.min(10, Koks.getKoks().moduleManager.getModules().size() / 2);
+
+            if (i <= position) {
                 x = sr.getScaledWidth() / 2 + (size * (lineSize / 2)) + (size + 6) * indexX;
                 y = sr.getScaledHeight() / 2 + (size + 6) * indexY + curScroll;
             } else {
@@ -121,8 +124,8 @@ public class ClickGUIPE extends GuiScreen {
 
         if (curMod != null && settingMenu) {
             Koks.getKoks().wrapper.renderUtil.drawOutlineRect(x - settingsSize / 2, y - settingsSize / 2, x + settingsSize / 2, y + settingsSize / 2, 2F, curMod.getCategory().getCategoryColor().getRGB(), new Color(16, 16, 16).getRGB());
-            Koks.getKoks().wrapper.renderUtil.scissor(x - settingsSize / 2, y - settingsSize / 2, x + settingsSize / 2, y + settingsSize / 2);
             GL11.glPushMatrix();
+            Koks.getKoks().wrapper.renderUtil.scissor(x - settingsSize / 2, y - settingsSize / 2, x + settingsSize / 2, y + settingsSize / 2);
             GL11.glEnable(GL11.GL_SCISSOR_TEST);
             fontRendererObj.drawString(curMod.getName(), x - fontRendererObj.getStringWidth(curMod.getName()) * 2 / 2, y - settingsSize / 2 + fontRendererObj.FONT_HEIGHT / 2 + settingScroll, 2F, curMod.isToggled() ? curMod.getCategory().getCategoryColor().getRGB() : curMod.getCategory().getCategoryColor().darker().getRGB());
             fontRendererObj.drawString(curMod.getKey() == 0 ? "" : Keyboard.getKeyName(curMod.getKey()), x - settingsSize / 2 + 3, y - settingsSize / 2 + fontRendererObj.FONT_HEIGHT / 2 + settingScroll, 1.6F, curMod.getCategory().getCategoryColor().getRGB());
@@ -209,9 +212,7 @@ public class ClickGUIPE extends GuiScreen {
         }
 
 
-        super.
-
-                drawScreen(mouseX, mouseY, partialTicks);
+        super.drawScreen(mouseX, mouseY, partialTicks);
 
     }
 

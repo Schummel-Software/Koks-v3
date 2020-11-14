@@ -7,7 +7,7 @@ import koks.config.ConfigSystem;
 import koks.event.EventManager;
 import koks.filemanager.FileManager;
 import koks.friends.FriendManager;
-import koks.gui.clickgui.periodic.ClickGUIPE;
+import koks.gui.clickgui.periodic.ClickGUIPSE;
 import koks.gui.tabgui.TabGUI;
 import koks.module.KeyBindManager;
 import koks.gui.clickgui.normal.ClickGUI;
@@ -70,7 +70,7 @@ public class Koks {
     public Wrapper wrapper;
 
     public ClickGUI clickGUI;
-    public ClickGUIPE clickGUIPE;
+    public ClickGUIPSE clickGUIPE;
 
     public DiscordUtil discordUtil;
 
@@ -83,7 +83,7 @@ public class Koks {
         eventManager = new EventManager();
         commandManager = new CommandManager();
         clickGUI = new ClickGUI();
-        clickGUIPE = new ClickGUIPE();
+        clickGUIPE = new ClickGUIPSE();
         keyBindManager = new KeyBindManager();
         keyBindManager.readKeyBinds();
         fileManager = new FileManager();
