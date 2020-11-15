@@ -34,6 +34,9 @@ public class V3_0_0 extends Changelog{
         added("Friends");
         added("Safewalk");
         added("GommeMode");
+        added("Xray");
+        added("BedFucker");
+        added("TrueSight");
         added("Changelog");
         added("NoRotate");
         fixed("Intave Scaffold");

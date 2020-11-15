@@ -1367,6 +1367,7 @@ public class EntityRenderer implements IResourceManagerReloadListener {
         GlStateManager.enableDepth();
         GlStateManager.enableAlpha();
         GlStateManager.alphaFunc(516, 0.1F);
+
         this.mc.mcProfiler.startSection("center");
 
         if (this.mc.gameSettings.anaglyph) {

@@ -9,6 +9,7 @@ import koks.Koks;
 import koks.event.impl.EventMoveFlying;
 import koks.event.impl.EventSafeWalk;
 import koks.event.impl.EventWeb;
+import koks.module.impl.render.TrueSight;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFence;
 import net.minecraft.block.BlockFenceGate;
@@ -1908,7 +1909,7 @@ public abstract class Entity implements ICommandSender {
      * For EntityLivingBase subclasses, returning false when invisible will render the entity semitransparent.
      */
     public boolean isInvisibleToPlayer(EntityPlayer player) {
-        return player.isSpectator() ? false : this.isInvisible();
+        return player.isSpectator() ? false : Koks.getKoks().moduleManager.getModule(TrueSight.class).isToggled() ? false : this.isInvisible();
     }
 
     public void setInvisible(boolean invisible) {

@@ -86,6 +86,9 @@ public class ModuleManager {
         addModule(new WallSpeed());
         addModule(new Safewalk());
         addModule(new GommeMode());
+        addModule(new XRay());
+        addModule(new TrueSight());
+        addModule(new BedFucker());
         
         modules.sort(Comparator.comparing(Module::getName));
     }

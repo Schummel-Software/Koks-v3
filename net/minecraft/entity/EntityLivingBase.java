@@ -1555,7 +1555,7 @@ public abstract class EntityLivingBase extends Entity
         return false;
     }
 
-    protected float getJumpUpwardsMotion()
+    public float getJumpUpwardsMotion()
     {
         return 0.42F;
     }
@@ -1563,6 +1563,7 @@ public abstract class EntityLivingBase extends Entity
     /**
      * Causes this entity to do an upwards motion (jumping).
      */
+
     protected void jump()
     {
         this.motionY = (double)this.getJumpUpwardsMotion();

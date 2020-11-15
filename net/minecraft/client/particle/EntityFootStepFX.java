@@ -10,6 +10,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import org.lwjgl.opengl.GL11;
 
 public class EntityFootStepFX extends EntityFX
 {
@@ -42,6 +43,7 @@ public class EntityFootStepFX extends EntityFX
 
         f1 = f1 * 0.2F;
         GlStateManager.disableLighting();
+
         float f2 = 0.125F;
         float f3 = (float)(this.posX - interpPosX);
         float f4 = (float)(this.posY - interpPosY);

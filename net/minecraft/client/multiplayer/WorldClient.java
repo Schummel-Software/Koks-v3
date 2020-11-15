@@ -4,6 +4,9 @@ import com.google.common.collect.Sets;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.Callable;
+
+import koks.Koks;
+import koks.module.impl.render.TrueSight;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -317,7 +320,7 @@ public class WorldClient extends World
         byte b0 = 16;
         Random random = new Random();
         ItemStack itemstack = this.mc.thePlayer.getHeldItem();
-        boolean flag = this.mc.playerController.getCurrentGameType() == WorldSettings.GameType.CREATIVE && itemstack != null && Block.getBlockFromItem(itemstack.getItem()) == Blocks.barrier;
+        boolean flag =  Koks.getKoks().moduleManager.getModule(TrueSight.class).isToggled() || (itemstack != null && Block.getBlockFromItem(itemstack.getItem()) == Blocks.barrier && this.mc.playerController.getCurrentGameType() == WorldSettings.GameType.CREATIVE);
         BlockPosM blockposm = this.randomTickPosM;
 
         for (int i = 0; i < 1000; ++i)

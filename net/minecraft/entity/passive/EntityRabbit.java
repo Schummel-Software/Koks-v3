@@ -72,7 +72,7 @@ public class EntityRabbit extends EntityAnimal
         this.setMovementSpeed(0.0D);
     }
 
-    protected float getJumpUpwardsMotion()
+    public float getJumpUpwardsMotion()
     {
         return this.moveHelper.isUpdating() && this.moveHelper.getY() > this.posY + 0.5D ? 0.5F : this.moveType.func_180074_b();
     }
