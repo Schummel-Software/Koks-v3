@@ -84,10 +84,14 @@ public class RotationUtil {
         return new float[]{yaw, pitch >= 90 ? 90 : pitch <= -90 ? -90 : pitch};
     }
 
-    @BCompiler(aot = BCompiler.AOT.AGGRESSIVE)
     public float[] faceBlock(BlockPos pos, float currentYaw, float currentPitch, float speed) {
+        return faceBlock(pos, 3.0F, currentYaw, currentPitch, speed);
+    }
+
+    @BCompiler(aot = BCompiler.AOT.AGGRESSIVE)
+    public float[] faceBlock(BlockPos pos, float yTranslation, float currentYaw, float currentPitch, float speed) {
         double x = (pos.getX() + 0.5F) - mc.thePlayer.posX;
-        double y = (pos.getY() - 3.0F) - (mc.thePlayer.posY + mc.thePlayer.getEyeHeight());
+        double y = (pos.getY() - yTranslation) - (mc.thePlayer.posY + mc.thePlayer.getEyeHeight());
         double z = (pos.getZ() + 0.5F) - mc.thePlayer.posZ;
 
         double calculate = MathHelper.sqrt_double(x * x + z * z);

@@ -1307,12 +1307,22 @@ public abstract class Entity implements ICommandSender {
      * interpolated look vector
      */
     public Vec3 getLook(float partialTicks) {
-        if (partialTicks == 1.0F) {
-            return this.getVectorForRotation(this.rotationPitch, this.rotationYaw);
+        if (this instanceof EntityPlayerSP) {
+            if (partialTicks == 1.0F) {
+                return this.getVectorForRotation(((EntityPlayerSP) this).rotationPitchHead, ((EntityPlayerSP) this).rotationYawHead);
+            } else {
+                float f = ((EntityPlayerSP) this).prevRotationPitchHead + (((EntityPlayerSP) this).rotationPitchHead - ((EntityPlayerSP) this).prevRotationPitchHead) * partialTicks;
+                float f1 = this.prevRotationYaw + (((EntityPlayerSP) this).rotationYawHead - ((EntityPlayerSP) this).prevRotationYawHead) * partialTicks;
+                return this.getVectorForRotation(f, f1);
+            }
         } else {
-            float f = this.prevRotationPitch + (this.rotationPitch - this.prevRotationPitch) * partialTicks;
-            float f1 = this.prevRotationYaw + (this.rotationYaw - this.prevRotationYaw) * partialTicks;
-            return this.getVectorForRotation(f, f1);
+            if (partialTicks == 1.0F) {
+                return this.getVectorForRotation(this.rotationPitch, this.rotationYaw);
+            } else {
+                float f = this.prevRotationPitch + (this.rotationPitch - this.prevRotationPitch) * partialTicks;
+                float f1 = this.prevRotationYaw + (this.rotationYaw - this.prevRotationYaw) * partialTicks;
+                return this.getVectorForRotation(f, f1);
+            }
         }
     }
 

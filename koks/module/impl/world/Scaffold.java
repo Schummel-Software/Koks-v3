@@ -5,9 +5,7 @@ import koks.Koks;
 import koks.api.settings.Setting;
 import koks.api.util.TimeHelper;
 import koks.event.Event;
-import koks.event.impl.EventMotion;
-import koks.event.impl.EventSafeWalk;
-import koks.event.impl.EventUpdate;
+import koks.event.impl.*;
 import koks.module.Module;
 import koks.module.ModuleInfo;
 import net.minecraft.block.Block;
@@ -101,13 +99,13 @@ public class Scaffold extends Module {
 
             getBlockPosToPlaceOn(pos);
 
-            pitch = getPitch(360);
-
             if (simpleRotations.isToggled()) {
                 setYawSimple();
             } else {
                 setYaw();
             }
+
+            pitch = getPitch(360);
 
         }
         if (event instanceof EventSafeWalk) {
@@ -186,8 +184,9 @@ public class Scaffold extends Module {
                     ItemBlock itemBlock = (ItemBlock) mc.thePlayer.inventory.getStackInSlot(i).getItem();
                     if (this.blackList.contains(itemBlock.getBlock()))
                         continue;
-                    mc.thePlayer.sendQueue.addToSendQueue(new C09PacketHeldItemChange(i));
+
                     silentSlot = i;
+                    mc.thePlayer.sendQueue.addToSendQueue(new C09PacketHeldItemChange(silentSlot));
                     silentItemStack = mc.thePlayer.inventory.getStackInSlot(i);
                     if (mc.theWorld.getBlockState(new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY - 1.0D - (shouldBuildDown ? 1 : 0), mc.thePlayer.posZ)).getBlock() instanceof BlockAir) {
                         if (swingItem.isToggled())
@@ -246,7 +245,7 @@ public class Scaffold extends Module {
                         if (blackList.contains(((ItemBlock) silentItemStack.getItem()).getBlock()))
                             return;
                         if (silentItemStack != null) {
-                            getPlayerController().sendSlotPacket(silentItemStack, silentSlot);
+
                             mc.rightClickMouse();
 
                             sneakCount++;

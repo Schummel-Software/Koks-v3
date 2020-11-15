@@ -34,35 +34,37 @@ public class Fly extends Module {
         if (event instanceof EventUpdate) {
             String extra = mode.getCurrentMode().equalsIgnoreCase("AAC3.3.12") ? " [" + aac3312boost.getCurrentValue() + "]" : "";
             setInfo(mode.getCurrentMode() + extra);
-            switch (mode.getCurrentMode()) {
-                case "Verus":
-                    if (event instanceof EventUpdate) {
-                        getTimer().timerSpeed = 0.9F;
-                        if (!getPlayer().onGround) {
-                            getPlayer().capabilities.isFlying = false;
-                            getPlayer().capabilities.isCreativeMode = true;
-                            getPlayer().cameraYaw = 0.05F;
+        }
+        switch (mode.getCurrentMode()) {
+            case "Verus":
+                if (event instanceof EventUpdate) {
+                    getTimer().timerSpeed = 0.9F;
+                    if (!getPlayer().onGround) {
+                        getPlayer().capabilities.isFlying = false;
+                        getPlayer().capabilities.isCreativeMode = true;
+                        getPlayer().cameraYaw = 0.05F;
 
-                            if (getPlayer().motionY < -0.4) {
-                                float speed = 3F;
-                                double motionX = -Math.sin(Math.toRadians(movementUtil.getDirection(mc.thePlayer.rotationYaw))) * speed;
-                                double motionZ = Math.cos(Math.toRadians(movementUtil.getDirection(mc.thePlayer.rotationYaw))) * speed;
+                        if (getPlayer().motionY < -0.4) {
+                            float speed = 3F;
+                            double motionX = -Math.sin(Math.toRadians(movementUtil.getDirection(mc.thePlayer.rotationYaw))) * speed;
+                            double motionZ = Math.cos(Math.toRadians(movementUtil.getDirection(mc.thePlayer.rotationYaw))) * speed;
 
-                                getPlayer().setPosition(getX() + motionX, getY(), getZ() + motionZ);
-                                getPlayer().motionY *= -1.01;
-                            }
-
+                            getPlayer().setPosition(getX() + motionX, getY(), getZ() + motionZ);
+                            getPlayer().motionY *= -1.01;
                         }
+
                     }
-                    break;
-                case "AAC3.3.12":
-                    if (event instanceof EventUpdate) {
-                        if (mc.thePlayer.posY <= -70) {
-                            mc.thePlayer.motionY = aac3312boost.getCurrentValue();
-                        }
+                }
+                break;
+            case "AAC3.3.12":
+                if (event instanceof EventUpdate) {
+                    if (mc.thePlayer.posY <= -70) {
+                        mc.thePlayer.motionY = aac3312boost.getCurrentValue();
                     }
-                    break;
-                case "Bizzi":
+                }
+                break;
+            case "Bizzi":
+                if (event instanceof EventUpdate) {
                     if (getGameSettings().keyBindSneak.pressed) {
                         getPlayer().motionY = 5.0;
                     }
@@ -73,44 +75,24 @@ public class Fly extends Module {
                     } else {
                         getTimer().timerSpeed = 0.7f;
                     }
-                    break;
-                case "MCCentral":
-                    if (event instanceof EventUpdate) {
-                        mc.thePlayer.motionY = 0;
-                        if (isMoving())
-                            movementUtil.setSpeed(0.8, true);
-                        if (mc.gameSettings.keyBindJump.isKeyDown())
-                            mc.thePlayer.motionY = 0.5;
-                        if (mc.gameSettings.keyBindSneak.isKeyDown())
-                            mc.thePlayer.motionY = -0.5;
-                    }
-                    break;
-                case "CubeCraft":
-                    if (event instanceof EventUpdate) {
+                }
+                break;
+            case "MCCentral":
+                if (event instanceof EventUpdate) {
+                    mc.thePlayer.motionY = 0;
+                    if (isMoving())
+                        movementUtil.setSpeed(0.8, true);
+                    if (mc.gameSettings.keyBindJump.isKeyDown())
+                        mc.thePlayer.motionY = 0.5;
+                    if (mc.gameSettings.keyBindSneak.isKeyDown())
+                        mc.thePlayer.motionY = -0.5;
+                }
+                break;
+            case "CubeCraft":
+                if (event instanceof EventUpdate) {
 
-                        getPlayer().motionY = 0;
-                        getTimer().timerSpeed = 1F;
-
-                        switch (mc.thePlayer.ticksExisted % 10) {
-                            case 0:
-                            case 6:
-                                getPlayer().motionY -= randomUtil.getRandomFloat(0.01F, 0.05F);
-                                break;
-                            case 2:
-                            case 3:
-                            case 4:
-                                float speed = 0.9F;
-                                double motionX = -Math.sin(Math.toRadians(mc.thePlayer.rotationYaw)) * speed;
-                                double motionZ = Math.cos(Math.toRadians(mc.thePlayer.rotationYaw)) * speed;
-
-                                getPlayer().setPosition(getX() + motionX, getY(), getZ() + motionZ);
-                                getPlayer().motionY += 0.2F;
-                                break;
-                            case 9:
-                                getPlayer().motionX = 0;
-                                getPlayer().motionZ = 0;
-                                break;
-                        }
+                    getPlayer().motionY = 0;
+                    getPlayer().motionY = randomUtil.getRandomDouble(-0.01, 0.01);
 
                    /* mc.thePlayer.motionY = 0.0;
                     mc.timer.timerSpeed = 0.3F;
@@ -128,19 +110,18 @@ public class Fly extends Module {
                         movementUtil.setSpeed(0.4, false);
                         timeHelper.reset();
                     }*/
-                    }
-                    break;
-            }
+                }
+                break;
         }
 
-    }
+}
 
     @Override
     public void onEnable() {
         timeHelper.reset();
         damageTime.reset();
 
-        if (getPlayer().onGround && mode.getCurrentMode().equalsIgnoreCase("Verus")) {
+        if (mode.getCurrentMode().equalsIgnoreCase("Verus")) {
             getPlayer().jump();
         }
 

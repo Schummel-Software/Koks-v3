@@ -355,7 +355,7 @@ public class ModelHorse extends ModelBase
         super.setLivingAnimations(entitylivingbaseIn, p_78086_2_, p_78086_3_, partialTickTime);
         float f = this.updateHorseRotation(entitylivingbaseIn.prevRenderYawOffset, entitylivingbaseIn.renderYawOffset, partialTickTime);
         float f1 = this.updateHorseRotation(entitylivingbaseIn.prevRotationYawHead, entitylivingbaseIn.rotationYawHead, partialTickTime);
-        float f2 = entitylivingbaseIn.prevRotationPitch + (entitylivingbaseIn.rotationPitch - entitylivingbaseIn.prevRotationPitch) * partialTickTime;
+        float f2 = entitylivingbaseIn.prevRotationPitchHead + (entitylivingbaseIn.rotationPitchHead - entitylivingbaseIn.prevRotationPitchHead) * partialTickTime;
         float f3 = f1 - f;
         float f4 = f2 / (180F / (float)Math.PI);
 

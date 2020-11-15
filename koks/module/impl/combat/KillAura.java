@@ -64,7 +64,8 @@ public class KillAura extends Module {
     public Setting mouseFix = new Setting("MouseFix", true, this);
     public Setting fixMovement = new Setting("Fix Movement", true, this);
     public Setting stopSprinting = new Setting("Stop Sprinting", true, this);
-    public Setting usePlayerController = new Setting("Use PlayerController", true, this);
+
+    public Setting attackMode = new Setting("Attack Mode", new String[]{"PlayerController", "MouseClick", "Packet"}, "PlayerController", this);
 
     // CUSTOM SETTINGS
     public Setting noSwing = new Setting("NoSwing", false, this);
@@ -180,7 +181,7 @@ public class KillAura extends Module {
     public void attackEntity() {
         Entity rayCastEntity = rayCastUtil.rayCastedEntity(hitRange.getCurrentValue() + hasenRange, yaw, pitch);
 
-        if (!failing && rayCastEntity != null) {
+        if (!failing && (rayCastEntity != null || throughWalls.isToggled() && !getPlayer().canEntityBeSeen(finalEntity))) {
 
 
             for (int i = 0; i < crackSize.getCurrentValue(); i++)
@@ -192,12 +193,19 @@ public class KillAura extends Module {
             /*if (mc.currentScreen != null)
                 getPlayer().closeScreen();*/
 
-            if (usePlayerController.isToggled()) {
 
-                mc.clickMouse();
-                /*mc.playerController.attackEntity(mc.thePlayer, rayCastEntity);*/
-            } else {
-                mc.thePlayer.sendQueue.addToSendQueue(new C02PacketUseEntity(rayCastEntity, C02PacketUseEntity.Action.ATTACK));
+            Entity attackEntity = !getPlayer().canEntityBeSeen(finalEntity) && throughWalls.isToggled() ? finalEntity : rayCastEntity;
+
+            switch (attackMode.getCurrentMode()) {
+                case "PlayerController":
+                    mc.playerController.attackEntity(mc.thePlayer, attackEntity);
+                    break;
+                case "MouseClick":
+                    mc.clickMouse();
+                    break;
+                case "Packet":
+                    mc.thePlayer.sendQueue.addToSendQueue(new C02PacketUseEntity(attackEntity, C02PacketUseEntity.Action.ATTACK));
+                    break;
             }
 
             if (switchCounter < entities.size())

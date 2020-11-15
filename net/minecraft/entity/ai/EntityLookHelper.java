@@ -81,7 +81,7 @@ public class EntityLookHelper
             double d3 = (double)MathHelper.sqrt_double(d0 * d0 + d2 * d2);
             float f = (float)(MathHelper.func_181159_b(d2, d0) * 180.0D / Math.PI) - 90.0F;
             float f1 = (float)(-(MathHelper.func_181159_b(d1, d3) * 180.0D / Math.PI));
-            this.entity.rotationPitch = this.updateRotation(this.entity.rotationPitch, f1, this.deltaLookPitch);
+            this.entity.rotationPitchHead = this.updateRotation(this.entity.rotationPitchHead, f1, this.deltaLookPitch);
             this.entity.rotationYawHead = this.updateRotation(this.entity.rotationYawHead, f, this.deltaLookYaw);
         }
         else
