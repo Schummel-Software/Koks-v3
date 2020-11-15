@@ -3,6 +3,7 @@ package net.minecraft.client.entity;
 import com.mojang.authlib.GameProfile;
 import koks.Koks;
 import koks.command.Command;
+import koks.event.impl.EventDamage;
 import koks.event.impl.EventMotion;
 import koks.event.impl.EventUpdate;
 import koks.module.impl.gui.ClickGui;
@@ -329,7 +330,9 @@ public class EntityPlayerSP extends AbstractClientPlayer
      */
     protected void damageEntity(DamageSource damageSrc, float damageAmount)
     {
-        if (!this.isEntityInvulnerable(damageSrc))
+        EventDamage eventDamage = new EventDamage(this.getHealth(), this.getHealth() - damageAmount, this.getHealth() - (this.getHealth() - damageAmount), this.isEntityInvulnerable(damageSrc));
+        Koks.getKoks().eventManager.onEvent(eventDamage);
+        if (!eventDamage.isInvulnerable())
         {
             this.setHealth(this.getHealth() - damageAmount);
         }

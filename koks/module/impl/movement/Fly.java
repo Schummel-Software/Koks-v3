@@ -1,17 +1,23 @@
 package koks.module.impl.movement;
 
+import com.sun.corba.se.impl.logging.OMGSystemException;
 import com.sun.org.apache.xpath.internal.operations.Bool;
 import god.buddy.aot.BCompiler;
 import koks.Koks;
 import koks.api.settings.Setting;
 import koks.api.util.TimeHelper;
 import koks.event.Event;
+import koks.event.impl.EventDamage;
+import koks.event.impl.EventPacket;
+import koks.event.impl.EventTick;
 import koks.event.impl.EventUpdate;
 import koks.module.Module;
 import koks.module.ModuleInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerCapabilities;
+import net.minecraft.network.INetHandler;
+import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.*;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.MathHelper;
@@ -24,8 +30,11 @@ import net.minecraft.util.MathHelper;
 @ModuleInfo(name = "Fly", description = "Flying around the world", category = Module.Category.MOVEMENT)
 public class Fly extends Module {
 
+    public Setting aac1910speed = new Setting("AAC1.9.10-Speed", 2.34F, 0F, 2.8F, false, this);
+    public Setting aac1910motion = new Setting("AAC1.9.10-MotionY", 0.8F, 0F, 0.85F, false, this);
+
     public Setting aac3312boost = new Setting("AAC3.3.12-Boost", 9F, 1F, 10F, true, this);
-    public Setting mode = new Setting("Mode", new String[]{"AAC3.3.12", "MCCentral", "CubeCraft", "Verus", "Bizzi"}, "AAC3.3.12", this);
+    public Setting mode = new Setting("Mode", new String[]{"AAC3.3.12", "AAC1.9.10", "MCCentral", "CubeCraft", "Verus", "Bizzi"}, "AAC3.3.12", this);
     public TimeHelper damageTime = new TimeHelper();
 
     @BCompiler(aot = BCompiler.AOT.NORMAL)
@@ -55,6 +64,20 @@ public class Fly extends Module {
 
                     }
                 }
+                break;
+            case "AAC1.9.10":
+                if (event instanceof EventUpdate) {
+                    if (getPlayer().fallDistance > 3) {
+                        sendPacket(new C03PacketPlayer(true));
+                        getPlayer().fallDistance = 0;
+                        if (getHurtTime() != 0) {
+                            getPlayer().motionY = aac1910motion.getCurrentValue();
+                        }
+                    }
+                    if (!getPlayer().onGround && getPlayer().hurtTime != 0)
+                        movementUtil.setSpeed(0.25F * aac1910speed.getCurrentValue(), true);
+                }
+
                 break;
             case "AAC3.3.12":
                 if (event instanceof EventUpdate) {
@@ -114,10 +137,11 @@ public class Fly extends Module {
                 break;
         }
 
-}
+    }
 
     @Override
     public void onEnable() {
+
         timeHelper.reset();
         damageTime.reset();
 
