@@ -94,7 +94,9 @@ public class Scaffold extends Module {
                     shouldBuildDown = false;
                 }
             }
-            BlockPos pos = new BlockPos(mc.thePlayer.posX, (mc.thePlayer.getEntityBoundingBox()).minY - 1.0D - (shouldBuildDown ? 1 : 0), mc.thePlayer.posZ);
+            BlockPos pos;
+
+            pos = new BlockPos(mc.thePlayer.posX, (mc.thePlayer.getEntityBoundingBox()).minY - 1.0D - (shouldBuildDown ? 1 : 0), mc.thePlayer.posZ);
             getPlayer().setSprinting(sprint.isToggled());
 
             getBlockPosToPlaceOn(pos);
@@ -177,8 +179,9 @@ public class Scaffold extends Module {
     public void placeBlock(BlockPos pos, EnumFacing face) {
         finalPos = pos;
         ItemStack silentItemStack = null;
+        boolean silent = true;
         int silentSlot = mc.thePlayer.inventory.currentItem;
-        if (mc.thePlayer.getCurrentEquippedItem() == null || (!(mc.thePlayer.getCurrentEquippedItem().getItem() instanceof ItemBlock))) {
+        if (silent && (mc.thePlayer.getCurrentEquippedItem() == null || (!(mc.thePlayer.getCurrentEquippedItem().getItem() instanceof ItemBlock)))) {
             for (int i = 0; i < 9; i++) {
                 if (mc.thePlayer.inventory.getStackInSlot(i) != null && mc.thePlayer.inventory.getStackInSlot(i).getItem() instanceof ItemBlock) {
                     ItemBlock itemBlock = (ItemBlock) mc.thePlayer.inventory.getStackInSlot(i).getItem();
@@ -198,11 +201,14 @@ public class Scaffold extends Module {
                 }
             }
         } else {
-            silentItemStack = (mc.thePlayer.getCurrentEquippedItem().getItem() instanceof ItemBlock) ? mc.thePlayer.getCurrentEquippedItem() : null;
-            if (mc.theWorld.getBlockState(new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY - 1.0D - (shouldBuildDown ? 1 : 0), mc.thePlayer.posZ)).getBlock() instanceof BlockAir) {
-                if (blackList.contains(((ItemBlock) silentItemStack.getItem()).getBlock()))
-                    return;
-                mc.thePlayer.swingItem();
+            if(getPlayer().getCurrentEquippedItem() != null) {
+                silentItemStack = (mc.thePlayer.getCurrentEquippedItem().getItem() instanceof ItemBlock) ? mc.thePlayer.getCurrentEquippedItem() : null;
+                if (mc.theWorld.getBlockState(new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY - 1.0D - (shouldBuildDown ? 1 : 0), mc.thePlayer.posZ)).getBlock() instanceof BlockAir) {
+                    assert silentItemStack != null;
+                    if (blackList.contains(((ItemBlock) silentItemStack.getItem()).getBlock()))
+                        return;
+                    mc.thePlayer.swingItem();
+                }
             }
         }
 

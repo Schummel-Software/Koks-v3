@@ -21,6 +21,7 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.*;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.Vec3;
 
 /**
  * @author avox | lmao | kroko
@@ -31,10 +32,10 @@ import net.minecraft.util.MathHelper;
 public class Fly extends Module {
 
     public Setting aac1910speed = new Setting("AAC1.9.10-Speed", 2.34F, 0F, 2.8F, false, this);
-    public Setting aac1910motion = new Setting("AAC1.9.10-MotionY", 0.8F, 0F, 0.85F, false, this);
+    public Setting aac1910motion = new Setting("AAC1.9.10-MotionY", 0.8F, 0F, 1.1F, false, this);
 
     public Setting aac3312boost = new Setting("AAC3.3.12-Boost", 9F, 1F, 10F, true, this);
-    public Setting mode = new Setting("Mode", new String[]{"AAC3.3.12", "AAC1.9.10", "MCCentral", "CubeCraft", "Verus", "Bizzi"}, "AAC3.3.12", this);
+    public Setting mode = new Setting("Mode", new String[]{"AAC3.3.12", "AAC1.9.10", "Redesky", "MCCentral", "CubeCraft", "Verus", "Bizzi"}, "AAC3.3.12", this);
     public TimeHelper damageTime = new TimeHelper();
 
     @BCompiler(aot = BCompiler.AOT.NORMAL)
@@ -67,14 +68,14 @@ public class Fly extends Module {
                 break;
             case "AAC1.9.10":
                 if (event instanceof EventUpdate) {
-                    if (getPlayer().fallDistance > 3) {
+                    if (getPlayer().fallDistance >= 3) {
                         sendPacket(new C03PacketPlayer(true));
                         getPlayer().fallDistance = 0;
                         if (getHurtTime() != 0) {
                             getPlayer().motionY = aac1910motion.getCurrentValue();
                         }
                     }
-                    if (!getPlayer().onGround && getPlayer().hurtTime != 0)
+                    if (!getPlayer().onGround && (getPlayer().hurtTime != 0 || getPlayer().hurtResistantTime != 0))
                         movementUtil.setSpeed(0.25F * aac1910speed.getCurrentValue(), true);
                 }
 
@@ -83,6 +84,21 @@ public class Fly extends Module {
                 if (event instanceof EventUpdate) {
                     if (mc.thePlayer.posY <= -70) {
                         mc.thePlayer.motionY = aac3312boost.getCurrentValue();
+                    }
+                }
+                break;
+            case "Redesky":
+                if (event instanceof EventUpdate) {
+                    double motionX = -Math.sin(Math.toRadians(movementUtil.getDirection(getPlayer().rotationYaw))) * 6;
+                    double motionZ = Math.cos(Math.toRadians(movementUtil.getDirection(getPlayer().rotationYaw))) * 6;
+
+                    double flagX = -Math.sin(Math.toRadians(movementUtil.getDirection(getPlayer().rotationYaw))) * 7.5;
+                    double flagZ = Math.cos(Math.toRadians(movementUtil.getDirection(getPlayer().rotationYaw))) * 7.5;
+
+                    if(timeHelper.hasReached(190)) {
+                        sendPacket(new C03PacketPlayer.C04PacketPlayerPosition(getX() + flagX, getY() + randomUtil.getRandomDouble(1.1, 1.2), getZ() + flagZ, true));
+                        getPlayer().setPosition(getX() + motionX, getY(), getZ() + motionZ);
+                        timeHelper.reset();
                     }
                 }
                 break;

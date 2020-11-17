@@ -37,6 +37,7 @@ public class V3_0_0 extends Changelog{
         added("Xray");
         added("BedFucker");
         added("TrueSight");
+        added("AntiVoid");
         added("Changelog");
         added("NoRotate");
         fixed("Intave Scaffold");

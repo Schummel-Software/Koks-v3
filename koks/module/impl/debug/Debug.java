@@ -29,21 +29,19 @@ public class Debug extends Module {
     @BCompiler(aot = BCompiler.AOT.AGGRESSIVE)
     @Override
     public void onEvent(Event event) {
-
-        if(event instanceof EventHeadLook) {
-
-        }
-
         if (event instanceof EventUpdate) {
 
-            getPlayer().isInWeb = false;
 
-            if (getPlayer().isOnLadder() && getPlayer().isCollidedHorizontally && !getPlayer().onGround) {
+
+
+            /*getPlayer().isInWeb = false;*/
+
+           /* if (getPlayer().isOnLadder() && getPlayer().isCollidedHorizontally && !getPlayer().onGround) {
                 if (timeHelper.hasReached(550)) {
                     getPlayer().motionY = 0.55F;
                     timeHelper.reset();
                 }
-            }
+            }*/
         }
 
         if (event instanceof EventTick) {
