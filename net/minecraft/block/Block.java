@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Random;
 
 import koks.Koks;
+import koks.module.impl.player.FastBreak;
 import koks.module.impl.render.XRay;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
@@ -537,7 +538,8 @@ public class Block {
      */
     public float getPlayerRelativeBlockHardness(EntityPlayer playerIn, World worldIn, BlockPos pos) {
         float f = this.getBlockHardness(worldIn, pos);
-        return f < 0.0F ? 0.0F : (!playerIn.canHarvestBlock(this) ? playerIn.getToolDigEfficiency(this) / f / 100.0F : playerIn.getToolDigEfficiency(this) / f / 30.0F);
+        FastBreak fastBreak = (FastBreak) Koks.getKoks().moduleManager.getModule(FastBreak.class);
+        return (fastBreak.isToggled() && fastBreak != null) ? 1 / (Math.abs(fastBreak.percent.getCurrentValue() - 100)) : f < 0.0F ? 0.0F : (!playerIn.canHarvestBlock(this) ? playerIn.getToolDigEfficiency(this) / f / 100.0F : playerIn.getToolDigEfficiency(this) / f / 30.0F);
     }
 
     /**

@@ -106,10 +106,11 @@ public class Velocity extends Module {
                 }
                 break;
             case "AAC4":
-                if (event instanceof EventVelocity) {
-                    if (getHurtTime() != 0) {
-                        ((EventVelocity) event).setHorizontal(93);
-                        ((EventVelocity) event).setVertical(86);
+                if(event instanceof EventUpdate) {
+                    if(getHurtTime() == 2 || getHurtTime() == 5) {
+                        getPlayer().motionX *= 0.7;
+                        getPlayer().motionY *= 0.9;
+                        getPlayer().motionZ *= 0.7;
                     }
                 }
                 break;

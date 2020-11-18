@@ -33,6 +33,7 @@ public abstract class Module extends Methods {
     public RayCastUtil rayCastUtil;
     public RenderUtil renderUtil;
     public RotationUtil rotationUtil;
+    public InventoryUtil inventoryUtil;
 
     public Module() {
         ModuleInfo moduleInfo = getClass().getAnnotation(ModuleInfo.class);
@@ -48,6 +49,7 @@ public abstract class Module extends Methods {
         rayCastUtil = Koks.getKoks().wrapper.rayCastUtil;
         renderUtil = Koks.getKoks().wrapper.renderUtil;
         rotationUtil = Koks.getKoks().wrapper.rotationUtil;
+        inventoryUtil = Koks.getKoks().wrapper.inventoryUtil;
 
         /* for(Field field : getClass().getDeclaredFields()) {
             try{

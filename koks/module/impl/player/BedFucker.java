@@ -2,7 +2,9 @@ package koks.module.impl.player;
 
 import koks.api.settings.Setting;
 import koks.event.Event;
+import koks.event.impl.EventJump;
 import koks.event.impl.EventMotion;
+import koks.event.impl.EventMoveFlying;
 import koks.event.impl.EventUpdate;
 import koks.module.Module;
 import koks.module.ModuleInfo;
@@ -39,6 +41,14 @@ public class BedFucker extends Module {
                     curPitch = rots[1];
                 }
             }
+        }
+
+        if(event instanceof EventMoveFlying) {
+            ((EventMoveFlying) event).setYaw(curYaw);
+        }
+
+        if(event instanceof EventJump) {
+            ((EventJump) event).setYaw(curYaw);
         }
 
         if (event instanceof EventUpdate) {

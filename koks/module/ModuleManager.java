@@ -89,8 +89,11 @@ public class ModuleManager {
         addModule(new XRay());
         addModule(new TrueSight());
         addModule(new BedFucker());
+        addModule(new Fullbright());
         addModule(new AntiVoid());
-        
+        addModule(new ShopSaver());
+        addModule(new FastBreak());
+
         modules.sort(Comparator.comparing(Module::getName));
     }
 

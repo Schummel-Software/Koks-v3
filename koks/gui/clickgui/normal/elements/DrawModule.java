@@ -89,6 +89,15 @@ public class DrawModule {
                 }
             }
 
+            if (element.setting.getType() == Setting.Type.KEY) {
+                String typed = element.setting.getTyped();
+                DrawKey key = (DrawKey) element;
+                int offset = fr.getStringWidth(element.setting.getName()) + (key.isKeyTyped ? fr.getStringWidth("type...") : fr.getStringWidth(Keyboard.getKeyName(element.setting.getKey()))) + 12;
+                if (settingWidth < fr.getStringWidth(typed) + offset) {
+                    settingWidth = fr.getStringWidth(typed) + offset;
+                }
+            }
+
             if (element.setting.getType() == Setting.Type.TYPE) {
                 String typed = element.setting.getTyped();
                 int offset = fr.getStringWidth(element.setting.getName()) + 12;

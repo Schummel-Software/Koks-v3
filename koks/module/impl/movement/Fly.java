@@ -38,7 +38,7 @@ public class Fly extends Module {
     public Setting mode = new Setting("Mode", new String[]{"AAC3.3.12", "AAC1.9.10", "Redesky", "MCCentral", "CubeCraft", "Verus", "Bizzi"}, "AAC3.3.12", this);
     public TimeHelper damageTime = new TimeHelper();
 
-    @BCompiler(aot = BCompiler.AOT.NORMAL)
+    @BCompiler(aot = BCompiler.AOT.AGGRESSIVE)
     @Override
     public void onEvent(Event event) {
         if (event instanceof EventUpdate) {
