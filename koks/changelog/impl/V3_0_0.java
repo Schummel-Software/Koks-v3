@@ -38,6 +38,9 @@ public class V3_0_0 extends Changelog{
         added("BedFucker");
         added("TrueSight");
         added("AntiVoid");
+        added("FastBreak");
+        added("Fullbright");
+        added("ShopSaver");
         added("Changelog");
         added("NoRotate");
         fixed("Intave Scaffold");
