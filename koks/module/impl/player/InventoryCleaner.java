@@ -7,6 +7,7 @@ import koks.event.impl.EventUpdate;
 import koks.module.Module;
 import koks.api.settings.Setting;
 import koks.module.ModuleInfo;
+import koks.module.impl.movement.BoatFly;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -36,7 +37,6 @@ public class InventoryCleaner extends Module {
     public Setting axeSlot = new Setting("Axe Slot", 0.0F, 0.0F, 9.0F, true, this);
     public Setting shovelSlot = new Setting("Shovel Slot", 0.0F, 0.0F, 9.0F, true, this);
     private AutoArmor autoArmor;
-    private final TimeHelper startTimer = timeHelper;
     private final TimeHelper throwTimer = new TimeHelper();
 
     public InventoryCleaner() {
@@ -46,20 +46,26 @@ public class InventoryCleaner extends Module {
     @Override
     public void onEvent(Event event) {
         if (event instanceof EventUpdate) {
+
+            if (Koks.getKoks().moduleManager.getModule(BoatFly.class).isToggled())
+                trashItems.remove(Items.boat);
+            else if (!trashItems.contains(Items.boat))
+                trashItems.add(Items.boat);
+
             setInfo(Math.round(throwDelay.getCurrentValue()) + "");
             if (mc.currentScreen instanceof GuiInventory) {
-                if (!startTimer.hasReached((long) startDelay.getCurrentValue())) {
+                if (!timeHelper.hasReached((long) startDelay.getCurrentValue())) {
                     throwTimer.reset();
                     return;
                 }
             } else {
-                startTimer.reset();
+                timeHelper.reset();
                 if (openedInventory.isToggled())
                     return;
             }
 
             if (autoArmor.isToggled() && !autoArmor.isFinished()) {
-                startTimer.reset();
+                timeHelper.reset();
                 throwTimer.reset();
                 if (openedInventory.isToggled())
                     return;

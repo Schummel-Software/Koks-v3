@@ -1,6 +1,7 @@
 package koks.module.impl.player;
 
 import koks.api.settings.Setting;
+import koks.api.util.DestroyType;
 import koks.event.Event;
 import koks.event.impl.EventJump;
 import koks.event.impl.EventMotion;
@@ -10,9 +11,13 @@ import koks.module.Module;
 import koks.module.ModuleInfo;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockBed;
+import net.minecraft.init.Blocks;
 import net.minecraft.network.play.client.C07PacketPlayerDigging;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+
+import javax.naming.ldap.HasControls;
+import java.util.HashMap;
 
 /**
  * @author kroko
@@ -22,12 +27,20 @@ import net.minecraft.util.EnumFacing;
 @ModuleInfo(name = "BedFucker", category = Module.Category.PLAYER, description = "You break automatically the block")
 public class BedFucker extends Module {
 
+    public HashMap<Block, DestroyType> blocks = new HashMap<>();
 
     public BlockPos curPos;
     public float curYaw, curPitch;
 
     public Setting range = new Setting("Range", 10, 5, 30, true, this);
     public Setting delay = new Setting("Delay", 10, 0, 300, true, this);
+
+    public BedFucker() {
+        blocks.put(Blocks.bed, DestroyType.BREAK);
+        blocks.put(Blocks.dragon_egg, DestroyType.CLICK);
+        blocks.put(Blocks.cake, DestroyType.CLICK);
+        blocks.put(Blocks.beacon, DestroyType.BREAK);
+    }
 
     @Override
     public void onEvent(Event event) {
@@ -43,11 +56,11 @@ public class BedFucker extends Module {
             }
         }
 
-        if(event instanceof EventMoveFlying) {
+        if (event instanceof EventMoveFlying) {
             ((EventMoveFlying) event).setYaw(curYaw);
         }
 
-        if(event instanceof EventJump) {
+        if (event instanceof EventJump) {
             ((EventJump) event).setYaw(curYaw);
         }
 
@@ -60,16 +73,26 @@ public class BedFucker extends Module {
                         for (int z = -range; z < range; z++) {
                             BlockPos pos = getPosition().add(x, y, z);
                             Block block = getWorld().getBlockState(pos).getBlock();
-                            if (block instanceof BlockBed) {
+                            if (blocks.containsKey(block)) {
                                 curPos = pos;
                             }
                         }
             } else {
-                getPlayer().sendQueue.addToSendQueue(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.START_DESTROY_BLOCK, curPos, EnumFacing.DOWN));
-                if (timeHelper.hasReached((long) delay.getCurrentValue())) {
-                    getPlayer().sendQueue.addToSendQueue(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.STOP_DESTROY_BLOCK, curPos, EnumFacing.DOWN));
-                    curPos = null;
-                    timeHelper.reset();
+                if (blocks.get(getWorld().getBlockState(curPos).getBlock()).equals(DestroyType.BREAK)) {
+                    getPlayer().sendQueue.addToSendQueue(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.START_DESTROY_BLOCK, curPos, EnumFacing.DOWN));
+                    if (timeHelper.hasReached((long) delay.getCurrentValue())) {
+                        getPlayer().sendQueue.addToSendQueue(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.STOP_DESTROY_BLOCK, curPos, EnumFacing.DOWN));
+                        if (getWorld().getBlockState(curPos).getBlock() == Blocks.air)
+                            curPos = null;
+                        timeHelper.reset();
+                    }
+                } else if (blocks.get(getWorld().getBlockState(curPos).getBlock()).equals(DestroyType.CLICK)) {
+                    if(timeHelper.hasReached((long) delay.getCurrentValue())) {
+                        getPlayerController().clickBlock(curPos, EnumFacing.DOWN);
+                        if (getWorld().getBlockState(curPos).getBlock() == Blocks.air)
+                            curPos = null;
+                        timeHelper.reset();
+                    }
                 }
             }
         }

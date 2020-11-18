@@ -1,5 +1,7 @@
 package koks.module;
 
+import koks.Koks;
+import koks.cl.Role;
 import koks.module.impl.combat.*;
 import koks.module.impl.debug.Debug;
 import koks.module.impl.debug.Test;
@@ -93,6 +95,10 @@ public class ModuleManager {
         addModule(new AntiVoid());
         addModule(new ShopSaver());
         addModule(new FastBreak());
+
+        if(Koks.getKoks().CLManager.getUser().getRole() != Role.Developer) {
+            modules.removeIf(module -> module.getCategory().equals(Module.Category.DEBUG));
+        }
 
         modules.sort(Comparator.comparing(Module::getName));
     }

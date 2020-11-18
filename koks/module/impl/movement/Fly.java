@@ -95,7 +95,7 @@ public class Fly extends Module {
                     double flagX = -Math.sin(Math.toRadians(movementUtil.getDirection(getPlayer().rotationYaw))) * 7.5;
                     double flagZ = Math.cos(Math.toRadians(movementUtil.getDirection(getPlayer().rotationYaw))) * 7.5;
 
-                    if(timeHelper.hasReached(190)) {
+                    if (timeHelper.hasReached(190)) {
                         sendPacket(new C03PacketPlayer.C04PacketPlayerPosition(getX() + flagX, getY() + randomUtil.getRandomDouble(1.1, 1.2), getZ() + flagZ, true));
                         getPlayer().setPosition(getX() + motionX, getY(), getZ() + motionZ);
                         timeHelper.reset();
@@ -133,7 +133,7 @@ public class Fly extends Module {
                     getPlayer().motionY = 0;
                     getPlayer().motionY = randomUtil.getRandomDouble(-0.01, 0.01);
 
-                   /* mc.thePlayer.motionY = 0.0;
+                    /* mc.thePlayer.motionY = 0.0;
                     mc.timer.timerSpeed = 0.3F;
                     if (mc.thePlayer.ticksExisted % 2 == 0) {
                         mc.thePlayer.motionY -= 0.01;
