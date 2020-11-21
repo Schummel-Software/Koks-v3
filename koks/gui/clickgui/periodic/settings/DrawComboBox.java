@@ -31,17 +31,16 @@ public class DrawComboBox extends Element {
         fr.drawString(">", x - 3 + fr.getStringWidth(setting.getName()) + 13, y + fr.FONT_HEIGHT / 2 - 2,- 1);
 
 
+
+
         if(extended) {
-            GL11.glPushMatrix();
-            renderUtil.scissor(x - 3, y, x - 3 + fr.getStringWidth(setting.getName()) + 20, (int) animation.getAnimationY());
-            GL11.glEnable(GL11.GL_SCISSOR_TEST);
             for(int i = 0; i < setting.getModes().length; i++) {
                 String mode = setting.getModes()[i];
                 fr.drawString(mode, x - 3 + 2, y + (fr.FONT_HEIGHT + 2) * (i + 1) + 2, setting.getCurrentMode().equalsIgnoreCase(mode) ? setting.getModule().getCategory().getCategoryColor().getRGB() : -1);
             }
-            GL11.glDisable(GL11.GL_SCISSOR_TEST);
-            GL11.glPopMatrix();
         }
+
+
 
     }
 
