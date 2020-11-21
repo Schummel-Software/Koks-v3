@@ -78,20 +78,22 @@ public class BedFucker extends Module {
                             }
                         }
             } else {
-                if (blocks.get(getWorld().getBlockState(curPos).getBlock()).equals(DestroyType.BREAK)) {
-                    getPlayer().sendQueue.addToSendQueue(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.START_DESTROY_BLOCK, curPos, EnumFacing.DOWN));
-                    if (timeHelper.hasReached((long) delay.getCurrentValue())) {
-                        getPlayer().sendQueue.addToSendQueue(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.STOP_DESTROY_BLOCK, curPos, EnumFacing.DOWN));
-                        if (getWorld().getBlockState(curPos).getBlock() == Blocks.air)
-                            curPos = null;
-                        timeHelper.reset();
-                    }
-                } else if (blocks.get(getWorld().getBlockState(curPos).getBlock()).equals(DestroyType.CLICK)) {
-                    if(timeHelper.hasReached((long) delay.getCurrentValue())) {
-                        getPlayerController().clickBlock(curPos, EnumFacing.DOWN);
-                        if (getWorld().getBlockState(curPos).getBlock() == Blocks.air)
-                            curPos = null;
-                        timeHelper.reset();
+                if (blocks.containsKey(getWorld().getBlockState(curPos).getBlock())) {
+                    if (blocks.get(getWorld().getBlockState(curPos).getBlock()).equals(DestroyType.BREAK)) {
+                        getPlayer().sendQueue.addToSendQueue(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.START_DESTROY_BLOCK, curPos, EnumFacing.DOWN));
+                        if (timeHelper.hasReached((long) delay.getCurrentValue())) {
+                            getPlayer().sendQueue.addToSendQueue(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.STOP_DESTROY_BLOCK, curPos, EnumFacing.DOWN));
+                            if (getWorld().getBlockState(curPos).getBlock() == Blocks.air)
+                                curPos = null;
+                            timeHelper.reset();
+                        }
+                    } else if (blocks.get(getWorld().getBlockState(curPos).getBlock()).equals(DestroyType.CLICK)) {
+                        if (timeHelper.hasReached((long) delay.getCurrentValue())) {
+                            getPlayerController().clickBlock(curPos, EnumFacing.DOWN);
+                            if (getWorld().getBlockState(curPos).getBlock() == Blocks.air)
+                                curPos = null;
+                            timeHelper.reset();
+                        }
                     }
                 }
             }

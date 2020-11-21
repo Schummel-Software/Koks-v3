@@ -57,7 +57,7 @@ public class Koks {
     }
 
     public SettingsManager settingsManager;
-    public final Minecraft mc = Minecraft.getMinecraft();
+    public volatile Minecraft mc = Minecraft.getMinecraft();
 
     public ModuleManager moduleManager;
     public EventManager eventManager;

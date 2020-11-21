@@ -40,17 +40,12 @@ public class InventoryCleaner extends Module {
     private final TimeHelper throwTimer = new TimeHelper();
 
     public InventoryCleaner() {
-        trashItems = Arrays.asList(Items.feather, Items.dye, Items.paper, Items.saddle, Items.string, Items.banner, Items.fishing_rod, Items.boat);
+        trashItems = Arrays.asList(Items.feather, Items.dye, Items.paper, Items.saddle, Items.string, Items.banner, Items.fishing_rod);
     }
 
     @Override
     public void onEvent(Event event) {
         if (event instanceof EventUpdate) {
-
-            if (Koks.getKoks().moduleManager.getModule(BoatFly.class).isToggled())
-                trashItems.remove(Items.boat);
-            else if (!trashItems.contains(Items.boat))
-                trashItems.add(Items.boat);
 
             setInfo(Math.round(throwDelay.getCurrentValue()) + "");
             if (mc.currentScreen instanceof GuiInventory) {

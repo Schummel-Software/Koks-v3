@@ -1335,6 +1335,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
      * Called when the window is closing. Sets 'running' to false which allows the game loop to exit cleanly.
      */
     public void shutdown() {
+        Koks.getKoks().stopClient();
         this.running = false;
     }
 

@@ -34,7 +34,7 @@ public class TrayUtil {
 
     public ArrayList<Menu> categories = new ArrayList<>();
 
-    private Minecraft mc = Minecraft.getMinecraft();
+    public volatile Minecraft mc = Minecraft.getMinecraft();
 
     public TrayUtil() {
         initTray();
@@ -62,14 +62,12 @@ public class TrayUtil {
     }
 
     private void addComponents(SystemTray tray, PopupMenu popupMenu) {
-        Menu debug = new Menu("Debug");
-        MenuItem reloadChunks = new MenuItem("Reload Chunks");
+        MenuItem exit = new MenuItem("Exit");
 
-        ActionListener reloadChunksAction = new ActionListener() {
+        ActionListener exitAction = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("Hey");
-                Minecraft.getMinecraft().renderGlobal.loadRenderers();
+                mc.shutdown();
             }
         };
 
@@ -158,10 +156,9 @@ public class TrayUtil {
             }
         }
 
-        reloadChunks.addActionListener(reloadChunksAction);
+        exit.addActionListener(exitAction);
 
         popupMenu.add(modules);
-        popupMenu.add(debug);
-        debug.add(reloadChunks);
+        popupMenu.add(exit);
     }
 }
