@@ -146,8 +146,6 @@ public class KillAura extends Module {
 
         if (event instanceof EventAttack) {
 
-            System.out.println(madeSound.size());
-
             if (finalEntity != null) {
 
                 if (finalEntity.hurtResistantTime == 10 && hasenRange < maxHazeRangeDistance.getCurrentValue() && hazeRange.isToggled()) {

@@ -1,6 +1,7 @@
 package koks;
 
 import koks.api.util.DiscordUtil;
+import koks.api.util.TrayUtil;
 import koks.changelog.ChangelogManager;
 import koks.command.CommandManager;
 import koks.config.ConfigSystem;
@@ -21,6 +22,8 @@ import koks.wrapper.Wrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.main.Main;
 import org.lwjgl.opengl.Display;
+
+import javax.swing.*;
 
 /**
  * @author deleteboys | lmao | kroko
@@ -73,6 +76,7 @@ public class Koks {
     public ClickGUIPSE clickGUIPE;
 
     public DiscordUtil discordUtil;
+    public TrayUtil trayUtil;
 
     public void startClient() {
         wrapper = new Wrapper();
@@ -96,6 +100,8 @@ public class Koks {
         new DiscordUtil();
         discordUtil = DiscordUtil.getSingleton();
         discordUtil.setupRPC("769964846506311690");
+
+        trayUtil = new TrayUtil();
 
         StringBuilder author = new StringBuilder();
         for (int i = 0; i < KOKS.AUTHORS.length; i++) {

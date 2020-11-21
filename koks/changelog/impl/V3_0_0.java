@@ -43,6 +43,7 @@ public class V3_0_0 extends Changelog{
         added("ShopSaver");
         added("Changelog");
         added("NoRotate");
+        added("SystemTray");
         fixed("Intave Scaffold");
         fixed("Block Bug");
         removed("ClickGUI Settings");

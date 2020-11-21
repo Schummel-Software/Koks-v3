@@ -310,7 +310,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
      */
     public MouseHelper mouseHelper;
     public final File mcDataDir;
-    private final File fileAssets;
+    public final File fileAssets;
     private final String launchedVersion;
     private final Proxy proxy;
     private ISaveFormat saveLoader;
@@ -1567,6 +1567,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
      * Runs the current tick.
      */
     public void runTick() throws IOException {
+
         if(theWorld != null) {
             EventTick eventTick = new EventTick();
             Koks.getKoks().eventManager.onEvent(eventTick);
