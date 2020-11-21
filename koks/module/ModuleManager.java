@@ -103,14 +103,6 @@ public class ModuleManager {
         modules.sort(Comparator.comparing(Module::getName));
     }
 
-    public void removeCategory(Module.Category category) {
-        for (Module module : getModules()) {
-            if (module.getCategory().equals(category)) {
-                modules.remove(module);
-            }
-        }
-    }
-
     public void addModule(Module module) {
         modules.add(module);
     }

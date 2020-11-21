@@ -2872,7 +2872,7 @@ public class GameSettings
         this.clouds = 2;
         this.fovSetting = 70.0F;
         this.gammaSetting = 0.0F;
-        this.guiScale = 0;
+        this.guiScale = 3;
         this.particleSetting = 0;
         this.heldItemTooltips = true;
         this.useVbo = false;

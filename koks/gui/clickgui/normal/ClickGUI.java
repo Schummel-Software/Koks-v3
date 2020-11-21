@@ -1,6 +1,8 @@
 package koks.gui.clickgui.normal;
 
+import koks.Koks;
 import koks.api.settings.Setting;
+import koks.cl.Role;
 import koks.module.Module;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -34,7 +36,8 @@ public class ClickGUI extends GuiScreen {
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         for (DrawCategory drawCategory : drawCategories) {
-            drawCategory.drawScreen(mouseX, mouseY, partialTicks);
+            if (!drawCategory.category.equals(Module.Category.DEBUG) || Koks.getKoks().CLManager.getUser().getRole().equals(Role.Developer))
+                drawCategory.drawScreen(mouseX, mouseY, partialTicks);
         }
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
@@ -42,7 +45,8 @@ public class ClickGUI extends GuiScreen {
     @Override
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
         for (DrawCategory drawCategory : drawCategories) {
-            drawCategory.keyTyped(typedChar, keyCode);
+            if (!drawCategory.category.equals(Module.Category.DEBUG) || Koks.getKoks().CLManager.getUser().getRole().equals(Role.Developer))
+                drawCategory.keyTyped(typedChar, keyCode);
         }
         super.keyTyped(typedChar, keyCode);
     }
@@ -50,7 +54,8 @@ public class ClickGUI extends GuiScreen {
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
         for (DrawCategory drawCategory : drawCategories) {
-            drawCategory.mouseClicked(mouseX, mouseY, mouseButton);
+            if (!drawCategory.category.equals(Module.Category.DEBUG) || Koks.getKoks().CLManager.getUser().getRole().equals(Role.Developer))
+                drawCategory.mouseClicked(mouseX, mouseY, mouseButton);
         }
         super.mouseClicked(mouseX, mouseY, mouseButton);
     }
@@ -58,7 +63,8 @@ public class ClickGUI extends GuiScreen {
     @Override
     protected void mouseReleased(int mouseX, int mouseY, int state) {
         for (DrawCategory drawCategory : drawCategories) {
-            drawCategory.mouseReleased(mouseX, mouseY, state);
+            if (!drawCategory.category.equals(Module.Category.DEBUG) || Koks.getKoks().CLManager.getUser().getRole().equals(Role.Developer))
+                drawCategory.mouseReleased(mouseX, mouseY, state);
         }
         super.mouseReleased(mouseX, mouseY, state);
     }

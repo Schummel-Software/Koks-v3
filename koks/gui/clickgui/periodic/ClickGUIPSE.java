@@ -2,6 +2,7 @@ package koks.gui.clickgui.periodic;
 
 import koks.Koks;
 import koks.api.settings.Setting;
+import koks.cl.Role;
 import koks.gui.clickgui.Element;
 import koks.gui.clickgui.periodic.settings.DrawComboBox;
 import koks.gui.clickgui.periodic.settings.DrawType;
@@ -30,7 +31,7 @@ public class ClickGUIPSE extends GuiScreen {
 
     private final ArrayList<DrawModule> drawModules = new ArrayList<>();
 
-    int size = 50, outline = 2, lineSize = 18, curScroll, catX = 0, settingScroll;
+    int size = 50, outline = 2, lineSize = 10, curScroll, catX = 0, settingScroll;
     ScaledResolution sr;
 
     public ClickGUIPSE() {
@@ -60,14 +61,18 @@ public class ClickGUIPSE extends GuiScreen {
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         ScaledResolution sr = new ScaledResolution(mc);
 
+        lineSize = 10;
+
         drawRect(0, 0, sr.getScaledWidth(), sr.getScaledHeight(), new Color(16, 16, 16).getRGB());
 
 
+        int up = 7;
+
         for (int i = 0; i < drawModules.size(); i++) {
             Module module = drawModules.get(i).module;
-            int length = (int) Math.ceil((double) i / (double) lineSize);
+            int length = (int) Math.ceil((double) (i - up) / (double) lineSize);
             int indexY = length + 1;
-            int indexX = i - (lineSize * length);
+            int indexX = (i - up) - (lineSize * length);
             int x;
             int y;
 
@@ -78,12 +83,15 @@ public class ClickGUIPSE extends GuiScreen {
             else if (curCat != null)
                 color = color.brighter();
 
-            if (i == 0) {
-                length = (int) Math.ceil((double) 1 / (double) lineSize);
-                indexX = 1 - (lineSize * length);
+
+            if (i <= up) {
+                length = (int) Math.ceil((double) (i + 1) / (double) lineSize);
+                indexX = (i + 1 - (i == 0 ? 0 : 1) + (i > 2 ? (lineSize - up + (i != up ? 1 : 0)) : 0)) - (lineSize * length);
+                indexY = length - 1 + (i + (up - 1)) / up - (i == up ? 1 : 0);
                 x = sr.getScaledWidth() / 2 + (size * (lineSize / 2)) + (size + 6) * indexX;
             } else
                 x = sr.getScaledWidth() / 2 + (size * (lineSize / 2)) + (size + 6) * indexX;
+
             y = sr.getScaledHeight() / 2 + (size + 6) * indexY + curScroll;
 
             drawModules.get(i).x = x;
@@ -94,21 +102,23 @@ public class ClickGUIPSE extends GuiScreen {
         }
 
         for (Module.Category category : Module.Category.values()) {
-            int length = (int) Math.ceil((double) (lineSize / 2) / (double) lineSize);
-            int indexX = ((lineSize / 2) - (lineSize * length));
-            Color color = category.getCategoryColor();
-            if (mouseX >= sr.getScaledWidth() / 2 + (size * (lineSize / 2)) / 2 + (size + 6) * indexX + catX && mouseX <= sr.getScaledWidth() / 2 + (size * (lineSize / 2)) / 2 + (size + 6) * indexX + catX + fontRendererObj.getStringWidth(category.name()) && mouseY >= sr.getScaledHeight() / 2 + size + 6 + curScroll && mouseY <= sr.getScaledHeight() / 2 + size + 6 + curScroll + fontRendererObj.FONT_HEIGHT) {
-                if (!settingMenu) {
-                    color = color.brighter();
-                    curCat = category;
+            if (category != Module.Category.DEBUG || Koks.getKoks().CLManager.getUser().getRole() == Role.Developer) {
+                int length = (int) Math.ceil((double) (lineSize / 2) / (double) lineSize);
+                int indexX = ((lineSize / 2) - (lineSize * length));
+                Color color = category.getCategoryColor();
+                if (mouseX >= sr.getScaledWidth() / 2 + (size * (lineSize / 2)) / 2 + (size + 3) * indexX + catX && mouseX <= sr.getScaledWidth() / 2 + (size * (lineSize / 2)) / 2 + (size + 3) * indexX + catX + fontRendererObj.getStringWidth(category.name()) && mouseY >= sr.getScaledHeight() / 2 + size / 2 + curScroll && mouseY <= sr.getScaledHeight() / 2 + size / 2 + curScroll + fontRendererObj.FONT_HEIGHT) {
+                    if (!settingMenu) {
+                        color = color.brighter();
+                        curCat = category;
 
+                    }
                 }
-            }
-            if (curCat != null && !curCat.equals(category))
-                color = color.darker().darker().darker();
+                if (curCat != null && !curCat.equals(category))
+                    color = color.darker().darker().darker();
 
-            fontRendererObj.drawString(category.name(), sr.getScaledWidth() / 2 + (size * (lineSize / 2)) / 2 + (size + 6) * indexX + catX, sr.getScaledHeight() / 2 + size + 6 + curScroll, color.getRGB());
-            catX += fontRendererObj.getStringWidth(category.name()) + 5;
+                fontRendererObj.drawString(category.name(), sr.getScaledWidth() / 2 + (size * (lineSize / 2)) / 2 + (size + 3) * indexX + catX, sr.getScaledHeight() / 2 + size / 2 + curScroll, color.getRGB());
+                catX += fontRendererObj.getStringWidth(category.name()) + 5;
+            }
         }
 
         catX = 0;
@@ -181,7 +191,7 @@ public class ClickGUIPSE extends GuiScreen {
                 if (drawModule.module.getName().equalsIgnoreCase(curMod.getName())) {
                     for (Element element : drawModule.elements) {
 
-                        if(element.setting.getType() == Setting.Type.SLIDER)
+                        if (element.setting.getType() == Setting.Type.SLIDER)
                             setY += 6;
                         element.updatePosition(x - settingsSize / 2 + 10, setY, settingWidth, 1);
                         element.drawScreen(mouseX, mouseY, partialTicks);
@@ -248,7 +258,7 @@ public class ClickGUIPSE extends GuiScreen {
 
     @Override
     protected void mouseReleased(int mouseX, int mouseY, int state) {
-        for(DrawModule drawModule : drawModules) {
+        for (DrawModule drawModule : drawModules) {
             drawModule.mouseReleased(mouseX, mouseY, state);
         }
         super.mouseReleased(mouseX, mouseY, state);
@@ -262,11 +272,11 @@ public class ClickGUIPSE extends GuiScreen {
         }
 
         boolean keyTyped = false;
-        for(DrawModule drawModule : drawModules) {
-            for(Element element : drawModule.elements) {
-                if(element instanceof DrawType) {
+        for (DrawModule drawModule : drawModules) {
+            for (Element element : drawModule.elements) {
+                if (element instanceof DrawType) {
                     DrawType drawType = (DrawType) element;
-                    if(drawType.isKeyTyped)
+                    if (drawType.isKeyTyped)
                         keyTyped = true;
                 }
             }

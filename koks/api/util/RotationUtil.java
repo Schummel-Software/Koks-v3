@@ -73,13 +73,8 @@ public class RotationUtil {
         float difYaw = yawAngle - currentYaw;
         float difPitch = pitchAngle - currentPitch;
 
-        float yaw = updateRotation(currentYaw + (mouseFix ? f2 : 0), yawAngle, smooth ? Math.abs(MathHelper.wrapAngleTo180_float(difYaw)) * 0.1F : 360);
-        float pitch = updateRotation(currentPitch + (mouseFix ? f3 : 0), pitchAngle, smooth ? Math.abs(MathHelper.wrapAngleTo180_float(difPitch)) * 0.1F : 360);
-
-        if(mouseFix) {
-            yaw -= yaw % f1;
-            pitch -= pitch % f1;
-        }
+        float yaw = updateRotation(currentYaw + (mouseFix ? f2 * 0.5F : 0), yawAngle, smooth ? Math.abs(MathHelper.wrapAngleTo180_float(difYaw)) * 0.1F : 360);
+        float pitch = updateRotation(currentPitch + (mouseFix ? f3 * 0.5F : 0), pitchAngle, smooth ? Math.abs(MathHelper.wrapAngleTo180_float(difPitch)) * 0.1F : 360);
 
         return new float[]{yaw, pitch >= 90 ? 90 : pitch <= -90 ? -90 : pitch};
     }
@@ -98,17 +93,19 @@ public class RotationUtil {
         float calcYaw = (float) (MathHelper.func_181159_b(z, x) * 180.0D / Math.PI) - 90.0F;
         float calcPitch = (float) -(MathHelper.func_181159_b(y, calculate) * 180.0D / Math.PI);
 
-        float f = mc.gameSettings.mouseSensitivity * 0.8F + 0.2F;
-        float f1 = f * f * f * 1.5F;
+        float f = mc.gameSettings.mouseSensitivity * 0.6F + 0.2F;
+        float f1 = f * f * f * 8.0F;
 
         float f2 = (float) ((calcYaw - currentYaw) * f1);
         float f3 = (float) ((calcPitch - currentPitch) * f1);
 
-        float yaw = updateRotation(currentYaw + f2, calcYaw, speed);
-        float pitch = updateRotation(currentPitch + f3, calcPitch, speed);
+        //TODO: Besserer Mouse Sensi Fix da er auf Verus Kickt
 
-        yaw -= yaw % f1;
-        pitch -= pitch % f1;
+        float yaw = updateRotation(currentYaw + f2 * 0.5F, calcYaw, speed);
+        float pitch = updateRotation(currentPitch + f3 * 0.5F, calcPitch, speed);
+
+        /*yaw -= yaw % f1;
+        pitch -= pitch % f1;*/
 
         return new float[]{yaw, pitch >= 90 ? 90 : pitch <= -90 ? -90 : pitch};
     }
