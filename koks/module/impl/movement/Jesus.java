@@ -17,7 +17,7 @@ import net.minecraft.util.BlockPos;
 @ModuleInfo(name = "Jesus", description = "You can walk on water", category = Module.Category.MOVEMENT)
 public class Jesus extends Module {
 
-    public Setting mode = new Setting("Mode", new String[]{"Intave"}, "Intave", this);
+    public Setting mode = new Setting("Mode", new String[]{"Vanilla", "Intave"}, "Vanilla", this);
 
     @BCompiler(aot = BCompiler.AOT.NORMAL)
     @Override
