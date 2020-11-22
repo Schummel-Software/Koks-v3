@@ -445,30 +445,6 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
     public void run() {
         this.running = true;
 
-        /*String applicationId = "754374125392232499";
-        String streamId = "";
-
-        DiscordEventHandlers handlers = new DiscordEventHandlers();
-        handlers.ready = (user) -> System.out.println("Ready!");
-        lib.Discord_Initialize(applicationId, handlers, true, streamId);
-        DiscordRichPresence presence = new DiscordRichPresence();
-
-        presence.startTimestamp = System.currentTimeMillis() / 1000;
-
-        presence.details = "Playing Minecraft 1.8.8";
-
-        lib.Discord_UpdatePresence(presence);
-
-        new Thread(() -> {
-            while (!Thread.currentThread().isInterrupted()) {
-                lib.Discord_RunCallbacks();
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException ignored) {
-                }
-            }
-        }, "RPC-Callback-Handler").start();*/
-
         try {
             this.startGame();
         } catch (Throwable throwable) {
