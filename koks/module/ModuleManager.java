@@ -99,6 +99,7 @@ public class ModuleManager {
         addModule(new IceSpeed());
         addModule(new NoPitchLimit());
         addModule(new AimBot());
+        addModule(new Blink());
 
         if(Koks.getKoks().CLManager.getUser().getRole() != Role.Developer) {
             modules.removeIf(module -> module.getCategory().equals(Module.Category.DEBUG));

@@ -28,8 +28,12 @@ public class Methods {
         return mc.thePlayer;
     }
 
-    public void sendPacket(Packet packet) {
+    public void sendPacket(Packet<?> packet) {
         getPlayer().sendQueue.addToSendQueue(packet);
+    }
+
+    public void sendPacketUnlogged(Packet<?> packet) {
+        getPlayer().sendQueue.addToSendQueueUnlogged(packet);
     }
 
     public PlayerControllerMP getPlayerController() {

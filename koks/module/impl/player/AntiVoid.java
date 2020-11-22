@@ -15,7 +15,7 @@ import net.minecraft.network.play.client.C03PacketPlayer;
 @ModuleInfo(name = "AntiVoid", description = "You doesn't fall in to the void", category = Module.Category.PLAYER)
 public class AntiVoid extends Module {
 
-    public Setting fallDistance = new Setting("Fall Distance", 3, 3, 6, false ,this);
+    public Setting fallDistance = new Setting("Fall Distance", 3, 3, 6, false, this);
     public Setting mode = new Setting("Mode", new String[]{"AAC1.9.10"}, "AAC1.9.10", this);
 
     @Override
@@ -23,10 +23,12 @@ public class AntiVoid extends Module {
         if (event instanceof EventUpdate) {
             switch (mode.getCurrentMode()) {
                 case "AAC1.9.10":
-                    if (getPlayer().fallDistance > (fallDistance.getCurrentValue() > 4 ? 4 : fallDistance.getCurrentValue()) && !getPlayer().onGround) {
+                    if (getPlayer().fallDistance > (fallDistance.getCurrentValue() > 4.5 ? 4.5 : fallDistance.getCurrentValue()) && !getPlayer().onGround) {
                         sendPacket(new C03PacketPlayer(true));
-                        getPlayer().fallDistance = 0;
-                        getPlayer().motionY = 1.5;
+                        if (getHurtTime() != 0) {
+                            getPlayer().fallDistance = 0;
+                            getPlayer().motionY = 1.5;
+                        }
                     }
                     break;
             }
