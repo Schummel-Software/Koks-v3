@@ -123,6 +123,13 @@ public class KillAura extends Module {
             }
         }
 
+        if(event instanceof EventWalk) {
+            if (this.rotations.lockView.isToggled() && finalEntity != null) {
+                mc.thePlayer.rotationYaw = yaw;
+                mc.thePlayer.rotationPitch = pitch;
+            }
+        }
+
         if (event instanceof EventMotion) {
             if (((EventMotion) event).getType() == EventMotion.Type.PRE) {
                 if (finalEntity != null) {
@@ -130,10 +137,7 @@ public class KillAura extends Module {
                     yaw = rotations[0];
                     pitch = rotations[1];
 
-                    if (this.rotations.lockView.isToggled()) {
-                        mc.thePlayer.rotationYaw = yaw;
-                        mc.thePlayer.rotationPitch = pitch;
-                    } else {
+                    if (!this.rotations.lockView.isToggled()) {
                         ((EventMotion) event).setYaw(yaw);
                         ((EventMotion) event).setPitch(pitch);
                     }
