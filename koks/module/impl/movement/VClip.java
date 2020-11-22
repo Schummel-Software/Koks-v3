@@ -35,13 +35,9 @@ public class VClip extends Module {
             double y = mc.thePlayer.posY;
             double z = mc.thePlayer.posZ;
             if (((EventKeyPress) event).getKey() == upKey.getKey()) {
-                mc.thePlayer.sendQueue.addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(x, y + upHeight.getCurrentValue(), z, false));
-                mc.thePlayer.sendQueue.addToSendQueue(new C03PacketPlayer(true));
-                mc.thePlayer.sendQueue.addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(x, y, z, false));
+                setPosition(x, y + upHeight.getCurrentValue(), z, getPlayer().onGround);
             } else if (((EventKeyPress) event).getKey() == downKey.getKey()) {
-                mc.thePlayer.sendQueue.addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(x, y + downHeight.getCurrentValue(), z, false));
-                mc.thePlayer.sendQueue.addToSendQueue(new C03PacketPlayer(true));
-                mc.thePlayer.sendQueue.addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(x, y, z, false));
+                setPosition(x, y + downHeight.getCurrentValue(),z, getPlayer().onGround);
             }
         }
     }

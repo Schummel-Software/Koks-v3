@@ -78,11 +78,14 @@ public class Scaffold extends Module {
     public void onEvent(Event event) {
         if (event instanceof EventMotion) {
             if (((EventMotion) event).getType() == EventMotion.Type.PRE) {
-                    ((EventMotion) event).setYaw(yaw);
-                    ((EventMotion) event).setPitch(pitch);
+                ((EventMotion) event).setYaw(yaw);
+                ((EventMotion) event).setPitch(pitch);
             }
         }
 
+        if(event instanceof EventJump) {
+            ((EventJump) event).setYaw(yaw);
+        }
 
         if (event instanceof EventUpdate) {
             if (downScaffold.isToggled()) {

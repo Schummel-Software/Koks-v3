@@ -160,7 +160,7 @@ public class KillAura extends Module {
                     hasenRange = 0;
                 }
 
-                if (canBlock() && autoBlock.isToggled() && blockMode.getCurrentMode().equals("Full"))
+                if (canBlock() && autoBlock.isToggled() && blockMode.getCurrentMode().equalsIgnoreCase("Full"))
                     mc.playerController.sendUseItem(mc.thePlayer, mc.theWorld, mc.thePlayer.getHeldItem());
 
 
@@ -250,7 +250,7 @@ public class KillAura extends Module {
     }
 
     boolean canBlock() {
-        return getPlayer().getCurrentEquippedItem() != null && mc.thePlayer.getHeldItem().getItem() instanceof ItemSword;
+        return getPlayer().getCurrentEquippedItem() != null && mc.thePlayer.getCurrentEquippedItem().getItem() instanceof ItemSword;
     }
 
     public void manageEntities() {

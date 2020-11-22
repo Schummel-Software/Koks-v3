@@ -104,9 +104,6 @@ public class RotationUtil {
         float yaw = updateRotation(currentYaw + f2 * 0.5F, calcYaw, speed);
         float pitch = updateRotation(currentPitch + f3 * 0.5F, calcPitch, speed);
 
-        /*yaw -= yaw % f1;
-        pitch -= pitch % f1;*/
-
         return new float[]{yaw, pitch >= 90 ? 90 : pitch <= -90 ? -90 : pitch};
     }
 

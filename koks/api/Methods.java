@@ -135,12 +135,13 @@ public class Methods {
     }
 
     public void setPosition(double x, double y, double z, boolean ground) {
-        changePosition(x, y, z);
+        getPlayer().setPosition(x, y, z);
         getPlayer().sendQueue.addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(x, y, z, ground));
     }
 
     public void changePosition(double x, double y, double z) {
         mc.thePlayer.setPosition(mc.thePlayer.posX + x, mc.thePlayer.posY + y, mc.thePlayer.posZ + z);
+        getPlayer().sendQueue.addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX + x, mc.thePlayer.posY + y, mc.thePlayer.posZ + z, getPlayer().onGround));
     }
 
 /*    public void stopPlayer() {
