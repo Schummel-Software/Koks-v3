@@ -22,7 +22,7 @@ public class NoSlowdown extends Module {
     @Override
     public void onEvent(Event event) {
         if (event instanceof EventUpdate) {
-            if (aac.isToggled()) {
+            if (aac.isToggled() && getPlayer().isBlocking()) {
                 getPlayer().sendQueue.addToSendQueue(new C09PacketHeldItemChange(getPlayer().inventory.currentItem));
 
             }

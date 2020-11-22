@@ -64,6 +64,10 @@ public class KillAura extends Module {
 
     // MOVEMENT SETTINGS
     public Setting mouseFix = new Setting("MouseFix", true, this);
+    public Setting sensitivityMultiplier = new Setting("Sensitivity Multiplier", 0.6F, 0.1F, 1F, false, this);
+    public Setting fixMultiplier = new Setting("Fix Multiplier", 8F, 1.0F, 8.0F, false, this);
+    public Setting percentFix = new Setting("Percent Fix", false, this);
+
     public Setting fixMovement = new Setting("Fix Movement", true, this);
     public Setting stopSprinting = new Setting("Stop Sprinting", true, this);
 
@@ -133,7 +137,7 @@ public class KillAura extends Module {
         if (event instanceof EventMotion) {
             if (((EventMotion) event).getType() == EventMotion.Type.PRE) {
                 if (finalEntity != null) {
-                    float[] rotations = rotationUtil.faceEntity(finalEntity, mouseFix.isToggled(), curYaw, curPitch, this.rotations.smooth.isToggled(), this.rotations.accuracy.getCurrentValue(), this.rotations.precision.getCurrentValue(), this.rotations.predictionMultiplier.getCurrentValue());
+                    float[] rotations = rotationUtil.faceEntity(finalEntity, mouseFix.isToggled(),sensitivityMultiplier.getCurrentValue(), fixMultiplier.getCurrentValue(), percentFix.isToggled(), curYaw, curPitch, this.rotations.smooth.isToggled(), this.rotations.accuracy.getCurrentValue(), this.rotations.precision.getCurrentValue(), this.rotations.predictionMultiplier.getCurrentValue());
                     yaw = rotations[0];
                     pitch = rotations[1];
 
@@ -244,7 +248,7 @@ public class KillAura extends Module {
                         mc.thePlayer.sendQueue.addToSendQueue(new C0APacketAnimation());
                         break;
                     case "ServerSide":
-                        mc.thePlayer.sendQueue.addToSendQueue(new S0BPacketAnimation());
+                        mc.getNetHandler().getNetworkManager().sendPacket(new C0APacketAnimation());
                         break;
                 }
             } else {

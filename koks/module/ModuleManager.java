@@ -74,6 +74,7 @@ public class ModuleManager {
         addModule(new NoRotate());
         addModule(new OverArmor());
         addModule(new NoBob());
+        addModule(new AntiAim());
         addModule(new NoFov());
         addModule(new NoHurtCam());
         addModule(new PlayerESP());

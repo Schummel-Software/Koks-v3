@@ -203,8 +203,7 @@ public class Scaffold extends Module {
                 silentItemStack = (mc.thePlayer.getCurrentEquippedItem().getItem() instanceof ItemBlock) ? mc.thePlayer.getCurrentEquippedItem() : null;
                 BlockPos position = new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY - 1.0D - (shouldBuildDown ? 1 : 0), mc.thePlayer.posZ);
                 if (mc.theWorld.getBlockState(position).getBlock() instanceof BlockAir) {
-                    assert silentItemStack != null;
-                    if (blackList.contains(((ItemBlock) silentItemStack.getItem()).getBlock()))
+                    if (silentItemStack != null && blackList.contains(((ItemBlock) silentItemStack.getItem()).getBlock()))
                         return;
                     mc.thePlayer.swingItem();
                 }
