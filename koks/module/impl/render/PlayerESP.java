@@ -11,6 +11,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.AxisAlignedBB;
+import org.lwjgl.opengl.GL11;
 
 /**
  * @author kroko
@@ -46,6 +47,7 @@ public class PlayerESP extends Module {
                     if (espMode.getCurrentMode().equals("Box")) {
                         float width = 0.16F;
 
+                        GL11.glDisable(GL11.GL_LIGHTING);
                         AxisAlignedBB axisalignedbb = entity.getEntityBoundingBox();
                         AxisAlignedBB axisalignedbb1 = new AxisAlignedBB(
                                 axisalignedbb.minX - entity.posX + x - width,
@@ -69,6 +71,7 @@ public class PlayerESP extends Module {
                         if (((EntityLivingBase) entity).hurtTime != 0) {
                             espUtil.renderBox(axisalignedbb2);
                         }
+                        GL11.glEnable(GL11.GL_LIGHTING);
                     }
                 }
             }

@@ -431,7 +431,6 @@ public class NetworkManager extends SimpleChannelInboundHandler<Packet> {
     }
 
 
-
     static class InboundHandlerTuplePacketListener {
         private final Packet packet;
         private final GenericFutureListener<? extends Future<? super Void>>[] futureListeners;
