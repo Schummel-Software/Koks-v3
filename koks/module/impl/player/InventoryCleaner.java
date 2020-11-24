@@ -15,6 +15,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.*;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -70,7 +71,7 @@ public class InventoryCleaner extends Module {
                 if (mc.thePlayer.inventoryContainer.getSlot(i).getHasStack()) {
                     ItemStack is = mc.thePlayer.inventoryContainer.getSlot(i).getStack();
 
-                    if (throwTimer.hasReached((long) (throwDelay.getCurrentValue() + randomUtil.getRandomGaussian(20)))) {
+                    if (throwTimer.hasReached((long) (throwDelay.getCurrentValue() +  randomUtil.getRandomGaussian(20)))) {
                         if (swordSlot.getCurrentValue() != 0 && (is.getItem() instanceof ItemSword || is.getItem() instanceof ItemAxe || is.getItem() instanceof ItemPickaxe) && is == bestWeapon() && mc.thePlayer.inventoryContainer.getInventory().contains(bestWeapon()) && mc.thePlayer.inventoryContainer.getSlot((int) (35 + swordSlot.getCurrentValue())).getStack() != is && !preferSword.isToggled()) {
                             mc.playerController.windowClick(mc.thePlayer.inventoryContainer.windowId, i, (int) (swordSlot.getCurrentValue() - 1), 2, mc.thePlayer);
                             throwTimer.reset();

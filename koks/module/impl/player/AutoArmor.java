@@ -33,7 +33,6 @@ public class AutoArmor extends Module {
     public Setting startDelay = new Setting("Start Delay", 250.0F, 0.0F, 500.0F, true, this);
     public Setting throwDelay = new Setting("Equip Delay", 100.0F, 0.0F, 150.0F, true, this);
 
-    private final TimeHelper startTimer = timeHelper;
     private final TimeHelper throwTimer = new TimeHelper();
 
     public AutoArmor() {
@@ -67,12 +66,12 @@ public class AutoArmor extends Module {
         if (event instanceof EventUpdate) {
             setInfo(Math.round(throwDelay.getCurrentValue()) + "");
             if (mc.currentScreen instanceof GuiInventory) {
-                if (!startTimer.hasReached((long) startDelay.getCurrentValue())) {
+                if (!timeHelper.hasReached((long) startDelay.getCurrentValue())) {
                     throwTimer.reset();
                     return;
                 }
             } else {
-                startTimer.reset();
+                timeHelper.reset();
                 if (openedInventory.isToggled())
                     return;
             }

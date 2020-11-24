@@ -12,6 +12,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.C09PacketHeldItemChange;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
 
 /**
@@ -22,7 +23,7 @@ import net.minecraft.util.Vec3;
 @ModuleInfo(name = "Speed", description = "In germany we call it rasant", category = Module.Category.MOVEMENT)
 public class Speed extends Module {
 
-    public Setting mode = new Setting("Mode", new String[]{"Intave", "MCCentral", "Mineplex", "Mineplex FAST", "Mineplex Ground", "AAC3.3.12", "AAC4", "Tired", "Legit"}, "Intave", this);
+    public Setting mode = new Setting("Mode", new String[]{"Intave", "MCCentral", "Mineplex", "Mineplex FAST", "Mineplex Ground", "AAC4", "AAC3.3.12", "NCPBhop", "NCPGround", "Tired", "Legit"}, "Intave", this);
 
     public float mineplexMotion, mineplexSpeed;
 
@@ -40,6 +41,16 @@ public class Speed extends Module {
                     if (getPlayer().onGround)
                         getPlayer().jump();
                     getPlayer().setSprinting(true);
+                    break;
+                case "NCPBhop":
+                    getPlayer().setSprinting(true);
+                    movementUtil.setSpeed(0.26, true);
+                    if(movementUtil.isMoving()) {
+                        if (getPlayer().onGround) {
+                            getPlayer().jump();
+                        }else{
+                        }
+                    }
                     break;
                 case "AAC4":
                     if (getPlayer().onGround) {
