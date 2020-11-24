@@ -1,5 +1,7 @@
 package net.minecraft.client.renderer;
 
+import koks.Koks;
+import koks.module.impl.render.XRay;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -19,6 +21,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.WorldType;
 import optifine.Config;
 import optifine.Reflector;
+import org.lwjgl.opengl.GL11;
 import shadersmod.client.SVertexBuilder;
 
 public class BlockRendererDispatcher implements IResourceManagerReloadListener
@@ -76,6 +79,10 @@ public class BlockRendererDispatcher implements IResourceManagerReloadListener
 
     public boolean renderBlock(IBlockState state, BlockPos pos, IBlockAccess blockAccess, WorldRenderer worldRendererIn)
     {
+
+        XRay xRay = (XRay) Koks.getKoks().moduleManager.getModule(XRay.class);
+        if(xRay != null && xRay.isToggled() && !xRay.blocks.contains(state.getBlock()) && xRay.mode.getCurrentMode().equalsIgnoreCase("Invisible"))
+            return false;
         try
         {
             int i = state.getBlock().getRenderType();

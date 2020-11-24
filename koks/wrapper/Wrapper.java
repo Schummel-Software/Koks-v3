@@ -18,5 +18,6 @@ public class Wrapper {
     public final RenderUtil renderUtil = new RenderUtil();
     public final RotationUtil rotationUtil = new RotationUtil();
     public final Methods methods = new Methods();
+    public final InventoryUtil inventoryUtil = new InventoryUtil();
 
 }

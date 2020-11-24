@@ -7,6 +7,7 @@ import koks.event.impl.EventUpdate;
 import koks.module.Module;
 import koks.api.settings.Setting;
 import koks.module.ModuleInfo;
+import koks.module.impl.movement.BoatFly;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -14,6 +15,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.*;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -36,30 +38,30 @@ public class InventoryCleaner extends Module {
     public Setting axeSlot = new Setting("Axe Slot", 0.0F, 0.0F, 9.0F, true, this);
     public Setting shovelSlot = new Setting("Shovel Slot", 0.0F, 0.0F, 9.0F, true, this);
     private AutoArmor autoArmor;
-    private final TimeHelper startTimer = timeHelper;
     private final TimeHelper throwTimer = new TimeHelper();
 
     public InventoryCleaner() {
-        trashItems = Arrays.asList(Items.feather, Items.dye, Items.paper, Items.saddle, Items.string, Items.banner, Items.fishing_rod, Items.boat);
+        trashItems = Arrays.asList(Items.feather, Items.dye, Items.paper, Items.saddle, Items.string, Items.banner, Items.fishing_rod);
     }
 
     @Override
     public void onEvent(Event event) {
         if (event instanceof EventUpdate) {
+
             setInfo(Math.round(throwDelay.getCurrentValue()) + "");
             if (mc.currentScreen instanceof GuiInventory) {
-                if (!startTimer.hasReached((long) startDelay.getCurrentValue())) {
+                if (!timeHelper.hasReached((long) startDelay.getCurrentValue())) {
                     throwTimer.reset();
                     return;
                 }
             } else {
-                startTimer.reset();
+                timeHelper.reset();
                 if (openedInventory.isToggled())
                     return;
             }
 
             if (autoArmor.isToggled() && !autoArmor.isFinished()) {
-                startTimer.reset();
+                timeHelper.reset();
                 throwTimer.reset();
                 if (openedInventory.isToggled())
                     return;
@@ -69,7 +71,7 @@ public class InventoryCleaner extends Module {
                 if (mc.thePlayer.inventoryContainer.getSlot(i).getHasStack()) {
                     ItemStack is = mc.thePlayer.inventoryContainer.getSlot(i).getStack();
 
-                    if (throwTimer.hasReached((long) (throwDelay.getCurrentValue() + randomUtil.getRandomGaussian(20)))) {
+                    if (throwTimer.hasReached((long) (throwDelay.getCurrentValue() +  randomUtil.getRandomGaussian(20)))) {
                         if (swordSlot.getCurrentValue() != 0 && (is.getItem() instanceof ItemSword || is.getItem() instanceof ItemAxe || is.getItem() instanceof ItemPickaxe) && is == bestWeapon() && mc.thePlayer.inventoryContainer.getInventory().contains(bestWeapon()) && mc.thePlayer.inventoryContainer.getSlot((int) (35 + swordSlot.getCurrentValue())).getStack() != is && !preferSword.isToggled()) {
                             mc.playerController.windowClick(mc.thePlayer.inventoryContainer.windowId, i, (int) (swordSlot.getCurrentValue() - 1), 2, mc.thePlayer);
                             throwTimer.reset();

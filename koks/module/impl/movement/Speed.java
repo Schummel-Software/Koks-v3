@@ -7,6 +7,13 @@ import koks.event.Event;
 import koks.event.impl.EventUpdate;
 import koks.module.Module;
 import koks.module.ModuleInfo;
+import net.minecraft.client.multiplayer.WorldClient;
+import net.minecraft.item.ItemStack;
+import net.minecraft.network.play.client.C09PacketHeldItemChange;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.MathHelper;
+import net.minecraft.util.Vec3;
 
 /**
  * @author avox | lmao | kroko
@@ -16,9 +23,11 @@ import koks.module.ModuleInfo;
 @ModuleInfo(name = "Speed", description = "In germany we call it rasant", category = Module.Category.MOVEMENT)
 public class Speed extends Module {
 
-    public Setting mode = new Setting("Mode", new String[]{"Intave", "MCCentral", "Mineplex", "Mineplex FAST", "AAC3.3.12", "AAC4", "Tired", "Legit"}, "Intave", this);
+    public Setting mode = new Setting("Mode", new String[]{"Intave", "MCCentral", "Mineplex", "Mineplex FAST", "Mineplex Ground", "AAC4", "AAC3.3.12", "NCPBhop", "NCPGround", "Tired", "Legit"}, "Intave", this);
 
-    public float mineplexMotion;
+    public float mineplexMotion, mineplexSpeed;
+
+    public int curSlot;
 
     public int aacSpeed;
 
@@ -29,9 +38,30 @@ public class Speed extends Module {
             setInfo(mode.getCurrentMode());
             switch (mode.getCurrentMode()) {
                 case "Legit":
-                    if(getPlayer().onGround)
+                    if (getPlayer().onGround)
                         getPlayer().jump();
                     getPlayer().setSprinting(true);
+                    break;
+                case "NCPBhop":
+                    getPlayer().setSprinting(true);
+                    movementUtil.setSpeed(0.26, true);
+                    if(movementUtil.isMoving()) {
+                        if (getPlayer().onGround) {
+                            getPlayer().jump();
+                        }else{
+                        }
+                    }
+                    break;
+                case "NCPGround":
+                    if(getPlayer().onGround) {
+                        getPlayer().motionY = randomUtil.getRandomFloat(0.01F, 0.02F);
+                        getPlayer().addExhaustion(0.8F);
+                    }else{
+                        float f = movementUtil.getDirection(getPlayer().rotationYaw) * 0.017453292F;
+                        float speed = randomUtil.getRandomFloat(0.05F, 0.057F);
+                        getPlayer().motionX -= (double)(MathHelper.sin(f) * speed);
+                        getPlayer().motionZ += (double)(MathHelper.cos(f) * speed);
+                    }
                     break;
                 case "AAC4":
                     if (getPlayer().onGround) {
@@ -45,7 +75,7 @@ public class Speed extends Module {
                         getTimer().timerSpeed = 1.0F;
                     }
 
-                    if(aacSpeed >= 4)
+                    if (aacSpeed >= 4)
                         aacSpeed = 0;
                     break;
                 case "Intave":
@@ -109,6 +139,30 @@ public class Speed extends Module {
                         }
                     }
                     break;
+                case "Mineplex Ground":
+                    if (inventoryUtil.hasAir()) {
+                        if (getPlayer().onGround && isMoving()) {
+                            int slot = inventoryUtil.getAir();
+                            ItemStack stack = getPlayer().inventory.getStackInSlot(slot);
+                            BlockPos blockPos = new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY - 1, mc.thePlayer.posZ);
+                            Vec3 vec = new Vec3(blockPos.getX(), blockPos.getY(), blockPos.getZ());
+                            sendPacket(new C09PacketHeldItemChange(slot));
+                            getPlayerController().onPlayerRightClick(mc.thePlayer, mc.theWorld, null, blockPos, EnumFacing.UP, new Vec3(vec.xCoord * 0.4F, vec.yCoord * 0.4F, vec.zCoord * 0.4F));
+                            float targetSpeed = 0.8F;
+                            if(targetSpeed > mineplexSpeed)
+                                mineplexSpeed += targetSpeed / 8;
+                            if(mineplexSpeed >= targetSpeed)
+                                mineplexSpeed = targetSpeed;
+                            movementUtil.setSpeed(mineplexSpeed, true);
+                        }else{
+                            mineplexSpeed = 0;
+                        }
+                    } else {
+                        sendmsg("§cYou must have a Empty Slot!", true);
+                        this.setToggled(false);
+                    }
+
+                    break;
                 case "Mineplex":
                     if (!mc.thePlayer.isInWeb) {
                         if (getPlayer().onGround && isMoving())
@@ -138,12 +192,16 @@ public class Speed extends Module {
     @Override
     public void onEnable() {
         mineplexMotion = 0.2F;
+        curSlot = getPlayer().inventory.currentItem;
     }
 
     @Override
     public void onDisable() {
         mc.timer.timerSpeed = 1.0F;
         mc.thePlayer.speedInAir = 0.02F;
+        mineplexSpeed = 0;
+        if(mode.getCurrentMode().equalsIgnoreCase("Mineplex Ground"))
+            sendPacket(new C09PacketHeldItemChange(curSlot));
     }
 
 }

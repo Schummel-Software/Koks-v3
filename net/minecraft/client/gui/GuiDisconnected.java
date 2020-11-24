@@ -52,7 +52,6 @@ public class GuiDisconnected extends GuiScreen {
         if (this.field_175353_i > 200)
             this.field_175353_i = 50;
 
-        System.out.println(this.multilineMessage.size());
         this.buttonList.add(new GuiButton(0, this.width / 2 - 100, this.height / 2 + this.field_175353_i / 2 + this.fontRendererObj.FONT_HEIGHT, I18n.format("gui.toMenu", new Object[0])));
         if (Koks.getKoks().alteningApiKey != null && !Koks.getKoks().alteningApiKey.equals("")) {
             this.buttonList.add(new GuiButton(1, this.width / 2 - 100, this.height / 2 + this.field_175353_i / 2 + this.fontRendererObj.FONT_HEIGHT + 25, "Generate"));

@@ -15,7 +15,7 @@ import org.lwjgl.input.Keyboard;
 @ModuleInfo(name = "ClickGUI", description = "Opens the ClickGUI", category = Module.Category.GUI)
 public class ClickGui extends Module {
 
-    public Setting mode = new Setting("Mode", new String[]{"Panel", "PE"}, "Panel", this);
+    public Setting mode = new Setting("Mode", new String[]{"Panel", "PSE"}, "Panel", this);
 
     public ClickGui() {
         setKey(Keyboard.KEY_RSHIFT);
@@ -25,7 +25,7 @@ public class ClickGui extends Module {
     public void onEvent(Event event) {
         if (mc.currentScreen == null) {
             switch (mode.getCurrentMode()) {
-                case "PE":
+                case "PSE":
                     mc.displayGuiScreen(Koks.getKoks().clickGUIPE);
                     break;
                 case "Panel":

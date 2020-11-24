@@ -16,7 +16,7 @@ public class DrawType extends Element {
         this.setting = setting;
     }
 
-    boolean isKeyTyped = false;
+    public boolean isKeyTyped = false;
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {

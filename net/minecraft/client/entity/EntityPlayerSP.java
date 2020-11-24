@@ -3,8 +3,10 @@ package net.minecraft.client.entity;
 import com.mojang.authlib.GameProfile;
 import koks.Koks;
 import koks.command.Command;
+import koks.event.impl.EventDamage;
 import koks.event.impl.EventMotion;
 import koks.event.impl.EventUpdate;
+import koks.event.impl.EventWalk;
 import koks.module.impl.gui.ClickGui;
 import koks.module.impl.movement.NoSlowdown;
 import net.minecraft.client.Minecraft;
@@ -178,6 +180,7 @@ public class EntityPlayerSP extends AbstractClientPlayer
      * Called to update the entity's position/logic.
      */
     public void onUpdate() {
+
         if (this.worldObj.isBlockLoaded(new BlockPos(this.posX, 0.0D, this.posZ))) {
 
             EventUpdate eventUpdate = new EventUpdate();
@@ -186,6 +189,7 @@ public class EntityPlayerSP extends AbstractClientPlayer
             EventMotion eventMotion = new EventMotion(EventMotion.Type.PRE, this.rotationYaw, this.rotationPitch);
             Koks.getKoks().eventManager.onEvent(eventMotion);
             this.eventMotion = eventMotion;
+
             super.onUpdate();
 
             ClickGui clickGui = (ClickGui) Koks.getKoks().moduleManager.getModule(ClickGui.class);
@@ -203,6 +207,10 @@ public class EntityPlayerSP extends AbstractClientPlayer
      * called every tick when the player is on foot. Performs all the things that normally happen during movement.
      */
     public void onUpdateWalkingPlayer() {
+
+        EventWalk walk = new EventWalk();
+        Koks.getKoks().eventManager.onEvent(walk);
+
         boolean flag = this.isSprinting();
 
         if (flag != this.serverSprintState) {
@@ -271,8 +279,8 @@ public class EntityPlayerSP extends AbstractClientPlayer
                 this.lastReportedPitch = this.eventMotion.getPitch();
             }
         }
-        EventMotion eventMotion = new EventMotion(EventMotion.Type.POST,this.eventMotion.getYaw(),this.eventMotion.getPitch());
-        Koks.getKoks().eventManager.onEvent(eventMotion);
+        EventMotion eventMotionPost = new EventMotion(EventMotion.Type.POST,this.eventMotion.getYaw(),this.eventMotion.getPitch());
+        Koks.getKoks().eventManager.onEvent(eventMotionPost);
     }
 
     /**
@@ -329,7 +337,9 @@ public class EntityPlayerSP extends AbstractClientPlayer
      */
     protected void damageEntity(DamageSource damageSrc, float damageAmount)
     {
-        if (!this.isEntityInvulnerable(damageSrc))
+        EventDamage eventDamage = new EventDamage(this.getHealth(), this.getHealth() - damageAmount, this.getHealth() - (this.getHealth() - damageAmount), this.isEntityInvulnerable(damageSrc));
+        Koks.getKoks().eventManager.onEvent(eventDamage);
+        if (!eventDamage.isInvulnerable())
         {
             this.setHealth(this.getHealth() - damageAmount);
         }

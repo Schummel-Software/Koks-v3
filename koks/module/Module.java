@@ -10,6 +10,7 @@ import koks.module.impl.player.SendPublic;
 
 import java.awt.*;
 import java.lang.reflect.Field;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author deleteboys | lmao | kroko
@@ -21,7 +22,7 @@ public abstract class Module extends Methods {
     private int key;
     private double animation;
     private Category category;
-    private boolean toggled, bypass;
+    public AtomicBoolean toggled = new AtomicBoolean(false), bypass = new AtomicBoolean(false);
 
     public TimeHelper timeHelper = new TimeHelper();
 
@@ -33,6 +34,7 @@ public abstract class Module extends Methods {
     public RayCastUtil rayCastUtil;
     public RenderUtil renderUtil;
     public RotationUtil rotationUtil;
+    public InventoryUtil inventoryUtil;
 
     public Module() {
         ModuleInfo moduleInfo = getClass().getAnnotation(ModuleInfo.class);
@@ -48,6 +50,7 @@ public abstract class Module extends Methods {
         rayCastUtil = Koks.getKoks().wrapper.rayCastUtil;
         renderUtil = Koks.getKoks().wrapper.renderUtil;
         rotationUtil = Koks.getKoks().wrapper.rotationUtil;
+        inventoryUtil = Koks.getKoks().wrapper.inventoryUtil;
 
         /* for(Field field : getClass().getDeclaredFields()) {
             try{
@@ -63,25 +66,25 @@ public abstract class Module extends Methods {
     }
 
     public boolean isBypass() {
-        return bypass;
+        return bypass.get();
     }
 
     public void setBypass(boolean bypass) {
-        this.bypass = bypass;
+        this.bypass.compareAndSet(this.bypass.get(), bypass);
     }
 
     public boolean isToggled() {
-        return toggled;
+        return toggled.get();
     }
 
     public void toggle() {
         setToggled(!isToggled());
     }
 
-    public void setToggled(boolean toggled) {
-        this.toggled = toggled;
+    public synchronized void setToggled(boolean toggled) {
+        this.toggled.compareAndSet(this.toggled.get(), toggled);
         try {
-            if (!this.toggled) {
+            if (!this.toggled.get()) {
                 animation = 0;
                 onDisable();
             } else {

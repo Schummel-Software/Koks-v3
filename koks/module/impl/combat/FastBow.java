@@ -41,7 +41,6 @@ public class FastBow extends Module {
                 case "Timer":
                     if (mc.thePlayer.isUsingItem() && mc.thePlayer.getCurrentEquippedItem().getItem() instanceof ItemBow) {
                         getTimer().timerSpeed = 5.0F;
-                        System.out.println(getPlayer().getCurrentEquippedItem().getMaxItemUseDuration() - getPlayer().getItemInUseCount());
                         int i = getPlayer().getCurrentEquippedItem().getMaxItemUseDuration() - getPlayer().getItemInUseCount();
                         if (i >= 18) {
                             getTimer().timerSpeed = 1.0F;

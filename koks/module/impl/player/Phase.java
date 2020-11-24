@@ -7,6 +7,8 @@ import koks.event.impl.EventUpdate;
 import koks.module.Module;
 import koks.api.settings.Setting;
 import koks.module.ModuleInfo;
+import net.minecraft.network.play.client.C00PacketKeepAlive;
+import net.minecraft.network.play.client.C03PacketPlayer;
 
 /**
  * @author deleteboys | lmao | kroko
@@ -16,7 +18,17 @@ import koks.module.ModuleInfo;
 @ModuleInfo(name = "Phase", description = "You can walk through walls", category = Module.Category.PLAYER)
 public class Phase extends Module {
 
-    public Setting mode = new Setting("Mode", new String[]{"Hive", "Intave"}, "Hive", this);
+    public Setting mode = new Setting("Mode", new String[]{"Hive", "Intave", "AAC1.9.10"}, "Hive", this);
+
+    public void aac1910() {
+        getPlayer().setPosition(getX(), getY() - 2, getZ());
+
+        boolean ground = false;
+        for(int i = 0; i < 6; i++) {
+            ground = !ground;
+            sendPacket(new C03PacketPlayer.C04PacketPlayerPosition(getX(), getY() - 2, getZ(), ground));
+        }
+    }
 
     public void hive() {
         if (getPlayer().isCollidedHorizontally) {
@@ -51,6 +63,9 @@ public class Phase extends Module {
                     break;
                 case "Intave":
                     intave();
+                    break;
+                case "AAC1.9.10":
+                    aac1910();
                     break;
             }
         }

@@ -310,7 +310,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
      */
     public MouseHelper mouseHelper;
     public final File mcDataDir;
-    private final File fileAssets;
+    public final File fileAssets;
     private final String launchedVersion;
     private final Proxy proxy;
     private ISaveFormat saveLoader;
@@ -444,30 +444,6 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
 
     public void run() {
         this.running = true;
-
-        /*String applicationId = "754374125392232499";
-        String streamId = "";
-
-        DiscordEventHandlers handlers = new DiscordEventHandlers();
-        handlers.ready = (user) -> System.out.println("Ready!");
-        lib.Discord_Initialize(applicationId, handlers, true, streamId);
-        DiscordRichPresence presence = new DiscordRichPresence();
-
-        presence.startTimestamp = System.currentTimeMillis() / 1000;
-
-        presence.details = "Playing Minecraft 1.8.8";
-
-        lib.Discord_UpdatePresence(presence);
-
-        new Thread(() -> {
-            while (!Thread.currentThread().isInterrupted()) {
-                lib.Discord_RunCallbacks();
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException ignored) {
-                }
-            }
-        }, "RPC-Callback-Handler").start();*/
 
         try {
             this.startGame();
@@ -1335,6 +1311,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
      * Called when the window is closing. Sets 'running' to false which allows the game loop to exit cleanly.
      */
     public void shutdown() {
+        Koks.getKoks().stopClient();
         this.running = false;
     }
 
@@ -1567,6 +1544,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
      * Runs the current tick.
      */
     public void runTick() throws IOException {
+
         if(theWorld != null) {
             EventTick eventTick = new EventTick();
             Koks.getKoks().eventManager.onEvent(eventTick);

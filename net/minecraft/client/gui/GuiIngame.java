@@ -531,8 +531,19 @@ public class GuiIngame extends Gui {
                 i = Math.max(i, this.getFontRenderer().getStringWidth(s));
             }
 
-            int j1 = arraylist1.size() * this.getFontRenderer().FONT_HEIGHT;
-            int k1 = p_180475_2_.getScaledHeight() / 2 + j1 / 3;
+
+            int toggledModules = 0;
+
+            float offset = getFontRenderer().FONT_HEIGHT + 2;
+
+            for(Module mod : Koks.getKoks().moduleManager.getModules()) {
+                if(mod.isToggled())
+                    toggledModules++;
+            }
+
+            int j1 = (int) (arraylist1.size() * this.getFontRenderer().FONT_HEIGHT);
+
+            int k1 = (int) (j1 * 1.15 + toggledModules * offset);
             byte b0 = 3;
             int j = p_180475_2_.getScaledWidth() - i - b0;
             int k = 0;
@@ -546,14 +557,7 @@ public class GuiIngame extends Gui {
 
                 ScaledResolution sr = new ScaledResolution(mc);
 
-                ArrayList<Module> modules = new ArrayList<>();
-                for (int m = 0; m < Koks.getKoks().moduleManager.modules.size(); m++) {
-                    Module module = Koks.getKoks().moduleManager.modules.get(m);
-                    if (module.isToggled())
-                        if (!modules.contains(module))
-                            modules.add(module);
-                }
-                int l =  k1 - k * this.getFontRenderer().FONT_HEIGHT;
+                int l = (int) (k1 - k * this.getFontRenderer().FONT_HEIGHT);
                 int i1 = p_180475_2_.getScaledWidth() - b0 + 2;
                 drawRect(j - 2, l - 2, sr.getScaledWidth(), l + this.getFontRenderer().FONT_HEIGHT,new Color(0x141214).getRGB());
                 drawRect(j - 2 - 2, l - 2, j - 2, l + this.getFontRenderer().FONT_HEIGHT, Koks.getKoks().clientColor.getRGB());

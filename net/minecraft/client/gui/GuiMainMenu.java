@@ -591,6 +591,68 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
 
                 renderUtil.drawPicture((int) sr.getScaledWidth() / 2 + x - (wwidth - size + 5) / 2, (int) yPos + 1, 160, 60, new ResourceLocation("client/logo.png"));
                 fontRendererObj.drawString("Welcome " + Koks.getKoks().CLManager.getPrefix(), xPos, sr.getScaledHeight() / 2 + y - 14, Color.gray.getRGB(), true);
+                String event = "";
+                String type = "Happy";
+                String suffix = "§e!";
+                Calendar calendar = Calendar.getInstance();
+
+                int year = calendar.get(Calendar.YEAR);
+                int a = year % 19;
+                int b = year % 4;
+                int c = year % 7;
+                int k = year / 100;
+                int p = k / 3;
+                int q = k / 4;
+                int M = (15 + k - p - q) % 30;
+                int d = (19 * a + M) % 30;
+                int N = (4 + k - q) % 7;
+                int e = (2 * b + 4 * c + 6 * d + N) % 7;
+                int ostern = (22 + d + e);
+
+                if (d == 28 && e == 6 && (11 * M + 11 * M) % 30 < 19) ostern = 49;
+                /*if (ostern > 31) ostern -= 31;*/
+
+                if (calendar.get(Calendar.DAY_OF_MONTH) == 13 && calendar.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY) {
+                    type = "§cScarry";
+                    event = "§c§lFriday the 13th";
+                } else if (calendar.get(Calendar.DAY_OF_MONTH) == 11 && calendar.get(Calendar.MONTH) == Calendar.SEPTEMBER) {
+                    event = "§f§l9/11";
+                    type = "§cSadly";
+                } else if (calendar.get(Calendar.DAY_OF_MONTH) == 31 && calendar.get(Calendar.MONTH) == Calendar.OCTOBER)
+                    event = "§6§lHalloween";
+                else if (calendar.get(Calendar.DAY_OF_MONTH) == (ostern > 31 ? ostern - 31 : ostern) && calendar.get(Calendar.MONTH) == (ostern > 31 ? Calendar.APRIL : Calendar.MARCH))
+                    event = "§2§lEaster";
+                else if (calendar.get(Calendar.DAY_OF_MONTH) == 4 && calendar.get(Calendar.MONTH) == Calendar.MAY)
+                    event = "§6§lSTAR WARS §eDay";
+                else if (calendar.get(Calendar.DAY_OF_MONTH) == 12 && calendar.get(Calendar.MONTH) == Calendar.DECEMBER) {
+                    type = "§cMerry";
+                    event = "§f§lChristmas";
+                } else if (calendar.get(Calendar.DAY_OF_MONTH) == 1 && calendar.get(Calendar.MONTH) == Calendar.JANUARY)
+                    event = "§a§lNew Year";
+                else if (calendar.get(Calendar.DAY_OF_MONTH) == 31 && calendar.get(Calendar.MONTH) == Calendar.DECEMBER) {
+                    int hour = 23 - calendar.get(Calendar.HOUR_OF_DAY);
+                    int minutes = 59 - calendar.get(Calendar.MINUTE);
+                    int seconds = 59 - calendar.get(Calendar.SECOND);
+
+                    String formattedHour = (hour + "").length() == 1 ? "0" + hour : hour + "";
+                    String formattedMinute = (minutes + "").length() == 1 ? "0" + minutes : minutes + "";
+                    String formattedSecond = (seconds + "").length() == 1 ? "0" + seconds : seconds + "";
+
+                    String time = "§e" + formattedHour + "§7:§e" + formattedMinute + "§7:§e" + formattedSecond;
+                    if (hour == 0 && minutes == 0 && seconds <= 10)
+                        time = "§e§l" + formattedSecond;
+
+                    type = "§e" + (calendar.get(Calendar.YEAR) + 1) + " §ain";
+                    event = time;
+                }else if(calendar.get(Calendar.DAY_OF_MONTH) == 14 && calendar.get(Calendar.MONTH) == Calendar.FEBRUARY) {
+                    event = "§d§lValentine's day §d\u2764";
+                    suffix = "";
+                }else if(calendar.get(Calendar.DAY_OF_MONTH) == 17 && calendar.get(Calendar.MONTH) == Calendar.MARCH)
+                    event = "§a§lSt. Patrick’s Day";
+
+                float xPosEvent = sr.getScaledWidth() / 2 + x - fontRendererObj.getStringWidth("§e" + type + " " + event + suffix) / 2;
+                if (!event.equalsIgnoreCase(""))
+                    fontRendererObj.drawString("§e" + type + " " + event + suffix, xPosEvent, sr.getScaledHeight() / 2 + y - 14 + fontRendererObj.FONT_HEIGHT + 1, Color.gray.getRGB(), true);
             } else {
                 switch (currentIndex) {
                     case 1:

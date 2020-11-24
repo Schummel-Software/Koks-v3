@@ -23,6 +23,7 @@ public class V3_0_0 extends Changelog{
         added("MotionGraph");
         added("ArrayList Mode");
         added("FakeBlock");
+        added("Blink");
         added("Online Configs");
         added("AAC4 Speed");
         added("Intave GodMode for DBD (Dead By Daylight)");
@@ -34,8 +35,20 @@ public class V3_0_0 extends Changelog{
         added("Friends");
         added("Safewalk");
         added("GommeMode");
+        added("Xray");
+        added("BedFucker");
+        added("TrueSight");
+        added("AntiVoid");
+        added("FastBreak");
+        added("Fullbright");
+        added("ShopSaver");
         added("Changelog");
         added("NoRotate");
+        added("IceSpeed");
+        added("NoPitchLimit");
+        added("AimBot");
+        added("AntiAim");
+        added("SystemTray");
         fixed("Intave Scaffold");
         fixed("Block Bug");
         removed("ClickGUI Settings");

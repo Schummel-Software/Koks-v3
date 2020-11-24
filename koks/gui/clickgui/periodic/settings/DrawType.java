@@ -51,7 +51,6 @@ public class DrawType extends Element {
     @Override
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) {
         if (mouseButton == 0 && isHovered(mouseX, mouseY)) {
-            System.out.println("hey");
             isKeyTyped = !isKeyTyped;
         }
     }

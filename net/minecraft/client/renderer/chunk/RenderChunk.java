@@ -34,6 +34,7 @@ import optifine.BlockPosM;
 import optifine.Config;
 import optifine.Reflector;
 import optifine.ReflectorForge;
+import org.lwjgl.opengl.GL11;
 import shadersmod.client.SVertexBuilder;
 
 public class RenderChunk

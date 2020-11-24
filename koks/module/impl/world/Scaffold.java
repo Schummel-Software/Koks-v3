@@ -5,9 +5,7 @@ import koks.Koks;
 import koks.api.settings.Setting;
 import koks.api.util.TimeHelper;
 import koks.event.Event;
-import koks.event.impl.EventMotion;
-import koks.event.impl.EventSafeWalk;
-import koks.event.impl.EventUpdate;
+import koks.event.impl.*;
 import koks.module.Module;
 import koks.module.ModuleInfo;
 import net.minecraft.block.Block;
@@ -53,6 +51,8 @@ public class Scaffold extends Module {
     public Setting safeWalk = new Setting("SafeWalk", true, this);
     public Setting onGround = new Setting("OnGround", true, this);
 
+    public Setting silent = new Setting("Silent", true, this);
+
     public Setting downScaffold = new Setting("DownScaffold", false, this);
 
     public Setting randomHit = new Setting("Random Hit", false, this);
@@ -80,18 +80,14 @@ public class Scaffold extends Module {
     public void onEvent(Event event) {
         if (event instanceof EventMotion) {
             if (((EventMotion) event).getType() == EventMotion.Type.PRE) {
-
-                if (!getPlayer().isSprinting()) {
-                    ((EventMotion) event).setYaw(yaw);
-                    ((EventMotion) event).setPitch(pitch);
-                } else {
-                    ((EventMotion) event).setYaw(getPlayer().rotationYaw);
-                    ((EventMotion) event).setPitch(getPlayer().rotationPitch);
-                }
-
+                ((EventMotion) event).setYaw(yaw);
+                ((EventMotion) event).setPitch(pitch);
             }
         }
 
+        if(event instanceof EventJump) {
+            ((EventJump) event).setYaw(yaw);
+        }
 
         if (event instanceof EventUpdate) {
             if (downScaffold.isToggled()) {
@@ -102,18 +98,21 @@ public class Scaffold extends Module {
                     shouldBuildDown = false;
                 }
             }
-            BlockPos pos = new BlockPos(mc.thePlayer.posX, (mc.thePlayer.getEntityBoundingBox()).minY - 1.0D - (shouldBuildDown ? 1 : 0), mc.thePlayer.posZ);
+            BlockPos pos;
+
+            pos = new BlockPos(mc.thePlayer.posX, (mc.thePlayer.getEntityBoundingBox()).minY - 1.0D - (shouldBuildDown ? 1 : 0), mc.thePlayer.posZ);
             getPlayer().setSprinting(sprint.isToggled());
+            getGameSettings().keyBindSprint.pressed = sprint.isToggled();
 
             getBlockPosToPlaceOn(pos);
-
-            pitch = getPitch(360);
 
             if (simpleRotations.isToggled()) {
                 setYawSimple();
             } else {
                 setYaw();
             }
+
+            pitch = getPitch(360);
 
         }
         if (event instanceof EventSafeWalk) {
@@ -186,30 +185,28 @@ public class Scaffold extends Module {
         finalPos = pos;
         ItemStack silentItemStack = null;
         int silentSlot = mc.thePlayer.inventory.currentItem;
-        if (mc.thePlayer.getCurrentEquippedItem() == null || (!(mc.thePlayer.getCurrentEquippedItem().getItem() instanceof ItemBlock))) {
+        if (silent.isToggled() && (mc.thePlayer.getCurrentEquippedItem() == null || (!(mc.thePlayer.getCurrentEquippedItem().getItem() instanceof ItemBlock)))) {
             for (int i = 0; i < 9; i++) {
                 if (mc.thePlayer.inventory.getStackInSlot(i) != null && mc.thePlayer.inventory.getStackInSlot(i).getItem() instanceof ItemBlock) {
                     ItemBlock itemBlock = (ItemBlock) mc.thePlayer.inventory.getStackInSlot(i).getItem();
                     if (this.blackList.contains(itemBlock.getBlock()))
                         continue;
-                    mc.thePlayer.sendQueue.addToSendQueue(new C09PacketHeldItemChange(i));
+
                     silentSlot = i;
+                    mc.thePlayer.sendQueue.addToSendQueue(new C09PacketHeldItemChange(silentSlot));
                     silentItemStack = mc.thePlayer.inventory.getStackInSlot(i);
-                    if (mc.theWorld.getBlockState(new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY - 1.0D - (shouldBuildDown ? 1 : 0), mc.thePlayer.posZ)).getBlock() instanceof BlockAir) {
-                        if (swingItem.isToggled())
-                            mc.thePlayer.swingItem();
-                        else
-                            mc.thePlayer.sendQueue.addToSendQueue(new C0APacketAnimation());
-                    }
                     break;
                 }
             }
         } else {
-            silentItemStack = (mc.thePlayer.getCurrentEquippedItem().getItem() instanceof ItemBlock) ? mc.thePlayer.getCurrentEquippedItem() : null;
-            if (mc.theWorld.getBlockState(new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY - 1.0D - (shouldBuildDown ? 1 : 0), mc.thePlayer.posZ)).getBlock() instanceof BlockAir) {
-                if (blackList.contains(((ItemBlock) silentItemStack.getItem()).getBlock()))
-                    return;
-                mc.thePlayer.swingItem();
+            if (getPlayer().getCurrentEquippedItem() != null) {
+                silentItemStack = (mc.thePlayer.getCurrentEquippedItem().getItem() instanceof ItemBlock) ? mc.thePlayer.getCurrentEquippedItem() : null;
+                BlockPos position = new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY - 1.0D - (shouldBuildDown ? 1 : 0), mc.thePlayer.posZ);
+                if (mc.theWorld.getBlockState(position).getBlock() instanceof BlockAir) {
+                    if (silentItemStack != null && blackList.contains(((ItemBlock) silentItemStack.getItem()).getBlock()))
+                        return;
+                    mc.thePlayer.swingItem();
+                }
             }
         }
 
@@ -228,10 +225,19 @@ public class Scaffold extends Module {
                                 return;
                             if (silentItemStack != null) {
                                 MovingObjectPosition ray = rayCastUtil.rayCastedBlock(yaw, pitch, silentItemStack, intave.isToggled());
-                                if (intave.isToggled())
-                                    mc.playerController.onPlayerRightClick(mc.thePlayer, mc.theWorld, silentItemStack, ray.getBlockPos(), ray.sideHit, ray.hitVec);
-                                else
-                                    mc.playerController.onPlayerRightClick(mc.thePlayer, mc.theWorld, silentItemStack, pos, face, new Vec3(pos.getX() + (this.randomHit.isToggled() ? randomUtil.getRandomDouble(0, 0.7) : 0), pos.getY() + (this.randomHit.isToggled() ? randomUtil.getRandomDouble(0, 0.7) : 0), pos.getZ() + (this.randomHit.isToggled() ? randomUtil.getRandomDouble(0, 0.7) : 0)));
+                                if (intave.isToggled()) {
+                                    if (mc.playerController.onPlayerRightClick(mc.thePlayer, mc.theWorld, silentItemStack, ray.getBlockPos(), ray.sideHit, ray.hitVec))
+                                        if (swingItem.isToggled())
+                                            mc.thePlayer.swingItem();
+                                        else
+                                            mc.thePlayer.sendQueue.addToSendQueue(new C0APacketAnimation());
+                                } else if (!intave.isToggled())
+                                    if (mc.playerController.onPlayerRightClick(mc.thePlayer, mc.theWorld, silentItemStack, pos, face, new Vec3(pos.getX() + (this.randomHit.isToggled() ? randomUtil.getRandomDouble(0, 0.7) : 0), pos.getY() + (this.randomHit.isToggled() ? randomUtil.getRandomDouble(0, 0.7) : 0), pos.getZ() + (this.randomHit.isToggled() ? randomUtil.getRandomDouble(0, 0.7) : 0))))
+                                        if (swingItem.isToggled())
+                                            mc.thePlayer.swingItem();
+                                        else
+                                            mc.thePlayer.sendQueue.addToSendQueue(new C0APacketAnimation());
+
                                 sneakCount++;
 
                                 mc.thePlayer.motionX *= motion.getCurrentValue();
@@ -252,8 +258,13 @@ public class Scaffold extends Module {
                         if (blackList.contains(((ItemBlock) silentItemStack.getItem()).getBlock()))
                             return;
                         if (silentItemStack != null) {
-                            getPlayerController().sendSlotPacket(silentItemStack, silentSlot);
+
                             mc.rightClickMouse();
+
+
+                            if (mc.playerController.onPlayerRightClick(mc.thePlayer, mc.theWorld, silentItemStack, pos, face, new Vec3(pos.getX() + (this.randomHit.isToggled() ? randomUtil.getRandomDouble(0, 0.7) : 0), pos.getY() + (this.randomHit.isToggled() ? randomUtil.getRandomDouble(0, 0.7) : 0), pos.getZ() + (this.randomHit.isToggled() ? randomUtil.getRandomDouble(0, 0.7) : 0)))) {
+                                getPlayer().swingItem();
+                            }
 
                             sneakCount++;
 
@@ -271,7 +282,11 @@ public class Scaffold extends Module {
                         if (blackList.contains(((ItemBlock) silentItemStack.getItem()).getBlock()))
                             return;
                         if (silentItemStack != null) {
-                            mc.playerController.onPlayerRightClick(mc.thePlayer, mc.theWorld, silentItemStack, pos, face, new Vec3(pos.getX() + (this.randomHit.isToggled() ? randomUtil.getRandomDouble(0, 0.7) : 0), pos.getY() + (this.randomHit.isToggled() ? randomUtil.getRandomDouble(0, 0.7) : 0), pos.getZ() + (this.randomHit.isToggled() ? randomUtil.getRandomDouble(0, 0.7) : 0)));
+                            if (mc.playerController.onPlayerRightClick(mc.thePlayer, mc.theWorld, silentItemStack, pos, face, new Vec3(pos.getX() + (this.randomHit.isToggled() ? randomUtil.getRandomDouble(0, 0.7) : 0), pos.getY() + (this.randomHit.isToggled() ? randomUtil.getRandomDouble(0, 0.7) : 0), pos.getZ() + (this.randomHit.isToggled() ? randomUtil.getRandomDouble(0, 0.7) : 0))))
+                                if (swingItem.isToggled())
+                                    mc.thePlayer.swingItem();
+                                else
+                                    mc.thePlayer.sendQueue.addToSendQueue(new C0APacketAnimation());
                             sneakCount++;
 
                             mc.thePlayer.motionX *= motion.getCurrentValue();
@@ -283,8 +298,6 @@ public class Scaffold extends Module {
                             timeHelper.reset();
                         }
                     }
-                    if (sprint.isToggled())
-                        getPlayer().sendQueue.addToSendQueue(new C0BPacketEntityAction(getPlayer(), C0BPacketEntityAction.Action.START_SPRINTING));
 
                     timeHelper.reset();
                 }

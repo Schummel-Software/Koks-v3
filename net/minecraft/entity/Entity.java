@@ -9,6 +9,8 @@ import koks.Koks;
 import koks.event.impl.EventMoveFlying;
 import koks.event.impl.EventSafeWalk;
 import koks.event.impl.EventWeb;
+import koks.module.impl.player.NoPitchLimit;
+import koks.module.impl.render.TrueSight;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFence;
 import net.minecraft.block.BlockFenceGate;
@@ -410,7 +412,8 @@ public abstract class Entity implements ICommandSender {
         float f1 = this.rotationYaw;
         this.rotationYaw = (float) ((double) this.rotationYaw + (double) yaw * 0.15D);
         this.rotationPitch = (float) ((double) this.rotationPitch - (double) pitch * 0.15D);
-        this.rotationPitch = MathHelper.clamp_float(this.rotationPitch, -90.0F, 90.0F);
+        if (!Koks.getKoks().moduleManager.getModule(NoPitchLimit.class).isToggled())
+            this.rotationPitch = MathHelper.clamp_float(this.rotationPitch, -90.0F, 90.0F);
         this.prevRotationPitch += this.rotationPitch - f;
         this.prevRotationYaw += this.rotationYaw - f1;
     }
@@ -1306,12 +1309,22 @@ public abstract class Entity implements ICommandSender {
      * interpolated look vector
      */
     public Vec3 getLook(float partialTicks) {
-        if (partialTicks == 1.0F) {
-            return this.getVectorForRotation(this.rotationPitch, this.rotationYaw);
+        if (this instanceof EntityPlayerSP) {
+            if (partialTicks == 1.0F) {
+                return this.getVectorForRotation(((EntityPlayerSP) this).rotationPitchHead, ((EntityPlayerSP) this).rotationYawHead);
+            } else {
+                float f = ((EntityPlayerSP) this).prevRotationPitchHead + (((EntityPlayerSP) this).rotationPitchHead - ((EntityPlayerSP) this).prevRotationPitchHead) * partialTicks;
+                float f1 = this.prevRotationYaw + (((EntityPlayerSP) this).rotationYawHead - ((EntityPlayerSP) this).prevRotationYawHead) * partialTicks;
+                return this.getVectorForRotation(f, f1);
+            }
         } else {
-            float f = this.prevRotationPitch + (this.rotationPitch - this.prevRotationPitch) * partialTicks;
-            float f1 = this.prevRotationYaw + (this.rotationYaw - this.prevRotationYaw) * partialTicks;
-            return this.getVectorForRotation(f, f1);
+            if (partialTicks == 1.0F) {
+                return this.getVectorForRotation(this.rotationPitch, this.rotationYaw);
+            } else {
+                float f = this.prevRotationPitch + (this.rotationPitch - this.prevRotationPitch) * partialTicks;
+                float f1 = this.prevRotationYaw + (this.rotationYaw - this.prevRotationYaw) * partialTicks;
+                return this.getVectorForRotation(f, f1);
+            }
         }
     }
 
@@ -1908,7 +1921,7 @@ public abstract class Entity implements ICommandSender {
      * For EntityLivingBase subclasses, returning false when invisible will render the entity semitransparent.
      */
     public boolean isInvisibleToPlayer(EntityPlayer player) {
-        return player.isSpectator() ? false : this.isInvisible();
+        return player.isSpectator() ? false : Koks.getKoks().moduleManager.getModule(TrueSight.class).isToggled() ? false : this.isInvisible();
     }
 
     public void setInvisible(boolean invisible) {

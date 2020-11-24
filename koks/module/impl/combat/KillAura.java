@@ -7,6 +7,7 @@ import koks.event.impl.*;
 import koks.module.Module;
 import koks.api.settings.Setting;
 import koks.module.ModuleInfo;
+import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityArmorStand;
@@ -14,6 +15,7 @@ import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemSword;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.*;
@@ -35,6 +37,9 @@ import java.util.Random;
 @ModuleInfo(name = "KillAura", description = "Its damage the entitys arround you", category = Module.Category.COMBAT)
 public class KillAura extends Module {
 
+    float hasenRange;
+    long lastAttack;
+
     // TARGET SETTINGS
     public Setting attackType = new Setting("Attack Type", new String[]{"Single", "Switch", "Hybrid"}, "Single", this);
     public Setting preferType = new Setting("Prefer", new String[]{"Health", "Distance"}, "Distance", this);
@@ -45,6 +50,8 @@ public class KillAura extends Module {
     public Setting mobs = new Setting("Mobs", false, this);
 
     // BASIC ATTACK SETTINGS
+    public Setting hazeRange = new Setting("Haze Range", false, this);
+    public Setting maxHazeRangeDistance = new Setting("Max Haze Range Distance", 1.0F, 0.0F, 3.0F, false, this);
     public Setting hitRange = new Setting("Hit Range", 3.0F, 3.0F, 6.0F, false, this);
     public Setting cps = new Setting("CPS", 5.0F, 5.0F, 20.0F, true, this);
     public Setting hurtTime = new Setting("HurtTime", 10.0F, 0.0F, 10.0F, true, this);
@@ -56,9 +63,15 @@ public class KillAura extends Module {
     public Setting blockMode = new Setting("BlockMode", new String[]{"On Attack", "Half", "Full"}, "On Attack", this);
 
     // MOVEMENT SETTINGS
+    public Setting mouseFix = new Setting("MouseFix", true, this);
+    public Setting sensitivityMultiplier = new Setting("Sensitivity Multiplier", 0.6F, 0.1F, 1F, false, this);
+    public Setting fixMultiplier = new Setting("Fix Multiplier", 8F, 1.0F, 8.0F, false, this);
+    public Setting percentFix = new Setting("Percent Fix", false, this);
+
     public Setting fixMovement = new Setting("Fix Movement", true, this);
     public Setting stopSprinting = new Setting("Stop Sprinting", true, this);
-    public Setting usePlayerController = new Setting("Use PlayerController", true, this);
+
+    public Setting attackMode = new Setting("Attack Mode", new String[]{"PlayerController", "MouseClick", "Packet"}, "PlayerController", this);
 
     // CUSTOM SETTINGS
     public Setting noSwing = new Setting("NoSwing", false, this);
@@ -67,11 +80,14 @@ public class KillAura extends Module {
 
     // ANTI BOT SETTINGS
     public Setting healthNaNCheck = new Setting("Health NaN Check", false, this);
+    public Setting groundCheck = new Setting("GroundCheck", false, this);
     public Setting nameCheck = new Setting("Name Check", true, this);
     public Setting ignoreInvisible = new Setting("Ignore Invisible", true, this);
     public Setting ignoreDeath = new Setting("IgnoreDeath", true, this);
     public Setting throughWalls = new Setting("Through Walls", false, this);
     public Setting soundCheck = new Setting("Sound Check", false, this);
+
+    //TODO: HitBefore, TablistCheck
 
     public ArrayList<Entity> entities = new ArrayList<>();
     public Entity finalEntity;
@@ -81,6 +97,8 @@ public class KillAura extends Module {
     public int switchCounter;
     public float yaw, pitch, curYaw, curPitch;
     public boolean failing;
+
+    public ArrayList<Entity> madeSound = new ArrayList();
 
     @Override
     public void onEvent(Event event) {
@@ -97,17 +115,33 @@ public class KillAura extends Module {
             manageEntities();
         }
 
+        if (event instanceof EventPacket) {
+            Packet packet = ((EventPacket) event).getPacket();
+            if(packet instanceof S29PacketSoundEffect) {
+                S29PacketSoundEffect soundEffect = (S29PacketSoundEffect) packet;
+                for(Entity entity : getWorld().loadedEntityList) {
+                    if(entity != getPlayer() && entity.getDistance(soundEffect.getX(), soundEffect.getY(), soundEffect.getZ()) <= 1) {
+                        madeSound.add(entity);
+                    }
+                }
+            }
+        }
+
+        if(event instanceof EventWalk) {
+            if (this.rotations.lockView.isToggled() && finalEntity != null) {
+                mc.thePlayer.rotationYaw = yaw;
+                mc.thePlayer.rotationPitch = pitch;
+            }
+        }
+
         if (event instanceof EventMotion) {
             if (((EventMotion) event).getType() == EventMotion.Type.PRE) {
                 if (finalEntity != null) {
-                    float[] rotations = rotationUtil.faceEntity(finalEntity, curYaw, curPitch, this.rotations.smooth.isToggled(), this.rotations.accuracy.getCurrentValue(), this.rotations.precision.getCurrentValue(), this.rotations.predictionMultiplier.getCurrentValue());
+                    float[] rotations = rotationUtil.faceEntity(finalEntity, mouseFix.isToggled(),sensitivityMultiplier.getCurrentValue(), fixMultiplier.getCurrentValue(), percentFix.isToggled(), curYaw, curPitch, this.rotations.smooth.isToggled(), this.rotations.accuracy.getCurrentValue(), this.rotations.precision.getCurrentValue(), this.rotations.predictionMultiplier.getCurrentValue());
                     yaw = rotations[0];
                     pitch = rotations[1];
 
-                    if (this.rotations.lockView.isToggled()) {
-                        mc.thePlayer.rotationYaw = yaw;
-                        mc.thePlayer.rotationPitch = pitch;
-                    } else {
+                    if (!this.rotations.lockView.isToggled()) {
                         ((EventMotion) event).setYaw(yaw);
                         ((EventMotion) event).setPitch(pitch);
                     }
@@ -119,12 +153,26 @@ public class KillAura extends Module {
         }
 
         if (event instanceof EventAttack) {
+
             if (finalEntity != null) {
-                if (canBlock() && autoBlock.isToggled() && blockMode.getCurrentMode().equals("Full"))
+
+                if (finalEntity.hurtResistantTime == 10 && hasenRange < maxHazeRangeDistance.getCurrentValue() && hazeRange.isToggled()) {
+                    hasenRange += 0.5F;
+                    lastAttack = System.currentTimeMillis() / 1000;
+                }
+
+                if (!hazeRange.isToggled())
+                    hasenRange = 0;
+
+                if (System.currentTimeMillis() / 1000 - lastAttack >= 2) {
+                    hasenRange = 0;
+                }
+
+                if (canBlock() && autoBlock.isToggled() && blockMode.getCurrentMode().equalsIgnoreCase("Full"))
                     mc.playerController.sendUseItem(mc.thePlayer, mc.theWorld, mc.thePlayer.getHeldItem());
 
 
-                long cps = (long) this.cps.getCurrentValue();
+                long cps = (long) this.cps.getCurrentValue() + randomUtil.getRandomInt(-1, 1);
 
                 cps = cps < 10 ? cps : cps + 5;
                 if (((EntityLivingBase) finalEntity).hurtTime <= hurtTime.getCurrentValue()) {
@@ -142,6 +190,8 @@ public class KillAura extends Module {
                     if (canBlock() && autoBlock.isToggled() && blockMode.getCurrentMode().equals("Half"))
                         mc.playerController.sendUseItem(mc.thePlayer, mc.theWorld, mc.thePlayer.getCurrentEquippedItem());
                 }
+            } else {
+                hasenRange = 0;
             }
         }
 
@@ -156,9 +206,9 @@ public class KillAura extends Module {
     }
 
     public void attackEntity() {
-        Entity rayCastEntity = rayCastUtil.rayCastedEntity(hitRange.getCurrentValue(), yaw, pitch);
+        Entity rayCastEntity = rayCastUtil.rayCastedEntity(hitRange.getCurrentValue() + hasenRange, yaw, pitch);
 
-        if (!failing && rayCastEntity != null) {
+        if (!failing && (rayCastEntity != null || throughWalls.isToggled() && !getPlayer().canEntityBeSeen(finalEntity))) {
 
 
             for (int i = 0; i < crackSize.getCurrentValue(); i++)
@@ -170,10 +220,19 @@ public class KillAura extends Module {
             /*if (mc.currentScreen != null)
                 getPlayer().closeScreen();*/
 
-            if (usePlayerController.isToggled()) {
-                mc.playerController.attackEntity(mc.thePlayer, rayCastEntity);
-            } else {
-                mc.thePlayer.sendQueue.addToSendQueue(new C02PacketUseEntity(rayCastEntity, C02PacketUseEntity.Action.ATTACK));
+
+            Entity attackEntity = !getPlayer().canEntityBeSeen(finalEntity) && throughWalls.isToggled() ? finalEntity : rayCastEntity;
+
+            switch (attackMode.getCurrentMode()) {
+                case "PlayerController":
+                    mc.playerController.attackEntity(mc.thePlayer, attackEntity);
+                    break;
+                case "MouseClick":
+                    mc.clickMouse();
+                    break;
+                case "Packet":
+                    mc.thePlayer.sendQueue.addToSendQueue(new C02PacketUseEntity(attackEntity, C02PacketUseEntity.Action.ATTACK));
+                    break;
             }
 
             if (switchCounter < entities.size())
@@ -189,7 +248,7 @@ public class KillAura extends Module {
                         mc.thePlayer.sendQueue.addToSendQueue(new C0APacketAnimation());
                         break;
                     case "ServerSide":
-                        mc.thePlayer.sendQueue.addToSendQueue(new S0BPacketAnimation());
+                        mc.getNetHandler().getNetworkManager().sendPacket(new C0APacketAnimation());
                         break;
                 }
             } else {
@@ -199,7 +258,7 @@ public class KillAura extends Module {
     }
 
     boolean canBlock() {
-        return getPlayer().getCurrentEquippedItem() != null && mc.thePlayer.getHeldItem().getItem() instanceof ItemSword;
+        return getPlayer().getCurrentEquippedItem() != null && mc.thePlayer.getCurrentEquippedItem().getItem() instanceof ItemSword;
     }
 
     public void manageEntities() {
@@ -222,7 +281,7 @@ public class KillAura extends Module {
                 break;
             case "Switch":
                 if (entities.size() - 1 >= switchCounter)
-                    if (entities.get(switchCounter).getDistanceToEntity(getPlayer()) <= hitRange.getCurrentValue())
+                    if (entities.get(switchCounter).getDistanceToEntity(getPlayer()) <= hitRange.getCurrentValue() + hasenRange)
                         finalEntity = entities.get(switchCounter);
                     else
                         entities.remove(entities.get(switchCounter));
@@ -303,6 +362,10 @@ public class KillAura extends Module {
         EntityLivingBase entityLivingBase = (EntityLivingBase) entity;
         if (healthNaNCheck.isToggled() && !Float.isNaN(entityLivingBase.getHealth()))
             return false;
+        if (groundCheck.isToggled() && entity.onGround && getWorld().getBlockState(entity.getPosition().add(0, -0.05, 0)).getBlock() == Blocks.air)
+            return false;
+        if(soundCheck.isToggled() && !madeSound.contains(entity))
+            return false;
         if (nameCheck.isToggled() && entity instanceof EntityPlayer && !checkedName(entity))
             return false;
         if (ignoreInvisible.isToggled() && entity.isInvisible())
@@ -326,6 +389,7 @@ public class KillAura extends Module {
 
     @Override
     public void onEnable() {
+        hasenRange = 0;
         rotations = (Rotations) Koks.getKoks().moduleManager.getModule(Rotations.class);
         finalEntity = null;
         curYaw = getPlayer().rotationYaw;

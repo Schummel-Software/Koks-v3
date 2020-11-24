@@ -1,6 +1,9 @@
 package net.minecraft.block;
 
 import java.util.Random;
+
+import koks.Koks;
+import koks.module.impl.movement.Jesus;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyInteger;
@@ -120,6 +123,9 @@ public abstract class BlockLiquid extends Block
 
     public AxisAlignedBB getCollisionBoundingBox(World worldIn, BlockPos pos, IBlockState state)
     {
+        Jesus jesus = (Jesus) Koks.getKoks().moduleManager.getModule(Jesus.class);
+        if(jesus.isToggled() && jesus.mode.getCurrentMode().equalsIgnoreCase("Vanilla"))
+            return new AxisAlignedBB((double) pos.getX() + this.minX, (double) pos.getY() + this.minY, (double) pos.getZ() + this.minZ, (double) pos.getX() + this.maxX, (double) pos.getY() + this.maxY, (double) pos.getZ() + this.maxZ);
         return null;
     }
 

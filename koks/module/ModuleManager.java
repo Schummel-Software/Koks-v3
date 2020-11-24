@@ -1,5 +1,7 @@
 package koks.module;
 
+import koks.Koks;
+import koks.cl.Role;
 import koks.module.impl.combat.*;
 import koks.module.impl.debug.Debug;
 import koks.module.impl.debug.Test;
@@ -72,6 +74,7 @@ public class ModuleManager {
         addModule(new NoRotate());
         addModule(new OverArmor());
         addModule(new NoBob());
+        addModule(new AntiAim());
         addModule(new NoFov());
         addModule(new NoHurtCam());
         addModule(new PlayerESP());
@@ -86,16 +89,23 @@ public class ModuleManager {
         addModule(new WallSpeed());
         addModule(new Safewalk());
         addModule(new GommeMode());
-        
-        modules.sort(Comparator.comparing(Module::getName));
-    }
+        addModule(new XRay());
+        addModule(new TrueSight());
+        addModule(new BedFucker());
+        addModule(new Fullbright());
+        addModule(new AntiVoid());
+        addModule(new ShopSaver());
+        addModule(new FastBreak());
+        addModule(new IceSpeed());
+        addModule(new NoPitchLimit());
+        addModule(new AimBot());
+        addModule(new Blink());
 
-    public void removeCategory(Module.Category category) {
-        for (Module module : getModules()) {
-            if (module.getCategory().equals(category)) {
-                modules.remove(module);
-            }
+        if(Koks.getKoks().CLManager.getUser().getRole() != Role.Developer) {
+            modules.removeIf(module -> module.getCategory().equals(Module.Category.DEBUG));
         }
+
+        modules.sort(Comparator.comparing(Module::getName));
     }
 
     public void addModule(Module module) {
