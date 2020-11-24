@@ -85,7 +85,7 @@ public class Scaffold extends Module {
             }
         }
 
-        if(event instanceof EventJump) {
+        if (event instanceof EventJump) {
             ((EventJump) event).setYaw(yaw);
         }
 
@@ -175,9 +175,11 @@ public class Scaffold extends Module {
     public float getPitch(int speed) {
         if (mc.thePlayer.onGround || staticPitch.isToggled()) {
             return pitchVal.getCurrentValue();
-        } else {
-            return rotationUtil.faceBlock(finalPos, yaw, pitch, speed)[1];
         }
+        else
+        if (finalPos != null)
+            return rotationUtil.faceBlock(finalPos, yaw, pitch, speed)[1];
+        return pitchVal.getCurrentValue();
     }
 
     @BCompiler(aot = BCompiler.AOT.AGGRESSIVE)

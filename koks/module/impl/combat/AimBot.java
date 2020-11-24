@@ -92,6 +92,8 @@ public class AimBot extends Module {
     public boolean isValid(Entity entity) {
         if (entity == mc.thePlayer) return false;
         if(entity == null) return false;
+        if(entity.isInvisible())return false;
+        if(entity.isDead)return false;
         if(!getWorld().loadedEntityList.contains(entity)) return false;
         if(getPlayer().getDistanceToEntity(entity) > getPlayerController().getBlockReachDistance()) return false;
         if(!(entity instanceof EntityLivingBase)) return false;
