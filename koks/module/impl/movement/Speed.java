@@ -52,6 +52,17 @@ public class Speed extends Module {
                         }
                     }
                     break;
+                case "NCPGround":
+                    if(getPlayer().onGround) {
+                        getPlayer().motionY = randomUtil.getRandomFloat(0.01F, 0.02F);
+                        getPlayer().addExhaustion(0.8F);
+                    }else{
+                        float f = movementUtil.getDirection(getPlayer().rotationYaw) * 0.017453292F;
+                        float speed = randomUtil.getRandomFloat(0.05F, 0.057F);
+                        getPlayer().motionX -= (double)(MathHelper.sin(f) * speed);
+                        getPlayer().motionZ += (double)(MathHelper.cos(f) * speed);
+                    }
+                    break;
                 case "AAC4":
                     if (getPlayer().onGround) {
                         aacSpeed++;
