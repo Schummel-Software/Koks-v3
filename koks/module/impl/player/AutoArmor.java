@@ -108,13 +108,13 @@ public class AutoArmor extends Module {
     }
 
     public boolean isTrashArmor(ItemStack itemStack) {
-        if (itemStack.getItem() instanceof ItemArmor && helmet.contains(itemStack.getItem()) && itemStack != bestHelmet())
+        if (itemStack.getItem() instanceof ItemArmor && helmet.contains(itemStack.getItem()) && itemStack != bestHelmet() && bestHelmet() != null)
             return true;
-        if (itemStack.getItem() instanceof ItemArmor && chest.contains(itemStack.getItem()) && itemStack != bestChestplate())
+        if (itemStack.getItem() instanceof ItemArmor && chest.contains(itemStack.getItem()) && itemStack != bestChestplate() && bestChestplate() != null)
             return true;
-        if (itemStack.getItem() instanceof ItemArmor && legging.contains(itemStack.getItem()) && itemStack != bestLeggings())
+        if (itemStack.getItem() instanceof ItemArmor && legging.contains(itemStack.getItem()) && itemStack != bestLeggings() && bestLeggings() != null)
             return true;
-        if (itemStack.getItem() instanceof ItemArmor && boot.contains(itemStack.getItem()) && itemStack != bestBoots())
+        if (itemStack.getItem() instanceof ItemArmor && boot.contains(itemStack.getItem()) && itemStack != bestBoots() && bestBoots() != null)
             return true;
         return false;
     }
@@ -123,7 +123,7 @@ public class AutoArmor extends Module {
         ItemStack bestArmor = null;
         float armorSkill = -1;
 
-        for (int i = 5; i < 44; i++) {
+        for (int i = 5; i < 45; i++) {
             if (mc.thePlayer.inventoryContainer.getSlot(i).getHasStack()) {
                 ItemStack is = mc.thePlayer.inventoryContainer.getSlot(i).getStack();
                 if (is.getItem() instanceof ItemArmor && helmet.contains(is.getItem())) {
@@ -143,7 +143,7 @@ public class AutoArmor extends Module {
         ItemStack bestArmor = null;
         float armorSkill = -1;
 
-        for (int i = 5; i < 44; i++) {
+        for (int i = 5; i < 45; i++) {
             if (mc.thePlayer.inventoryContainer.getSlot(i).getHasStack()) {
                 ItemStack is = mc.thePlayer.inventoryContainer.getSlot(i).getStack();
                 if (is.getItem() instanceof ItemArmor && chest.contains(is.getItem())) {
@@ -163,7 +163,7 @@ public class AutoArmor extends Module {
         ItemStack bestArmor = null;
         float armorSkill = -1;
 
-        for (int i = 5; i < 44; i++) {
+        for (int i = 5; i < 45; i++) {
             if (mc.thePlayer.inventoryContainer.getSlot(i).getHasStack()) {
                 ItemStack is = mc.thePlayer.inventoryContainer.getSlot(i).getStack();
                 if (is.getItem() instanceof ItemArmor && legging.contains(is.getItem())) {
@@ -183,7 +183,7 @@ public class AutoArmor extends Module {
         ItemStack bestArmor = null;
         float armorSkill = -1;
 
-        for (int i = 5; i < 44; i++) {
+        for (int i = 5; i < 45; i++) {
             if (mc.thePlayer.inventoryContainer.getSlot(i).getHasStack()) {
                 ItemStack is = mc.thePlayer.inventoryContainer.getSlot(i).getStack();
                 if (is.getItem() instanceof ItemArmor && boot.contains(is.getItem())) {
