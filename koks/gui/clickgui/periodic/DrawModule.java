@@ -93,23 +93,34 @@ public class DrawModule {
         }
 
         if (isHover(mouseX, mouseY)) {
-            switch (mouseButton) {
-                case 0:
-                    if (!Koks.getKoks().clickGUIPE.settingMenu)
+            if (!Koks.getKoks().clickGUIPE.settingMenu) {
+                switch (mouseButton) {
+                    case 0:
                         module.toggle();
-                    break;
-                case 1:
-                    Koks.getKoks().clickGUIPE.curMod = module;
-                    Koks.getKoks().clickGUIPE.settingMenu = true;
+                        break;
+                    case 1:
+
+                        Koks.getKoks().clickGUIPE.curMod = module;
+                        Koks.getKoks().clickGUIPE.settingMenu = true;
+                        Koks.getKoks().clickGUIPE.settingScroll = 0;
+                        break;
+                    case 2:
+                        boolean bindModule = Koks.getKoks().clickGUIPE.bindModule;
+                        if (!bindModule) {
+                            Koks.getKoks().clickGUIPE.bindModule = true;
+                            Koks.getKoks().clickGUIPE.bindMod = module;
+                        }
+                        break;
+                }
+            }else {
+                int settingsSize = Koks.getKoks().clickGUIPE.settingsSize;
+                int x = Koks.getKoks().clickGUIPE.x;
+                int y = Koks.getKoks().clickGUIPE.y;
+                if (!(mouseX >= x - settingsSize / 2 && mouseX <= x + settingsSize / 2 && mouseY >= y - settingsSize / 2 && mouseY <= y + settingsSize / 2)) {
+                    Koks.getKoks().clickGUIPE.curMod = null;
+                    Koks.getKoks().clickGUIPE.settingMenu = false;
                     Koks.getKoks().clickGUIPE.settingScroll = 0;
-                    break;
-                case 2:
-                    boolean bindModule = Koks.getKoks().clickGUIPE.bindModule;
-                    if (!bindModule) {
-                        Koks.getKoks().clickGUIPE.bindModule = true;
-                        Koks.getKoks().clickGUIPE.bindMod = module;
-                    }
-                    break;
+                }
             }
         }
     }

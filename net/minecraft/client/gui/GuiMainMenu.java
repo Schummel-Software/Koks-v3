@@ -36,6 +36,8 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
     public Animation resizeAnimation = new Animation();
     public Animation indexAnimation = new Animation();
 
+    public ArrayList<String> changes = new ArrayList<>();
+
     public boolean windowShowed = true, showInformations, showOptions, showColorPicker, showBackgrounds, showRight, drag = false, dragOptions = false, dragColor = false, dragBackground = false, dragInformation = false;
 
     public int currentIndex = 0, size = 40, indexSize = 7, wheight = 80, wwidth = 200, dicke = 5, drawIndexSize = currentIndex, lastIndex = 0, optionSize = 4, optionWidth = 125, optionHeight = 25, rightWidth = 20, rightHeight = 30, rightOutline = 2, rightOptions = 2,
@@ -280,6 +282,22 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
     }
 
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+
+
+        for (Changelog changelog : Koks.getKoks().changelogManager.changelogs) {
+            for (String added : changelog.addedList) {
+                if (!changes.contains(added))
+                    changes.add(added);
+            }
+            for (String fixed : changelog.fixedList) {
+                if (!changes.contains(fixed))
+                    changes.add(fixed);
+            }
+            for (String removed : changelog.removedList) {
+                if (!changes.contains(removed))
+                    changes.add(removed);
+            }
+        }
 
         ScaledResolution sr = new ScaledResolution(mc);
 
@@ -644,10 +662,10 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
 
                     type = "§e" + (calendar.get(Calendar.YEAR) + 1) + " §ain";
                     event = time;
-                }else if(calendar.get(Calendar.DAY_OF_MONTH) == 14 && calendar.get(Calendar.MONTH) == Calendar.FEBRUARY) {
+                } else if (calendar.get(Calendar.DAY_OF_MONTH) == 14 && calendar.get(Calendar.MONTH) == Calendar.FEBRUARY) {
                     event = "§d§lValentine's day §d\u2764";
                     suffix = "";
-                }else if(calendar.get(Calendar.DAY_OF_MONTH) == 17 && calendar.get(Calendar.MONTH) == Calendar.MARCH)
+                } else if (calendar.get(Calendar.DAY_OF_MONTH) == 17 && calendar.get(Calendar.MONTH) == Calendar.MARCH)
                     event = "§a§lSt. Patrick’s Day";
 
                 float xPosEvent = sr.getScaledWidth() / 2 + x - fontRendererObj.getStringWidth("§e" + type + " " + event + suffix) / 2;
@@ -749,6 +767,7 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
                             y += 5;
 
                         }
+
                         GL11.glDisable(GL11.GL_SCISSOR_TEST);
                         break;
                 }
@@ -832,18 +851,19 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
 
     @Override
     public void handleMouseInput() throws IOException {
+
         if (Mouse.isCreated() && currentIndex == 6) {
             int wheel = Mouse.getEventDWheel();
-            if (wheel != 0) {
-                if (wheel < 0) {
-                    wheel = -1;
-                } else {
-                    wheel = 1;
-                }
-                if (currentScroll + (float) (wheel * 25) <= 0) {
-                    currentScroll += (float) (wheel * 25);
-                }
-            }
+            currentScroll += wheel / 8;
+
+            if (currentScroll >= 0)
+                currentScroll = 0;
+
+            int maxScroll = (changes.size() + 2) * (fontRendererObj.FONT_HEIGHT) + 5;
+            System.out.println(currentScroll);
+            if(currentScroll <= -maxScroll)
+                currentScroll = -maxScroll;
+
         }
         super.handleMouseInput();
     }

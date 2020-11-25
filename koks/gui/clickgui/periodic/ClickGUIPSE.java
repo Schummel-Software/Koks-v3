@@ -57,6 +57,8 @@ public class ClickGUIPSE extends GuiScreen {
         }
     }
 
+    public int x, y, settingsSize;
+
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         ScaledResolution sr = new ScaledResolution(mc);
@@ -128,9 +130,9 @@ public class ClickGUIPSE extends GuiScreen {
             drawModule.drawScreen(mouseX, mouseY);
         }
 
-        int x = sr.getScaledWidth() / 2;
-        int y = sr.getScaledHeight() / 2;
-        int settingsSize = sr.getScaledHeight() / 2;
+        x = sr.getScaledWidth() / 2;
+        y = sr.getScaledHeight() / 2;
+        settingsSize = sr.getScaledHeight() / 2;
 
         if (curMod != null && settingMenu) {
             Koks.getKoks().wrapper.renderUtil.drawOutlineRect(x - settingsSize / 2, y - settingsSize / 2, x + settingsSize / 2, y + settingsSize / 2, 2F, curMod.getCategory().getCategoryColor().getRGB(), new Color(16, 16, 16).getRGB());
@@ -141,55 +143,50 @@ public class ClickGUIPSE extends GuiScreen {
             fontRendererObj.drawString(curMod.getKey() == 0 ? "" : Keyboard.getKeyName(curMod.getKey()), x - settingsSize / 2 + 3, y - settingsSize / 2 + fontRendererObj.FONT_HEIGHT / 2 + settingScroll, 1.6F, curMod.getCategory().getCategoryColor().getRGB());
 
             int setY = y - settingsSize / 2 + fontRendererObj.FONT_HEIGHT / 2 + settingScroll + 35;
-
-
-            int settingWidth = 0;
             FontRenderer fr = fontRendererObj;
-            for (DrawModule drawModule : drawModules) {
-                for (Element element : drawModule.elements) {
-                    String settingName = element.setting.getName();
-                    if (element.setting.getType() == Setting.Type.CHECKBOX) {
-                        String string = settingName;
-                        int offset = 10;
-                        if (settingWidth < fr.getStringWidth(string) - 4 + offset) {
-                            settingWidth = fr.getStringWidth(string) - 4 + offset;
-                        }
-                    }
-                    if (element.setting.getType() == Setting.Type.COMBOBOX) {
-                        String string = settingName + (element.extended ? "-" : "+");
-                        if (settingWidth < fr.getStringWidth(string) + 22) {
-                            settingWidth = fr.getStringWidth(string) + 22;
-                        }
-
-                        for (String mode : element.setting.getModes()) {
-                            int offset = 10;
-                            if (settingWidth < fr.getStringWidth(mode) + offset) {
-                                settingWidth = fr.getStringWidth(mode) + offset;
-                            }
-                        }
-                    }
-
-                    if (element.setting.getType() == Setting.Type.TYPE) {
-                        String typed = element.setting.getTyped();
-                        int offset = fr.getStringWidth(element.setting.getName()) + 12;
-                        if (settingWidth < fr.getStringWidth(typed) + offset) {
-                            settingWidth = fr.getStringWidth(typed) + offset;
-                        }
-                    }
-
-                    if (element.setting.getType() == Setting.Type.SLIDER) {
-                        String string = settingName + "00.00";
-                        int offset = 15;
-                        if (settingWidth < fr.getStringWidth(string) + offset) {
-                            settingWidth = fr.getStringWidth(string) + offset;
-                        }
-                    }
-                }
-            }
 
             for (DrawModule drawModule : drawModules) {
                 if (drawModule.module.getName().equalsIgnoreCase(curMod.getName())) {
                     for (Element element : drawModule.elements) {
+
+                        int settingWidth = 0;
+                        String settingName = element.setting.getName();
+                        if (element.setting.getType() == Setting.Type.CHECKBOX) {
+                            String string = settingName;
+                            int offset = 10;
+                            if (settingWidth < fr.getStringWidth(string) - 4 + offset) {
+                                settingWidth = fr.getStringWidth(string) - 4 + offset;
+                            }
+                        }
+                        if (element.setting.getType() == Setting.Type.COMBOBOX) {
+                            String string = settingName + (element.extended ? "-" : "+");
+                            if (settingWidth < fr.getStringWidth(string) + 22) {
+                                settingWidth = fr.getStringWidth(string) + 22;
+                            }
+
+                            for (String mode : element.setting.getModes()) {
+                                int offset = 5;
+                                if (settingWidth < fr.getStringWidth(mode) + offset) {
+                                    settingWidth = fr.getStringWidth(mode) + offset;
+                                }
+                            }
+                        }
+
+                        if (element.setting.getType() == Setting.Type.TYPE) {
+                            String typed = element.setting.getTyped();
+                            int offset = fr.getStringWidth(element.setting.getName()) + 12;
+                            if (settingWidth < fr.getStringWidth(typed) + offset) {
+                                settingWidth = fr.getStringWidth(typed) + offset;
+                            }
+                        }
+
+                        if (element.setting.getType() == Setting.Type.SLIDER) {
+                            String string = settingName + "00.00";
+                            int offset = 15;
+                            if (settingWidth < fr.getStringWidth(string) + offset) {
+                                settingWidth = fr.getStringWidth(string) + offset;
+                            }
+                        }
 
                         if (element.setting.getType() == Setting.Type.SLIDER)
                             setY += 6;
@@ -230,28 +227,40 @@ public class ClickGUIPSE extends GuiScreen {
     public void handleMouseInput() throws IOException {
         if (Mouse.isCreated() && !settingMenu) {
             int wheel = Mouse.getEventDWheel();
-            if (wheel != 0) {
-                if (wheel < 0) {
-                    wheel = -1;
-                } else {
-                    wheel = 1;
-                }
-                if (curScroll + (float) (wheel * 25) <= 0) {
-                    curScroll += (float) (wheel * 25);
-                }
-            }
+            curScroll += wheel / 8;
+            int minScroll = sr.getScaledWidth() / 2;
+            if (curScroll >= -minScroll)
+                curScroll = -minScroll;
         } else if (settingMenu) {
             int wheel = Mouse.getEventDWheel();
-            if (wheel != 0) {
-                if (wheel < 0) {
-                    wheel = -1;
-                } else {
-                    wheel = 1;
-                }
-                if (settingScroll + (float) (wheel * 25) <= 0) {
-                    settingScroll += (float) (wheel * 25);
+            settingScroll += wheel / 8;
+            if (settingScroll >= 0)
+                settingScroll = 0;
+
+            int settings = 0;
+
+            for (Setting setting : Koks.getKoks().settingsManager.getSettings()) {
+                if (setting.getModule().equals(curMod)) {
+                    settings++;
+                    if (setting.getType() == Setting.Type.COMBOBOX) {
+                        for (DrawModule module : drawModules) {
+                            for (Element element : module.elements) {
+                                if (element.extended && element.setting.equals(setting)) {
+                                    for (String mode : setting.getModes()) {
+                                        settings++;
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
+
+            int maxScroll = settings * (fontRendererObj.FONT_HEIGHT + 1);
+
+            if (settingScroll <= -maxScroll)
+                settingScroll = -maxScroll;
+
         }
         super.handleMouseInput();
     }
@@ -315,6 +324,7 @@ public class ClickGUIPSE extends GuiScreen {
         for (DrawModule drawModule : drawModules) {
             drawModule.mouseClicked(mouseX, mouseY, mouseButton);
         }
+
 
         if (!isHoverMods(mouseX, mouseY) && !settingMenu)
             curCat = null;

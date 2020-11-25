@@ -26,9 +26,11 @@ public class DrawComboBox extends Element {
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
 
-        renderUtil.drawOutlineRect(x - 3, y, x - 3 + fr.getStringWidth(setting.getName()) + 20, y + (fr.FONT_HEIGHT + 2) * (extended ? setting.getModes().length + 1 : 1), 1, setting.getModule().getCategory().getCategoryColor().getRGB(), new Color(16, 16, 16).getRGB());
+        renderUtil.drawOutlineRect(x - 3, y, x - 3 + width, y + (fr.FONT_HEIGHT + 2) * (extended ? setting.getModes().length + 1 : 1), 1, setting.getModule().getCategory().getCategoryColor().getRGB(), new Color(16, 16, 16).getRGB());
         fr.drawString(setting.getName(), x - 3 + 2, y + 2, -1);
-        fr.drawString(">", x - 3 + fr.getStringWidth(setting.getName()) + 13, y + fr.FONT_HEIGHT / 2 - 2,- 1);
+        GL11.glPushMatrix();
+        fr.drawString(extended ? "-" : "+", x - 3 + width - 7, y + fr.FONT_HEIGHT / 2 - 2,- 1);
+        GL11.glPopMatrix();
 
 
 
