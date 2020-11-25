@@ -1554,7 +1554,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
             if (Koks.getKoks().isNew) {
                 Methods methods = Koks.getKoks().wrapper.methods;
                 methods.sendmsg("§aWelcome to Koks!", true);
-                methods.sendURL("§aPlease join the Discord server! §7(§cClick§7)", "https://discord.gg/SeKKV5G", false, true);
+                methods.sendURL("§aPlease join the Discord server! §7(§cClick§7)", "https://discord.gg/dZPjSBFMC7", false, true);
                 methods.sendmsg("§aYou can open the ClickGUI with §e" + Keyboard.getKeyName(Koks.getKoks().moduleManager.getModule(ClickGui.class).getKey()).toUpperCase(), true);
                 Koks.getKoks().isNew = false;
             }

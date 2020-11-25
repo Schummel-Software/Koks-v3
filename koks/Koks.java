@@ -99,7 +99,7 @@ public class Koks {
 
         new DiscordUtil();
         discordUtil = DiscordUtil.getSingleton();
-        discordUtil.setupRPC("769964846506311690");
+        discordUtil.setupRPC("780938591278202880");
 
         trayUtil = new TrayUtil();
 

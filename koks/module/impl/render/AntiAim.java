@@ -18,7 +18,7 @@ public class AntiAim extends Module {
     public void onEvent(Event event) {
         if (event instanceof EventMotion) {
             if (((EventMotion) event).getType() == EventMotion.Type.PRE) {
-                if (getPlayer().swingProgress == 0 || !getGameSettings().keyBindAttack.pressed) {
+                if (getPlayer().swingProgress == 0 && !getGameSettings().keyBindAttack.pressed && !getGameSettings().keyBindUseItem.pressed) {
                     ((EventMotion) event).setYaw(getPlayer().rotationYaw + randomUtil.getRandomFloat(145F, 180F));
                     ((EventMotion) event).setPitch(randomUtil.getRandomFloat(50, 90));
                 } else {

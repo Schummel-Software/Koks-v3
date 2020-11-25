@@ -35,7 +35,7 @@ public class Fly extends Module {
     public Setting aac1910motion = new Setting("AAC1.9.10-MotionY", 0.8F, 0F, 1.1F, false, this);
 
     public Setting aac3312boost = new Setting("AAC3.3.12-Boost", 9F, 1F, 10F, true, this);
-    public Setting mode = new Setting("Mode", new String[]{"AAC3.3.12", "AAC1.9.10", "Redesky", "MCCentral", "CubeCraft", "Verus", "Bizzi"}, "AAC3.3.12", this);
+    public Setting mode = new Setting("Mode", new String[]{"AAC3.3.12", "AAC1.9.10", "Redesky", "MCCentral", "CubeCraft", "Verus", "Bizzi", "Vanilla"}, "AAC3.3.12", this);
     public TimeHelper damageTime = new TimeHelper();
 
     @BCompiler(aot = BCompiler.AOT.AGGRESSIVE)
@@ -46,6 +46,12 @@ public class Fly extends Module {
             setInfo(mode.getCurrentMode() + extra);
         }
         switch (mode.getCurrentMode()) {
+            case "Vanilla":
+                if(event instanceof EventUpdate) {
+                    getPlayer().capabilities.isFlying = true;
+                    getPlayer().capabilities.allowFlying = true;
+                }
+                break;
             case "Verus":
                 if (event instanceof EventUpdate) {
                     getTimer().timerSpeed = 0.9F;
