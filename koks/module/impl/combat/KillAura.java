@@ -48,6 +48,7 @@ public class KillAura extends Module {
     public Setting animals = new Setting("Animals", false, this);
     public Setting villager = new Setting("Villager", false, this);
     public Setting mobs = new Setting("Mobs", false, this);
+    public Setting eatAttack = new Setting("Attack While Eating", true, this);
 
     // BASIC ATTACK SETTINGS
     public Setting hazeRange = new Setting("Haze Range", false, this);
@@ -64,8 +65,8 @@ public class KillAura extends Module {
 
     // MOVEMENT SETTINGS
     public Setting mouseFix = new Setting("MouseFix", true, this);
-    public Setting sensitivityMultiplier = new Setting("Sensitivity Multiplier", 0.6F, 0.1F, 1F, false, this);
-    public Setting fixMultiplier = new Setting("Fix Multiplier", 8F, 1.0F, 8.0F, false, this);
+    /*    public Setting sensitivityMultiplier = new Setting("Sensitivity Multiplier", 0.6F, 0.1F, 1F, false, this);
+        public Setting fixMultiplier = new Setting("Fix Multiplier", 8F, 1.0F, 8.0F, false, this);*/
     public Setting percentFix = new Setting("Percent Fix", false, this);
 
     public Setting fixMovement = new Setting("Fix Movement", true, this);
@@ -117,17 +118,17 @@ public class KillAura extends Module {
 
         if (event instanceof EventPacket) {
             Packet packet = ((EventPacket) event).getPacket();
-            if(packet instanceof S29PacketSoundEffect) {
+            if (packet instanceof S29PacketSoundEffect) {
                 S29PacketSoundEffect soundEffect = (S29PacketSoundEffect) packet;
-                for(Entity entity : getWorld().loadedEntityList) {
-                    if(entity != getPlayer() && entity.getDistance(soundEffect.getX(), soundEffect.getY(), soundEffect.getZ()) <= 1) {
+                for (Entity entity : getWorld().loadedEntityList) {
+                    if (entity != getPlayer() && entity.getDistance(soundEffect.getX(), soundEffect.getY(), soundEffect.getZ()) <= 1) {
                         madeSound.add(entity);
                     }
                 }
             }
         }
 
-        if(event instanceof EventWalk) {
+        if (event instanceof EventWalk) {
             if (this.rotations.lockView.isToggled() && finalEntity != null) {
                 mc.thePlayer.rotationYaw = yaw;
                 mc.thePlayer.rotationPitch = pitch;
@@ -137,7 +138,7 @@ public class KillAura extends Module {
         if (event instanceof EventMotion) {
             if (((EventMotion) event).getType() == EventMotion.Type.PRE) {
                 if (finalEntity != null) {
-                    float[] rotations = rotationUtil.faceEntity(finalEntity, mouseFix.isToggled(),sensitivityMultiplier.getCurrentValue(), fixMultiplier.getCurrentValue(), percentFix.isToggled(), curYaw, curPitch, this.rotations.smooth.isToggled(), this.rotations.accuracy.getCurrentValue(), this.rotations.precision.getCurrentValue(), this.rotations.predictionMultiplier.getCurrentValue());
+                    float[] rotations = rotationUtil.faceEntity(finalEntity, mouseFix.isToggled(), percentFix.isToggled(), curYaw, curPitch, this.rotations.smooth.isToggled(), this.rotations.accuracy.getCurrentValue(), this.rotations.precision.getCurrentValue(), this.rotations.predictionMultiplier.getCurrentValue());
                     yaw = rotations[0];
                     pitch = rotations[1];
 
@@ -172,7 +173,7 @@ public class KillAura extends Module {
                     mc.playerController.sendUseItem(mc.thePlayer, mc.theWorld, mc.thePlayer.getHeldItem());
 
 
-                long cps = (long) this.cps.getCurrentValue() + randomUtil.getRandomInt(-1, 1);
+                long cps = (long) this.cps.getCurrentValue();
 
                 cps = cps < 10 ? cps : cps + 5;
                 if (((EntityLivingBase) finalEntity).hurtTime <= hurtTime.getCurrentValue()) {
@@ -210,49 +211,52 @@ public class KillAura extends Module {
 
         if (!failing && (rayCastEntity != null || throughWalls.isToggled() && !getPlayer().canEntityBeSeen(finalEntity))) {
 
+            if (getPlayer().getHeldItem() == null || !getPlayer().isUsingItem() || eatAttack.isToggled()) {
 
-            for (int i = 0; i < crackSize.getCurrentValue(); i++)
-                mc.effectRenderer.emitParticleAtEntity(finalEntity, EnumParticleTypes.CRIT);
+                for (int i = 0; i < crackSize.getCurrentValue(); i++)
+                    mc.effectRenderer.emitParticleAtEntity(finalEntity, EnumParticleTypes.CRIT);
 
-            if (canBlock() && autoBlock.isToggled() && blockMode.getCurrentMode().equals("Full"))
-                mc.getNetHandler().addToSendQueue(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, EnumFacing.DOWN));
+                if (canBlock() && autoBlock.isToggled() && blockMode.getCurrentMode().equals("Full"))
+                    mc.getNetHandler().addToSendQueue(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, EnumFacing.DOWN));
 
-            /*if (mc.currentScreen != null)
+                /*if (mc.currentScreen != null)
                 getPlayer().closeScreen();*/
 
+                if(!attackMode.getCurrentMode().equalsIgnoreCase("MouseClick")) {
+                    if (noSwing.isToggled()) {
+                        switch (noSwingType.getCurrentMode()) {
+                            case "Vanilla":
+                                break;
+                            case "Packet":
+                                mc.thePlayer.sendQueue.addToSendQueue(new C0APacketAnimation());
+                                break;
+                            case "ServerSide":
+                                mc.getNetHandler().getNetworkManager().sendPacket(new C0APacketAnimation());
+                                break;
+                        }
+                    } else {
+                        mc.thePlayer.swingItem();
+                    }
+                }
 
-            Entity attackEntity = !getPlayer().canEntityBeSeen(finalEntity) && throughWalls.isToggled() ? finalEntity : rayCastEntity;
+                Entity attackEntity = !getPlayer().canEntityBeSeen(finalEntity) && throughWalls.isToggled() ? finalEntity : rayCastEntity;
 
-            switch (attackMode.getCurrentMode()) {
-                case "PlayerController":
-                    mc.playerController.attackEntity(mc.thePlayer, attackEntity);
-                    break;
-                case "MouseClick":
-                    mc.clickMouse();
-                    break;
-                case "Packet":
-                    mc.thePlayer.sendQueue.addToSendQueue(new C02PacketUseEntity(attackEntity, C02PacketUseEntity.Action.ATTACK));
-                    break;
-            }
-
-            if (switchCounter < entities.size())
-                switchCounter++;
-            else
-                switchCounter = 0;
-
-            if (noSwing.isToggled()) {
-                switch (noSwingType.getCurrentMode()) {
-                    case "Vanilla":
+                switch (attackMode.getCurrentMode()) {
+                    case "PlayerController":
+                        mc.playerController.attackEntity(mc.thePlayer, attackEntity);
+                        break;
+                    case "MouseClick":
+                        mc.clickMouse();
                         break;
                     case "Packet":
-                        mc.thePlayer.sendQueue.addToSendQueue(new C0APacketAnimation());
-                        break;
-                    case "ServerSide":
-                        mc.getNetHandler().getNetworkManager().sendPacket(new C0APacketAnimation());
+                        mc.thePlayer.sendQueue.addToSendQueue(new C02PacketUseEntity(attackEntity, C02PacketUseEntity.Action.ATTACK));
                         break;
                 }
-            } else {
-                mc.thePlayer.swingItem();
+
+                if (switchCounter < entities.size())
+                    switchCounter++;
+                else
+                    switchCounter = 0;
             }
         }
     }
@@ -364,7 +368,7 @@ public class KillAura extends Module {
             return false;
         if (groundCheck.isToggled() && entity.onGround && getWorld().getBlockState(entity.getPosition().add(0, -0.05, 0)).getBlock() == Blocks.air)
             return false;
-        if(soundCheck.isToggled() && !madeSound.contains(entity))
+        if (soundCheck.isToggled() && !madeSound.contains(entity))
             return false;
         if (nameCheck.isToggled() && entity instanceof EntityPlayer && !checkedName(entity))
             return false;

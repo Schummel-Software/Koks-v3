@@ -1409,6 +1409,59 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
 
     @SuppressWarnings("incomplete-switch")
 
+    public void rightClickMouse(ItemStack itemStack) {
+        if (!this.playerController.func_181040_m()) {
+            this.rightClickDelayTimer = 4;
+            boolean flag = true;
+            ItemStack itemstack = itemStack;
+
+            if (this.objectMouseOver == null) {
+                logger.warn("Null returned as \'hitResult\', this shouldn\'t happen!");
+            } else {
+                switch (this.objectMouseOver.typeOfHit) {
+                    case ENTITY:
+                        if (this.playerController.func_178894_a(this.thePlayer, this.objectMouseOver.entityHit, this.objectMouseOver)) {
+                            flag = false;
+                        } else if (this.playerController.interactWithEntitySendPacket(this.thePlayer, this.objectMouseOver.entityHit)) {
+                            flag = false;
+                        }
+
+                        break;
+
+                    case BLOCK:
+                        BlockPos blockpos = this.objectMouseOver.getBlockPos();
+
+                        if (this.theWorld.getBlockState(blockpos).getBlock().getMaterial() != Material.air) {
+                            int i = itemstack != null ? itemstack.stackSize : 0;
+
+                            if (this.playerController.onPlayerRightClick(this.thePlayer, this.theWorld, itemstack, blockpos, this.objectMouseOver.sideHit, this.objectMouseOver.hitVec)) {
+                                flag = false;
+                                this.thePlayer.swingItem();
+                            }
+
+                            if (itemstack == null) {
+                                return;
+                            }
+
+                            if (itemstack.stackSize == 0) {
+                                this.thePlayer.inventory.mainInventory[this.thePlayer.inventory.currentItem] = null;
+                            } else if (itemstack.stackSize != i || this.playerController.isInCreativeMode()) {
+                                this.entityRenderer.itemRenderer.resetEquippedProgress();
+                            }
+                        }
+                }
+            }
+
+            if (flag) {
+                ItemStack itemstack1 = this.thePlayer.inventory.getCurrentItem();
+
+                if (itemstack1 != null && this.playerController.sendUseItem(this.thePlayer, this.theWorld, itemstack1)) {
+                    this.entityRenderer.itemRenderer.resetEquippedProgress2();
+                }
+            }
+        }
+    }
+
     /**
      * Called when user clicked he's mouse right button (place)
      */ public void rightClickMouse() {

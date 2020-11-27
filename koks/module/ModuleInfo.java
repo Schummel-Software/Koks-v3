@@ -14,6 +14,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ModuleInfo {
 
+    int key() default 0;
     String name();
     String description();
     Module.Category category();

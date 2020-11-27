@@ -12,14 +12,10 @@ import org.lwjgl.input.Keyboard;
  * @created on 13.09.2020 : 00:18
  */
 
-@ModuleInfo(name = "ClickGUI", description = "Opens the ClickGUI", category = Module.Category.GUI)
+@ModuleInfo(name = "ClickGUI", description = "Opens the ClickGUI", category = Module.Category.GUI, key = Keyboard.KEY_RSHIFT)
 public class ClickGui extends Module {
 
     public Setting mode = new Setting("Mode", new String[]{"Panel", "PSE"}, "Panel", this);
-
-    public ClickGui() {
-        setKey(Keyboard.KEY_RSHIFT);
-    }
 
     @Override
     public void onEvent(Event event) {

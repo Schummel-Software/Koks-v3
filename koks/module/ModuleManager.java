@@ -10,6 +10,7 @@ import koks.module.impl.gui.HUD;
 import koks.module.impl.movement.*;
 import koks.module.impl.player.*;
 import koks.module.impl.render.*;
+import koks.module.impl.world.ScaffoldOld;
 import koks.module.impl.world.Scaffold;
 
 import java.util.*;
@@ -23,10 +24,6 @@ public class ModuleManager {
     public ArrayList<Module> modules = new ArrayList<>();
 
     public ModuleManager() {
-
-        /* if(!Koks.getKoks().purvesManager.getUser().getRole().equals(Role.Developer)) {
-            removeCategory(Module.Category.DEBUG);
-        }*/
         addModule(new Criticals());
         addModule(new FastBow());
         addModule(new Friends());
@@ -82,7 +79,6 @@ public class ModuleManager {
         addModule(new FakeAutoBlock());
         addModule(new Swing());
         addModule(new TrailESP());
-        addModule(new Scaffold());
         addModule(new DormantESP());
         addModule(new Scoreboard());
         addModule(new Tracers());
@@ -99,6 +95,7 @@ public class ModuleManager {
         addModule(new IceSpeed());
         addModule(new NoPitchLimit());
         addModule(new AimBot());
+        addModule(new Scaffold());
         addModule(new Blink());
 
         if(Koks.getKoks().CLManager.getUser().getRole() != Role.Developer) {

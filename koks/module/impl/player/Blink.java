@@ -6,8 +6,12 @@ import koks.event.impl.EventPacket;
 import koks.event.impl.EventUpdate;
 import koks.module.Module;
 import koks.module.ModuleInfo;
+import net.minecraft.client.entity.EntityOtherPlayerMP;
+import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.C00PacketKeepAlive;
+import net.minecraft.stats.StatFileWriter;
 
 import java.util.ArrayList;
 
@@ -36,9 +40,25 @@ public class Blink extends Module {
         }
     }
 
+    EntityOtherPlayerMP fakeEntity;
+
     @Override
     public void onEnable() {
         packets.clear();
+
+        fakeEntity = new EntityOtherPlayerMP(mc.theWorld, getPlayer().getGameProfile());
+        fakeEntity.posX = getPlayer().posX;
+        fakeEntity.posY = getPlayer().posY;
+        fakeEntity.posZ = getPlayer().posZ;
+        fakeEntity.copyLocationAndAnglesFrom(getPlayer());
+        fakeEntity.rotationYaw = getPlayer().rotationYaw;
+        fakeEntity.rotationPitch = getPlayer().rotationPitch;
+        fakeEntity.rotationYawHead = getPlayer().rotationYawHead;
+        fakeEntity.rotationPitchHead = getPlayer().rotationPitchHead;
+        fakeEntity.renderYawOffset = getPlayer().renderYawOffset;
+        fakeEntity.inventory = getPlayer().inventory;
+        fakeEntity.setSneaking(getPlayer().isSneaking());
+        mc.theWorld.addEntityToWorld(1337, fakeEntity);
     }
 
     @Override
@@ -47,5 +67,6 @@ public class Blink extends Module {
             sendPacketUnlogged(packet);
         }
         packets.clear();
+        mc.theWorld.removeEntity(fakeEntity);
     }
 }

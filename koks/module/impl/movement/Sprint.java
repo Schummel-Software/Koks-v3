@@ -1,13 +1,9 @@
 package koks.module.impl.movement;
 
-import koks.Koks;
 import koks.event.Event;
-import koks.event.impl.EventTick;
 import koks.event.impl.EventUpdate;
 import koks.module.Module;
 import koks.module.ModuleInfo;
-import koks.module.impl.combat.KillAura;
-import koks.module.impl.world.Scaffold;
 
 /**
  * @author deleteboys | lmao | kroko

@@ -57,18 +57,14 @@ public class ClickGUIPSE extends GuiScreen {
         }
     }
 
-    public int x, y, settingsSize;
+    public int x, y, settingsSize, up = 7;
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         ScaledResolution sr = new ScaledResolution(mc);
 
-        lineSize = 10;
-
         drawRect(0, 0, sr.getScaledWidth(), sr.getScaledHeight(), new Color(16, 16, 16).getRGB());
 
-
-        int up = 7;
 
         for (int i = 0; i < drawModules.size(); i++) {
             Module module = drawModules.get(i).module;
@@ -227,10 +223,18 @@ public class ClickGUIPSE extends GuiScreen {
     public void handleMouseInput() throws IOException {
         if (Mouse.isCreated() && !settingMenu) {
             int wheel = Mouse.getEventDWheel();
+            int lastCurScroll = curScroll;
             curScroll += wheel / 8;
             int minScroll = sr.getScaledWidth() / 2;
             if (curScroll >= -minScroll)
                 curScroll = -minScroll;
+
+            int length = (int) Math.ceil((double) (drawModules.size() - up) / (double) lineSize);
+            length +=1;
+            int maxScroll = sr.getScaledHeight() / 2 + (size + 6) * length + curScroll;
+            System.out.println(maxScroll);
+            if(maxScroll <= 0)
+                curScroll = lastCurScroll;
         } else if (settingMenu) {
             int wheel = Mouse.getEventDWheel();
             settingScroll += wheel / 8;

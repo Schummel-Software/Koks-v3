@@ -195,7 +195,7 @@ public class EntityPlayerSP extends AbstractClientPlayer
             ClickGui clickGui = (ClickGui) Koks.getKoks().moduleManager.getModule(ClickGui.class);
 
             if (this.isRiding()) {
-                this.sendQueue.addToSendQueue(new C03PacketPlayer.C05PacketPlayerLook(this.rotationYaw, this.rotationPitch, this.onGround));
+                this.sendQueue.addToSendQueue(new C03PacketPlayer.C05PacketPlayerLook(eventMotion.getYaw(), eventMotion.getPitch(), this.onGround));
                 this.sendQueue.addToSendQueue(new C0CPacketInput(this.moveStrafing, this.moveForward, this.movementInput.jump, this.movementInput.sneak));
             } else {
                 this.onUpdateWalkingPlayer();

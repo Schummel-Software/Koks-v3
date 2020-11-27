@@ -101,7 +101,7 @@ public class RayCastUtil {
                 }
             }
 
-            if (this.pointedEntity != null && flag && vec3.distanceTo(vec33) > 3.0D) {
+            if (this.pointedEntity != null && flag && vec3.distanceTo(vec33) > range) {
                 this.pointedEntity = null;
                 this.mc.objectMouseOver = new MovingObjectPosition(MovingObjectPosition.MovingObjectType.MISS, vec33, (EnumFacing) null, new BlockPos(vec33));
             }
@@ -134,7 +134,7 @@ public class RayCastUtil {
         return ray != null && ray.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK && bp.equals(ray.getBlockPos());
     }
 
-    public MovingObjectPosition rayCastedBlock(float yaw, float pitch, ItemStack silentItem, boolean intave) {
+    public MovingObjectPosition rayCastedBlock(float yaw, float pitch) {
         float range = mc.playerController.getBlockReachDistance();
 
         Vec3 vec31 = getLook(yaw, pitch);
@@ -144,7 +144,6 @@ public class RayCastUtil {
 
 
         MovingObjectPosition ray = mc.theWorld.rayTraceBlocks(vec3, vec32, false, false, false);
-        ItemBlock itemblock = (ItemBlock) silentItem.getItem();
 
         if (ray != null && ray.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
             return ray;

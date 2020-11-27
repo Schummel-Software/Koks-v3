@@ -41,6 +41,7 @@ public abstract class Module extends Methods {
         this.category = moduleInfo.category();
         this.name = moduleInfo.name();
         this.description = moduleInfo.description();
+        this.key = moduleInfo.key();
 
         espUtil = Koks.getKoks().wrapper.espUtil;
         logger = Koks.getKoks().wrapper.logger;

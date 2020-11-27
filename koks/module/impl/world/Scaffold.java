@@ -1,392 +1,249 @@
 package koks.module.impl.world;
 
 import god.buddy.aot.BCompiler;
-import koks.Koks;
 import koks.api.settings.Setting;
-import koks.api.util.TimeHelper;
+import koks.api.util.RayCastUtil;
 import koks.event.Event;
-import koks.event.impl.*;
+import koks.event.impl.EventMotion;
+import koks.event.impl.EventSafeWalk;
+import koks.event.impl.EventUpdate;
 import koks.module.Module;
 import koks.module.ModuleInfo;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockAir;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.entity.Entity;
 import net.minecraft.init.Blocks;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.C09PacketHeldItemChange;
-import net.minecraft.network.play.client.C0APacketAnimation;
-import net.minecraft.network.play.client.C0BPacketEntityAction;
-import net.minecraft.util.*;
-import org.lwjgl.input.Keyboard;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.Vec3;
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.List;
 
 /**
- * @author avox | lmao | kroko
- * @created on 04.09.2020 : 10:23
+ * @author kroko
+ * @created on 26.11.2020 : 17:33
  */
 
 @ModuleInfo(name = "Scaffold", description = "Its place blocks under you", category = Module.Category.WORLD)
 public class Scaffold extends Module {
 
-    private final List blackList;
-
-    public BlockPos finalPos;
-    public boolean shouldBuildDown;
-
-    public Setting delay = new Setting("Delay", 0, 0, 100, true, this);
+    //BUILD
+    public Setting delay = new Setting("Delay", 0, 0, 500, true, this);
     public Setting motion = new Setting("Motion", 1, 0, 5, false, this);
-
-    public Setting pitchVal = new Setting("Pitch", 82, 70, 90, true, this);
-
-    public Setting sneak = new Setting("Sneak", false, this);
-    public Setting sneakAfterBlocks = new Setting("Sneak After...", 10, 0, 20, true, this);
-
-    public Setting swingItem = new Setting("Swing Item", true, this);
-    public Setting safeWalk = new Setting("SafeWalk", true, this);
-    public Setting onGround = new Setting("OnGround", true, this);
-
+    public Setting diagonal = new Setting("Diagonal", false, this);
     public Setting silent = new Setting("Silent", true, this);
+    public Setting noSwing = new Setting("NoSwing", false, this);
 
-    public Setting downScaffold = new Setting("DownScaffold", false, this);
-
-    public Setting randomHit = new Setting("Random Hit", false, this);
+    //MOVEMENT
+    public Setting safeWalk = new Setting("Safewalk", false, this);
+    public Setting onlyGround = new Setting("OnlyGround", true, this);
     public Setting sprint = new Setting("Sprint", false, this);
+    public Setting sneak = new Setting("Sneak", false, this);
+    public Setting sneakAfter = new Setting("Sneak after...", 1, 1, 10, true, this);
 
-    public Setting rayCast = new Setting("RayCast", true, this);
+    //RAYCAST
+    public Setting rayCast = new Setting("Raycast", false, this);
 
-    public Setting simpleRotations = new Setting("Simple Rotations", true, this);
+    //ROTATION
+    public Setting alwaysRotate = new Setting("Always Rotate", true, this);
+    public Setting simpleRotations = new Setting("Simple Rotations", false, this);
+    public Setting staticPitch = new Setting("Static Pitch", false, this);
+    public Setting pitch = new Setting("Pitch", 82, 70, 90, false, this);
 
-    public Setting staticPitch = new Setting("StaticPitch", false, this);
-
-    public Setting intave = new Setting("Intave", false, this);
-
-    public Setting alwaysLook = new Setting("AlwaysLook", true, this);
-
-    public float pitch, yaw;
-    public int sneakCount;
+    float curYaw, curPitch;
+    int sneakCount;
+    int lastSlot;
+    EnumFacing enumFacing;
+    private final List<Block> blackList;
 
     public Scaffold() {
         this.blackList = Arrays.asList(Blocks.red_flower, Blocks.yellow_flower, Blocks.crafting_table, Blocks.chest, Blocks.enchanting_table, Blocks.anvil, Blocks.sand, Blocks.gravel, Blocks.glass_pane, Blocks.stained_glass_pane, Blocks.ice, Blocks.packed_ice, Blocks.cobblestone_wall, Blocks.water, Blocks.lava, Blocks.web, Blocks.sapling, Blocks.rail, Blocks.golden_rail, Blocks.activator_rail, Blocks.detector_rail, Blocks.tnt, Blocks.red_flower, Blocks.yellow_flower, Blocks.flower_pot, Blocks.tallgrass, Blocks.red_mushroom, Blocks.brown_mushroom, Blocks.ladder, Blocks.torch, Blocks.stone_button, Blocks.wooden_button, Blocks.redstone_torch, Blocks.redstone_wire, Blocks.furnace, Blocks.cactus, Blocks.oak_fence, Blocks.acacia_fence, Blocks.nether_brick_fence, Blocks.birch_fence, Blocks.dark_oak_fence, Blocks.jungle_fence, Blocks.oak_fence, Blocks.acacia_fence_gate, Blocks.snow_layer, Blocks.trapdoor, Blocks.ender_chest, Blocks.beacon, Blocks.hopper, Blocks.daylight_detector, Blocks.daylight_detector_inverted, Blocks.carpet);
     }
 
-    @BCompiler(aot = BCompiler.AOT.NORMAL)
     @Override
     public void onEvent(Event event) {
-        if (event instanceof EventMotion) {
-            if (((EventMotion) event).getType() == EventMotion.Type.PRE) {
-                ((EventMotion) event).setYaw(yaw);
-                ((EventMotion) event).setPitch(pitch);
-            }
+        if (event instanceof EventSafeWalk) {
+            if (safeWalk.isToggled())
+                ((EventSafeWalk) event).setSafe(mc.thePlayer.onGround || !onlyGround.isToggled());
         }
 
-        if (event instanceof EventJump) {
-            ((EventJump) event).setYaw(yaw);
+        if (event instanceof EventMotion) {
+            if (((EventMotion) event).getType().equals(EventMotion.Type.PRE)) {
+                if (alwaysRotate.isToggled()) {
+                    ((EventMotion) event).setYaw(curYaw);
+                    ((EventMotion) event).setPitch(curPitch);
+                }
+            }
         }
 
         if (event instanceof EventUpdate) {
-            if (downScaffold.isToggled()) {
-                if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-                    shouldBuildDown = true;
-                    mc.gameSettings.keyBindSneak.pressed = false;
-                } else {
-                    shouldBuildDown = false;
-                }
-            }
-            BlockPos pos;
+            BlockPos blockPos = getBlockPosToPlaceOn(new BlockPos(getX(), getY() - 1, getZ()));
+            ItemStack itemStack = getPlayer().getCurrentEquippedItem();
 
-            pos = new BlockPos(mc.thePlayer.posX, (mc.thePlayer.getEntityBoundingBox()).minY - 1.0D - (shouldBuildDown ? 1 : 0), mc.thePlayer.posZ);
-            getPlayer().setSprinting(sprint.isToggled());
-            getGameSettings().keyBindSprint.pressed = sprint.isToggled();
-
-            getBlockPosToPlaceOn(pos);
-
-            if (simpleRotations.isToggled()) {
-                setYawSimple();
-            } else {
-                setYaw();
-            }
-
-            pitch = getPitch(360);
-
-        }
-        if (event instanceof EventSafeWalk) {
-            if (downScaffold.isToggled()) {
-                if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-                    shouldBuildDown = true;
-                    mc.gameSettings.keyBindSneak.pressed = false;
-                } else {
-                    shouldBuildDown = false;
-                }
-            }
-            if (safeWalk.isToggled()) {
-                if (getPlayer().onGround || !onGround.isToggled())
-                    ((EventSafeWalk) event).setSafe(true);
-            }
-        }
-    }
-
-
-    public void setYaw() {
-        if (finalPos != null) {
-            float[] rotations = rotationUtil.faceBlock(finalPos, yaw, pitch, 360);
-            yaw = rotations[0];
-        }
-    }
-
-
-    public void setYawSimple() {
-        boolean forward = mc.gameSettings.keyBindForward.isKeyDown();
-        boolean left = mc.gameSettings.keyBindLeft.isKeyDown();
-        boolean right = mc.gameSettings.keyBindRight.isKeyDown();
-        boolean back = mc.gameSettings.keyBindBack.isKeyDown();
-
-        float yaw = 0;
-
-        // Only one Key directions
-        if (forward && !left && !right && !back)
-            yaw = 180;
-        if (!forward && left && !right && !back)
-            yaw = 90;
-        if (!forward && !left && right && !back)
-            yaw = -90;
-        if (!forward && !left && !right && back)
-            yaw = 0;
-
-        // Multi Key directions
-        if (forward && left && !right && !back)
-            yaw = 135;
-        if (forward && !left && right && !back)
-            yaw = -135;
-
-        if (!forward && left && !right && back)
-            yaw = 45;
-        if (!forward && !left && right && back)
-            yaw = -45;
-
-        this.yaw = mc.thePlayer.rotationYaw + yaw;
-    }
-
-    public float getPitch(int speed) {
-        if (mc.thePlayer.onGround || staticPitch.isToggled()) {
-            return pitchVal.getCurrentValue();
-        }
-        else
-        if (finalPos != null)
-            return rotationUtil.faceBlock(finalPos, yaw, pitch, speed)[1];
-        return pitchVal.getCurrentValue();
-    }
-
-    @BCompiler(aot = BCompiler.AOT.AGGRESSIVE)
-    public void placeBlock(BlockPos pos, EnumFacing face) {
-        finalPos = pos;
-        ItemStack silentItemStack = null;
-        int silentSlot = mc.thePlayer.inventory.currentItem;
-        if (silent.isToggled() && (mc.thePlayer.getCurrentEquippedItem() == null || (!(mc.thePlayer.getCurrentEquippedItem().getItem() instanceof ItemBlock)))) {
-            for (int i = 0; i < 9; i++) {
-                if (mc.thePlayer.inventory.getStackInSlot(i) != null && mc.thePlayer.inventory.getStackInSlot(i).getItem() instanceof ItemBlock) {
-                    ItemBlock itemBlock = (ItemBlock) mc.thePlayer.inventory.getStackInSlot(i).getItem();
-                    if (this.blackList.contains(itemBlock.getBlock()))
-                        continue;
-
-                    silentSlot = i;
-                    mc.thePlayer.sendQueue.addToSendQueue(new C09PacketHeldItemChange(silentSlot));
-                    silentItemStack = mc.thePlayer.inventory.getStackInSlot(i);
-                    break;
-                }
-            }
-        } else {
-            if (getPlayer().getCurrentEquippedItem() != null) {
-                silentItemStack = (mc.thePlayer.getCurrentEquippedItem().getItem() instanceof ItemBlock) ? mc.thePlayer.getCurrentEquippedItem() : null;
-                BlockPos position = new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY - 1.0D - (shouldBuildDown ? 1 : 0), mc.thePlayer.posZ);
-                if (mc.theWorld.getBlockState(position).getBlock() instanceof BlockAir) {
-                    if (silentItemStack != null && blackList.contains(((ItemBlock) silentItemStack.getItem()).getBlock()))
-                        return;
-                    mc.thePlayer.swingItem();
-                }
-            }
-        }
-
-        if (sneakCount >= sneakAfterBlocks.getCurrentValue() && sneak.isToggled())
-            mc.gameSettings.keyBindSneak.pressed = true;
-
-        if (mc.theWorld.getBlockState(new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY - 1.0D - (shouldBuildDown ? 1 : 0), mc.thePlayer.posZ)).getBlock() instanceof BlockAir) {
-            if (!simpleRotations.isToggled())
-                setYaw();
-            if (silentItemStack != null) {
-                boolean rayCasted = !rayCast.isToggled() || rayCastUtil.isRayCastBlock(pos, rayCastUtil.rayCastedBlock(yaw, pitch, silentItemStack, intave.isToggled()));
-                if (rayCast.isToggled()) {
-                    if (rayCasted) {
-                        if (timeHelper.hasReached(mc.thePlayer.onGround ? (randomUtil.getRandomLong((long) delay.getCurrentValue(), (long) delay.getCurrentValue() + 1)) : 20L)) {
-                            if (blackList.contains(((ItemBlock) silentItemStack.getItem()).getBlock()))
-                                return;
-                            if (silentItemStack != null) {
-                                MovingObjectPosition ray = rayCastUtil.rayCastedBlock(yaw, pitch, silentItemStack, intave.isToggled());
-                                if (intave.isToggled()) {
-                                    if (mc.playerController.onPlayerRightClick(mc.thePlayer, mc.theWorld, silentItemStack, ray.getBlockPos(), ray.sideHit, ray.hitVec))
-                                        if (swingItem.isToggled())
-                                            mc.thePlayer.swingItem();
-                                        else
-                                            mc.thePlayer.sendQueue.addToSendQueue(new C0APacketAnimation());
-                                } else if (!intave.isToggled())
-                                    if (mc.playerController.onPlayerRightClick(mc.thePlayer, mc.theWorld, silentItemStack, pos, face, new Vec3(pos.getX() + (this.randomHit.isToggled() ? randomUtil.getRandomDouble(0, 0.7) : 0), pos.getY() + (this.randomHit.isToggled() ? randomUtil.getRandomDouble(0, 0.7) : 0), pos.getZ() + (this.randomHit.isToggled() ? randomUtil.getRandomDouble(0, 0.7) : 0))))
-                                        if (swingItem.isToggled())
-                                            mc.thePlayer.swingItem();
-                                        else
-                                            mc.thePlayer.sendQueue.addToSendQueue(new C0APacketAnimation());
-
-                                sneakCount++;
-
-                                mc.thePlayer.motionX *= motion.getCurrentValue();
-                                mc.thePlayer.motionZ *= motion.getCurrentValue();
-
-                                if (sneakCount > sneakAfterBlocks.getCurrentValue())
-                                    sneakCount = 0;
-
-                                timeHelper.reset();
-                            }
-                        }
-                    } else {
-
-                        timeHelper.reset();
-                    }
-                } else if (intave.isToggled() && !rayCast.isToggled()) {
-                    if (timeHelper.hasReached(mc.thePlayer.onGround ? (randomUtil.getRandomLong((long) delay.getCurrentValue(), (long) delay.getCurrentValue() + 1)) : 20L)) {
-                        if (blackList.contains(((ItemBlock) silentItemStack.getItem()).getBlock()))
-                            return;
-                        if (silentItemStack != null) {
-
-                            mc.rightClickMouse();
-
-
-                            if (mc.playerController.onPlayerRightClick(mc.thePlayer, mc.theWorld, silentItemStack, pos, face, new Vec3(pos.getX() + (this.randomHit.isToggled() ? randomUtil.getRandomDouble(0, 0.7) : 0), pos.getY() + (this.randomHit.isToggled() ? randomUtil.getRandomDouble(0, 0.7) : 0), pos.getZ() + (this.randomHit.isToggled() ? randomUtil.getRandomDouble(0, 0.7) : 0)))) {
-                                getPlayer().swingItem();
-                            }
-
-                            sneakCount++;
-
-                            mc.thePlayer.motionX *= motion.getCurrentValue();
-                            mc.thePlayer.motionZ *= motion.getCurrentValue();
-
-                            if (sneakCount > sneakAfterBlocks.getCurrentValue())
-                                sneakCount = 0;
-
-                            timeHelper.reset();
+            if (silent.isToggled() && itemStack == null || (itemStack != null && !(itemStack.getItem() instanceof ItemBlock))) {
+                for (int i = 0; i < 9; i++) {
+                    ItemStack item = getPlayer().inventory.getStackInSlot(i);
+                    if (item != null && item.getItem() instanceof ItemBlock) {
+                        if (!blackList.contains(Block.getBlockFromItem(item.getItem()))) {
+                            itemStack = item;
+                            sendPacket(new C09PacketHeldItemChange(i));
                         }
                     }
+                }
+            }
+
+            if (blockPos != null && itemStack != null && itemStack.getItem() instanceof ItemBlock) {
+                getPlayer().setSprinting(sprint.isToggled());
+                getGameSettings().keyBindSprint.pressed = sprint.isToggled();
+
+                if (sneak.isToggled() && sneakCount >= sneakAfter.getCurrentValue())
+                    getGameSettings().keyBindSneak.pressed = true;
+                else if (sneakCount < sneakAfter.getCurrentValue())
+                    getGameSettings().keyBindSneak.pressed = false;
+
+                float[] rotation = rotationUtil.faceBlock(blockPos, (float) (mc.theWorld.getBlockState(blockPos).getBlock().getBlockBoundsMaxY() - mc.theWorld.getBlockState(blockPos).getBlock().getBlockBoundsMinY()) + 0.5F, curYaw, curPitch, 180);
+                if (!simpleRotations.isToggled()) {
+                    curYaw = rotation[0];
+                    curPitch = rotation[1];
                 } else {
-                    if (timeHelper.hasReached(mc.thePlayer.onGround ? (randomUtil.getRandomLong((long) delay.getCurrentValue(), (long) delay.getCurrentValue() + 1)) : 20L)) {
-                        if (blackList.contains(((ItemBlock) silentItemStack.getItem()).getBlock()))
-                            return;
-                        if (silentItemStack != null) {
-                            if (mc.playerController.onPlayerRightClick(mc.thePlayer, mc.theWorld, silentItemStack, pos, face, new Vec3(pos.getX() + (this.randomHit.isToggled() ? randomUtil.getRandomDouble(0, 0.7) : 0), pos.getY() + (this.randomHit.isToggled() ? randomUtil.getRandomDouble(0, 0.7) : 0), pos.getZ() + (this.randomHit.isToggled() ? randomUtil.getRandomDouble(0, 0.7) : 0))))
-                                if (swingItem.isToggled())
-                                    mc.thePlayer.swingItem();
-                                else
-                                    mc.thePlayer.sendQueue.addToSendQueue(new C0APacketAnimation());
-                            sneakCount++;
+                    curYaw = getPlayer().rotationYaw + 180;
+                    curPitch = getPlayer().onGround || staticPitch.isToggled() ? pitch.getCurrentValue() : rotation[1];
+                }
+                MovingObjectPosition ray = rayCastUtil.rayCastedBlock(curYaw, curPitch);
+                if (timeHelper.hasReached((long) delay.getCurrentValue()) && (ray != null && ray.getBlockPos().equals(blockPos) || !rayCast.isToggled())) {
+                    if (getPlayerController().onPlayerRightClick(getPlayer(), mc.theWorld, itemStack, blockPos, enumFacing, new Vec3(blockPos.getX(), blockPos.getY(), blockPos.getZ()))) {
+                        getPlayer().motionX *= motion.getCurrentValue();
+                        getPlayer().motionZ *= motion.getCurrentValue();
+                        sneakCount++;
+                        if (sneakCount > sneakAfter.getCurrentValue())
+                            sneakCount = 0;
 
-                            mc.thePlayer.motionX *= motion.getCurrentValue();
-                            mc.thePlayer.motionZ *= motion.getCurrentValue();
-
-                            if (sneakCount > sneakAfterBlocks.getCurrentValue())
-                                sneakCount = 0;
-
-                            timeHelper.reset();
-                        }
+                        if (!noSwing.isToggled())
+                            getPlayer().swingItem();
                     }
 
                     timeHelper.reset();
                 }
             } else {
-                mc.gameSettings.keyBindSneak.pressed = false;
+                if (sneak.isToggled())
+                    getGameSettings().keyBindSneak.pressed = false;
                 timeHelper.reset();
-                if (!simpleRotations.isToggled())
-                    setYaw();
             }
-            shouldBuildDown = false;
         }
     }
 
     @Override
     public void onEnable() {
-        yaw = getPlayer().rotationYaw;
-        pitch = getPlayer().rotationPitch;
+        sneakCount = 0;
+        curYaw = getPlayer().rotationYaw;
+        curPitch = getPlayer().rotationPitch;
+        lastSlot = getPlayer().inventory.currentItem;
     }
 
     @Override
     public void onDisable() {
-        mc.gameSettings.keyBindSneak.pressed = false;
-        sneakCount = 0;
-        yaw = 0;
-        pitch = 0;
-        mc.timer.timerSpeed = 1F;
-        mc.thePlayer.sendQueue.addToSendQueue(new C09PacketHeldItemChange(mc.thePlayer.inventory.currentItem));
+        if (silent.isToggled())
+            sendPacket(new C09PacketHeldItemChange(lastSlot));
+    }
+
+    public boolean isNearAir(Entity entity, double expand) {
+        BlockPos blockPos = new BlockPos(Math.round(entity.posX), entity.posY - 1, Math.round(entity.posZ));
+        BlockPos blockPos1 = blockPos.add(expand, 0, 0);
+        BlockPos blockPos2 = blockPos.add(-expand, 0, 0);
+        BlockPos blockPos3 = blockPos.add(0, 0, expand);
+        BlockPos blockPos4 = blockPos.add(0, 0, -expand);
+        return getWorld().getBlockState(blockPos).getBlock() == Blocks.air || getWorld().getBlockState(blockPos1).getBlock() == Blocks.air || getWorld().getBlockState(blockPos2).getBlock() == Blocks.air || getWorld().getBlockState(blockPos3).getBlock() == Blocks.air
+                || getWorld().getBlockState(blockPos4).getBlock() == Blocks.air;
     }
 
     @BCompiler(aot = BCompiler.AOT.AGGRESSIVE)
-    public void getBlockPosToPlaceOn(BlockPos pos) {
+    private BlockPos getBlockPosToPlaceOn(BlockPos pos) {
         BlockPos blockPos1 = pos.add(-1, 0, 0);
         BlockPos blockPos2 = pos.add(1, 0, 0);
         BlockPos blockPos3 = pos.add(0, 0, -1);
         BlockPos blockPos4 = pos.add(0, 0, 1);
-        float down = (shouldBuildDown ? 1 : 0);
+        float down = 0;
         if (mc.theWorld.getBlockState(pos.add(0, -1 - down, 0)).getBlock() != Blocks.air) {
-            placeBlock(pos.add(0, -1, 0), EnumFacing.UP);
+            enumFacing = EnumFacing.UP;
+            return (pos.add(0, -1, 0));
         } else if (mc.theWorld.getBlockState(pos.add(-1, 0 - down, 0)).getBlock() != Blocks.air) {
-            placeBlock(pos.add(-1, 0 - down, 0), EnumFacing.EAST);
+            enumFacing = EnumFacing.EAST;
+            return (pos.add(-1, 0 - down, 0));
         } else if (mc.theWorld.getBlockState(pos.add(1, 0 - down, 0)).getBlock() != Blocks.air) {
-            placeBlock(pos.add(1, 0 - down, 0), EnumFacing.WEST);
+            enumFacing = EnumFacing.WEST;
+            return (pos.add(1, 0 - down, 0));
         } else if (mc.theWorld.getBlockState(pos.add(0, 0 - down, -1)).getBlock() != Blocks.air) {
-            placeBlock(pos.add(0, 0 - down, -1), EnumFacing.SOUTH);
+            enumFacing = EnumFacing.SOUTH;
+            return (pos.add(0, 0 - down, -1));
         } else if (mc.theWorld.getBlockState(pos.add(0, 0 - down, 1)).getBlock() != Blocks.air) {
-            placeBlock(pos.add(0, 0 - down, 1), EnumFacing.NORTH);
-        } else if (mc.theWorld.getBlockState(blockPos1.add(0, -1 - down, 0)).getBlock() != Blocks.air) {
-            placeBlock(blockPos1.add(0, -1 - down, 0), EnumFacing.UP);
-        } else if (mc.theWorld.getBlockState(blockPos1.add(-1, 0 - down, 0)).getBlock() != Blocks.air) {
-            placeBlock(blockPos1.add(-1, 0 - down, 0), EnumFacing.EAST);
-        } else if (mc.theWorld.getBlockState(blockPos1.add(1, 0 - down, 0)).getBlock() != Blocks.air) {
-            placeBlock(blockPos1.add(1, 0 - down, 0), EnumFacing.WEST);
-        } else if (mc.theWorld.getBlockState(blockPos1.add(0, 0 - down, -1)).getBlock() != Blocks.air) {
-            placeBlock(blockPos1.add(0, 0 - down, -1), EnumFacing.SOUTH);
-        } else if (mc.theWorld.getBlockState(blockPos1.add(0, 0 - down, 1)).getBlock() != Blocks.air) {
-            placeBlock(blockPos1.add(0, 0 - down, 1), EnumFacing.NORTH);
-        } else if (mc.theWorld.getBlockState(blockPos2.add(0, -1 - down, 0)).getBlock() != Blocks.air) {
-            placeBlock(blockPos2.add(0, -1 - down, 0), EnumFacing.UP);
-        } else if (mc.theWorld.getBlockState(blockPos2.add(-1, 0 - down, 0)).getBlock() != Blocks.air) {
-            placeBlock(blockPos2.add(-1, 0 - down, 0), EnumFacing.EAST);
-        } else if (mc.theWorld.getBlockState(blockPos2.add(1, 0 - down, 0)).getBlock() != Blocks.air) {
-            placeBlock(blockPos2.add(1, 0 - down, 0), EnumFacing.WEST);
-        } else if (mc.theWorld.getBlockState(blockPos2.add(0, 0 - down, -1)).getBlock() != Blocks.air) {
-            placeBlock(blockPos2.add(0, 0 - down, -1), EnumFacing.SOUTH);
-        } else if (mc.theWorld.getBlockState(blockPos2.add(0, 0 - down, 1)).getBlock() != Blocks.air) {
-            placeBlock(blockPos2.add(0, 0 - down, 1), EnumFacing.NORTH);
-        } else if (mc.theWorld.getBlockState(blockPos3.add(0, -1 - down, 0)).getBlock() != Blocks.air) {
-            placeBlock(blockPos3.add(0, -1 - down, 0), EnumFacing.UP);
-        } else if (mc.theWorld.getBlockState(blockPos3.add(-1, 0 - down, 0)).getBlock() != Blocks.air) {
-            placeBlock(blockPos3.add(-1, 0 - down, 0), EnumFacing.EAST);
-        } else if (mc.theWorld.getBlockState(blockPos3.add(1, 0 - down, 0)).getBlock() != Blocks.air) {
-            placeBlock(blockPos3.add(1, 0 - down, 0), EnumFacing.WEST);
-        } else if (mc.theWorld.getBlockState(blockPos3.add(0, 0 - down, -1)).getBlock() != Blocks.air) {
-            placeBlock(blockPos3.add(0, 0 - down, -1), EnumFacing.SOUTH);
-        } else if (mc.theWorld.getBlockState(blockPos3.add(0, 0 - down, 1)).getBlock() != Blocks.air) {
-            placeBlock(blockPos3.add(0, 0 - down, 1), EnumFacing.NORTH);
-        } else if (mc.theWorld.getBlockState(blockPos4.add(0, -1 - down, 0)).getBlock() != Blocks.air) {
-            placeBlock(blockPos4.add(0, -1 - down, 0), EnumFacing.UP);
-        } else if (mc.theWorld.getBlockState(blockPos4.add(-1, 0 - down, 0)).getBlock() != Blocks.air) {
-            placeBlock(blockPos4.add(-1, 0 - down, 0), EnumFacing.EAST);
-        } else if (mc.theWorld.getBlockState(blockPos4.add(1, 0 - down, 0)).getBlock() != Blocks.air) {
-            placeBlock(blockPos4.add(1, 0 - down, 0), EnumFacing.WEST);
-        } else if (mc.theWorld.getBlockState(blockPos4.add(0, 0 - down, -1)).getBlock() != Blocks.air) {
-            placeBlock(blockPos4.add(0, 0 - down, -1), EnumFacing.SOUTH);
-        } else if (mc.theWorld.getBlockState(blockPos4.add(0, 0 - down, 1)).getBlock() != Blocks.air) {
-            placeBlock(blockPos4.add(0, 0 - down, 1), EnumFacing.NORTH);
+            enumFacing = EnumFacing.NORTH;
+            return (pos.add(0, 0 - down, 1));
+        } else if (mc.theWorld.getBlockState(blockPos1.add(0, -1 - down, 0)).getBlock() != Blocks.air && diagonal.isToggled()) {
+            enumFacing = EnumFacing.UP;
+            return (blockPos1.add(0, -1 - down, 0));
+        } else if (mc.theWorld.getBlockState(blockPos1.add(-1, 0 - down, 0)).getBlock() != Blocks.air && diagonal.isToggled()) {
+            enumFacing = EnumFacing.EAST;
+            return (blockPos1.add(-1, 0 - down, 0));
+        } else if (mc.theWorld.getBlockState(blockPos1.add(1, 0 - down, 0)).getBlock() != Blocks.air && diagonal.isToggled()) {
+            enumFacing = EnumFacing.WEST;
+            return (blockPos1.add(1, 0 - down, 0));
+        } else if (mc.theWorld.getBlockState(blockPos1.add(0, 0 - down, -1)).getBlock() != Blocks.air && diagonal.isToggled()) {
+            enumFacing = EnumFacing.SOUTH;
+            return (blockPos1.add(0, 0 - down, -1));
+        } else if (mc.theWorld.getBlockState(blockPos1.add(0, 0 - down, 1)).getBlock() != Blocks.air && diagonal.isToggled()) {
+            enumFacing = EnumFacing.NORTH;
+            return (blockPos1.add(0, 0 - down, 1));
+        } else if (mc.theWorld.getBlockState(blockPos2.add(0, -1 - down, 0)).getBlock() != Blocks.air && diagonal.isToggled()) {
+            enumFacing = EnumFacing.UP;
+            return (blockPos2.add(0, -1 - down, 0));
+        } else if (mc.theWorld.getBlockState(blockPos2.add(-1, 0 - down, 0)).getBlock() != Blocks.air && diagonal.isToggled()) {
+            enumFacing = EnumFacing.EAST;
+            return (blockPos2.add(-1, 0 - down, 0));
+        } else if (mc.theWorld.getBlockState(blockPos2.add(1, 0 - down, 0)).getBlock() != Blocks.air && diagonal.isToggled()) {
+            enumFacing = EnumFacing.WEST;
+            return (blockPos2.add(1, 0 - down, 0));
+        } else if (mc.theWorld.getBlockState(blockPos2.add(0, 0 - down, -1)).getBlock() != Blocks.air && diagonal.isToggled()) {
+            enumFacing = EnumFacing.SOUTH;
+            return (blockPos2.add(0, 0 - down, -1));
+        } else if (mc.theWorld.getBlockState(blockPos2.add(0, 0 - down, 1)).getBlock() != Blocks.air && diagonal.isToggled()) {
+            enumFacing = EnumFacing.NORTH;
+            return (blockPos2.add(0, 0 - down, 1));
+        } else if (mc.theWorld.getBlockState(blockPos3.add(0, -1 - down, 0)).getBlock() != Blocks.air && diagonal.isToggled()) {
+            enumFacing = EnumFacing.UP;
+            return (blockPos3.add(0, -1 - down, 0));
+        } else if (mc.theWorld.getBlockState(blockPos3.add(-1, 0 - down, 0)).getBlock() != Blocks.air && diagonal.isToggled()) {
+            enumFacing = EnumFacing.EAST;
+            return (blockPos3.add(-1, 0 - down, 0));
+        } else if (mc.theWorld.getBlockState(blockPos3.add(1, 0 - down, 0)).getBlock() != Blocks.air && diagonal.isToggled()) {
+            enumFacing = EnumFacing.WEST;
+            return (blockPos3.add(1, 0 - down, 0));
+        } else if (mc.theWorld.getBlockState(blockPos3.add(0, 0 - down, -1)).getBlock() != Blocks.air && diagonal.isToggled()) {
+            enumFacing = EnumFacing.SOUTH;
+            return (blockPos3.add(0, 0 - down, -1));
+        } else if (mc.theWorld.getBlockState(blockPos3.add(0, 0 - down, 1)).getBlock() != Blocks.air && diagonal.isToggled()) {
+            enumFacing = EnumFacing.NORTH;
+            return (blockPos3.add(0, 0 - down, 1));
+        } else if (mc.theWorld.getBlockState(blockPos4.add(0, -1 - down, 0)).getBlock() != Blocks.air && diagonal.isToggled()) {
+            enumFacing = EnumFacing.UP;
+            return (blockPos4.add(0, -1 - down, 0));
+        } else if (mc.theWorld.getBlockState(blockPos4.add(-1, 0 - down, 0)).getBlock() != Blocks.air && diagonal.isToggled()) {
+            enumFacing = EnumFacing.EAST;
+            return (blockPos4.add(-1, 0 - down, 0));
+        } else if (mc.theWorld.getBlockState(blockPos4.add(1, 0 - down, 0)).getBlock() != Blocks.air && diagonal.isToggled()) {
+            enumFacing = EnumFacing.WEST;
+            return (blockPos4.add(1, 0 - down, 0));
+        } else if (mc.theWorld.getBlockState(blockPos4.add(0, 0 - down, -1)).getBlock() != Blocks.air && diagonal.isToggled()) {
+            enumFacing = EnumFacing.SOUTH;
+            return (blockPos4.add(0, 0 - down, -1));
+        } else if (mc.theWorld.getBlockState(blockPos4.add(0, 0 - down, 1)).getBlock() != Blocks.air && diagonal.isToggled()) {
+            enumFacing = EnumFacing.NORTH;
+            return (blockPos4.add(0, 0 - down, 1));
         }
+        return null;
     }
-
 }
