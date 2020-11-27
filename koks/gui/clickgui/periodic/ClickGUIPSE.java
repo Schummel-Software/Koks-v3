@@ -232,7 +232,6 @@ public class ClickGUIPSE extends GuiScreen {
             int length = (int) Math.ceil((double) (drawModules.size() - up) / (double) lineSize);
             length +=1;
             int maxScroll = sr.getScaledHeight() / 2 + (size + 6) * length + curScroll;
-            System.out.println(maxScroll);
             if(maxScroll <= 0)
                 curScroll = lastCurScroll;
         } else if (settingMenu) {
