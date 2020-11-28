@@ -1011,7 +1011,7 @@ public class EntityPlayerMP extends EntityPlayer implements ICrafting
     /**
      * Used for when item use count runs out, ie: eating completed
      */
-    protected void onItemUseFinish()
+    public void onItemUseFinish()
     {
         this.playerNetServerHandler.sendPacket(new S19PacketEntityStatus(this, (byte)9));
         super.onItemUseFinish();

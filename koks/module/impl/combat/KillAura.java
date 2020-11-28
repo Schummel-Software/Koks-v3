@@ -16,14 +16,14 @@ import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.EnumAction;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.*;
 import net.minecraft.network.play.server.*;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.*;
+import org.lwjgl.input.Keyboard;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -173,7 +173,7 @@ public class KillAura extends Module {
                     mc.playerController.sendUseItem(mc.thePlayer, mc.theWorld, mc.thePlayer.getHeldItem());
 
 
-                long cps = (long) this.cps.getCurrentValue();
+                long cps = (long) this.cps.getCurrentValue() + randomUtil.getRandomInt(-1, 1);
 
                 cps = cps < 10 ? cps : cps + 5;
                 if (((EntityLivingBase) finalEntity).hurtTime <= hurtTime.getCurrentValue()) {
@@ -211,8 +211,7 @@ public class KillAura extends Module {
 
         if (!failing && (rayCastEntity != null || throughWalls.isToggled() && !getPlayer().canEntityBeSeen(finalEntity))) {
 
-            if (getPlayer().getHeldItem() == null || !getPlayer().isUsingItem() || eatAttack.isToggled()) {
-
+            if (eatAttack.isToggled() || getPlayer().getHeldItem() != null && getPlayer().getHeldItem().getItem() instanceof ItemSword && autoBlock.isToggled() || !getGameSettings().keyBindUseItem.pressed || getPlayer().getHeldItem() == null) {
                 for (int i = 0; i < crackSize.getCurrentValue(); i++)
                     mc.effectRenderer.emitParticleAtEntity(finalEntity, EnumParticleTypes.CRIT);
 
@@ -222,7 +221,7 @@ public class KillAura extends Module {
                 /*if (mc.currentScreen != null)
                 getPlayer().closeScreen();*/
 
-                if(!attackMode.getCurrentMode().equalsIgnoreCase("MouseClick")) {
+                if (!attackMode.getCurrentMode().equalsIgnoreCase("MouseClick")) {
                     if (noSwing.isToggled()) {
                         switch (noSwingType.getCurrentMode()) {
                             case "Vanilla":

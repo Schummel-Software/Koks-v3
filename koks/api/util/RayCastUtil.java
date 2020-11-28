@@ -119,7 +119,7 @@ public class RayCastUtil {
         return pointedEntity;
     }
 
-    public MovingObjectPosition rayTrace(Entity entity,float yaw, float pitch, float reach) {
+    public MovingObjectPosition rayTrace(Entity entity, float yaw, float pitch, float reach) {
         Vec3 vec3 = entity.getPositionEyes(1F);
         Vec3 vec31 = getLook(yaw, pitch);
         Vec3 vec32 = vec3.addVector(vec31.xCoord * reach, vec31.yCoord * reach, vec31.zCoord * reach);

@@ -163,21 +163,18 @@ public class RenderUtil {
 
     public void drawCircle(double x, double y, double radius, int color) {
         GL11.glPushMatrix();
-
         Color c = new Color(color);
-        GlStateManager.enableBlend();
-        GlStateManager.disableTexture2D();
-        GL11.glColor4f(c.getRed() / 255, c.getGreen() / 255, c.getBlue() / 255, c.getAlpha() / 255);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glDisable(GL11.GL_TEXTURE_2D);
+        GL11.glColor4d(c.getRed() / 255D, c.getGreen() / 255D, c.getBlue() / 255D, c.getAlpha() / 255D);
         GL11.glBegin(GL11.GL_POLYGON);
         for(int i = 0; i < 360; i++) {
             GL11.glVertex2d(x + Math.sin(i * Math.PI / 180) * radius, y + Math.cos(i * Math.PI / 180) * radius);
         }
         GL11.glEnd();
-
-        GL11.glColor4f(1,1,1,1);
-        GlStateManager.disableBlend();
-        GlStateManager.enableTexture2D();
-
+        GL11.glDisable(GL11.GL_BLEND);
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
+        GL11.glColor3f(1, 1, 1);
         GL11.glPopMatrix();
     }
 

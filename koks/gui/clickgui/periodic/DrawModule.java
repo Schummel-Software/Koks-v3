@@ -112,7 +112,9 @@ public class DrawModule {
                         }
                         break;
                 }
-            }else {
+            }
+        } else {
+            if(Koks.getKoks().clickGUIPE.settingMenu) {
                 int settingsSize = Koks.getKoks().clickGUIPE.settingsSize;
                 int x = Koks.getKoks().clickGUIPE.x;
                 int y = Koks.getKoks().clickGUIPE.y;

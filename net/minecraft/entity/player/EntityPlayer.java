@@ -173,12 +173,12 @@ public abstract class EntityPlayer extends EntityLivingBase {
     /**
      * This is the item that is in use when the player is holding down the useItemButton (e.g., bow, food, sword)
      */
-    private ItemStack itemInUse;
+    public ItemStack itemInUse;
 
     /**
      * This field starts off equal to getMaxItemUseDuration and is decremented on each tick
      */
-    private int itemInUseCount;
+    public int itemInUseCount;
     public float speedOnGround = 0.1F;
     public float speedInAir = 0.02F;
     private int lastXPSound;
@@ -419,7 +419,7 @@ public abstract class EntityPlayer extends EntityLivingBase {
     /**
      * Plays sounds and makes particles for item in use state
      */
-    protected void updateItemUse(ItemStack itemStackIn, int p_71010_2_) {
+    public void updateItemUse(ItemStack itemStackIn, int p_71010_2_) {
         if (itemStackIn.getItemUseAction() == EnumAction.DRINK) {
             this.playSound("random.drink", 0.5F, this.worldObj.rand.nextFloat() * 0.1F + 0.9F);
         }
@@ -449,7 +449,7 @@ public abstract class EntityPlayer extends EntityLivingBase {
     /**
      * Used for when item use count runs out, ie: eating completed
      */
-    protected void onItemUseFinish() {
+    public void onItemUseFinish() {
         if (this.itemInUse != null) {
             this.updateItemUse(this.itemInUse, 16);
             int i = this.itemInUse.stackSize;

@@ -860,7 +860,6 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
                 currentScroll = 0;
 
             int maxScroll = (changes.size() + 2) * (fontRendererObj.FONT_HEIGHT) + 5;
-            System.out.println(currentScroll);
             if(currentScroll <= -maxScroll)
                 currentScroll = -maxScroll;
 

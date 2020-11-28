@@ -29,25 +29,21 @@ public class Tracers extends Module {
     @Override
     public void onEvent(Event event) {
         if (event instanceof EventRender3D) {
-            try {
-                for (Entity entity : getWorld().loadedEntityList) {
-                    if (entity instanceof EntityPlayer && entity != getPlayer() && !entity.isInvisible()) {
-                        GL11.glPushMatrix();
+            for (Entity entity : getWorld().loadedEntityList) {
+                if (entity instanceof EntityPlayer && entity != getPlayer() && !entity.isInvisible()) {
+                    GL11.glPushMatrix();
 
-                        GL11.glDisable(GL11.GL_TEXTURE_2D);
-                        GL11.glDisable(GL11.GL_DEPTH_TEST);
-                        GL11.glLineWidth(width.getCurrentValue());
+                    GL11.glDisable(GL11.GL_TEXTURE_2D);
+                    GL11.glDisable(GL11.GL_DEPTH_TEST);
+                    GL11.glLineWidth(width.getCurrentValue());
 
-                        drawLine(entity, Koks.getKoks().clientColor);
+                    drawLine(entity, Koks.getKoks().clientColor);
 
-                        GL11.glEnable(GL11.GL_DEPTH_TEST);
-                        GL11.glEnable(GL11.GL_TEXTURE_2D);
+                    GL11.glEnable(GL11.GL_DEPTH_TEST);
+                    GL11.glEnable(GL11.GL_TEXTURE_2D);
 
-                        GL11.glPopMatrix();
-                    }
+                    GL11.glPopMatrix();
                 }
-            } catch (NullPointerException ex) {
-                ex.printStackTrace();
             }
         }
     }
@@ -64,7 +60,7 @@ public class Tracers extends Module {
             if (scoreplayerteam != null) {
                 String s = FontRenderer.getFormatFromString(scoreplayerteam.getColorPrefix());
                 if (s.length() >= 2) {
-                    if (mc.getRenderManager().getFontRenderer().getColorCode(s.charAt(1)) != 0)
+                    if (mc.getRenderManager().getFontRenderer() != null && mc.getRenderManager().getFontRenderer().getColorCode(s.charAt(1)) != 0)
                         i = mc.getRenderManager().getFontRenderer().getColorCode(s.charAt(1));
                 }
             }

@@ -115,7 +115,7 @@ public class Scaffold extends Module {
                     curPitch = getPlayer().onGround || staticPitch.isToggled() ? pitch.getCurrentValue() : rotation[1];
                 }
                 MovingObjectPosition ray = rayCastUtil.rayCastedBlock(curYaw, curPitch);
-                if (timeHelper.hasReached((long) delay.getCurrentValue()) && (ray != null && ray.getBlockPos().equals(blockPos) || !rayCast.isToggled())) {
+                if (timeHelper.hasReached((long) delay.getCurrentValue() + (getPlayer().onGround ? 0 : 20)) && (ray != null && ray.getBlockPos().equals(blockPos) || !rayCast.isToggled())) {
                     if (getPlayerController().onPlayerRightClick(getPlayer(), mc.theWorld, itemStack, blockPos, enumFacing, new Vec3(blockPos.getX(), blockPos.getY(), blockPos.getZ()))) {
                         getPlayer().motionX *= motion.getCurrentValue();
                         getPlayer().motionZ *= motion.getCurrentValue();

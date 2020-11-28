@@ -44,12 +44,14 @@ public class RotationUtil {
         }
     }
 
+    //SANTEX
+
     @BCompiler(aot = BCompiler.AOT.AGGRESSIVE)
     public float[] faceEntity(Entity entity, boolean mouseFix, boolean percentFix,  float currentYaw, float currentPitch, boolean smooth, float accuracy, float precision, float predictionMultiplier) {
         Vec3 rotations = getBestVector(entity, accuracy, precision);
 
         double x = rotations.xCoord - mc.thePlayer.posX;
-        double y = rotations.yCoord - (mc.thePlayer.posY + (double) mc.thePlayer.getEyeHeight());
+        double y = rotations.yCoord - (mc.thePlayer.posY + (double) mc.thePlayer.getEyeHeight()) + randomUtil.getRandomDouble(-0.1, 0.1);
         double z = rotations.zCoord - mc.thePlayer.posZ;
 
         double xDiff = (entity.posX - entity.prevPosX) * predictionMultiplier;
@@ -64,7 +66,9 @@ public class RotationUtil {
         float yawAngle = (float) (MathHelper.func_181159_b(z + zDiff, x + xDiff) * 180.0D / Math.PI) - 90.0F;
         float pitchAngle = (float) (-(MathHelper.func_181159_b(y, angle) * 180.0D / Math.PI));
 
-        float f = mc.gameSettings.mouseSensitivity * 0.6F + 0.2F;
+        //0.5 == 100% Mouse Sensitivity #HARDCODED
+        //0.8 -> Ausprobieren
+        float f = 0.5F * 0.8F + 0.2F;
         float f1 = f * f * f * (8.0F * 0.15F);
 
         float f2 = (float) ((yawAngle - currentYaw) * f1);
@@ -73,7 +77,7 @@ public class RotationUtil {
         float difYaw = yawAngle - currentYaw;
         float difPitch = pitchAngle - currentPitch;
 
-        float yaw = updateRotation(currentYaw + (mouseFix ? f2 * 0.15F : 0), yawAngle, smooth ? Math.abs(MathHelper.wrapAngleTo180_float(difYaw)) * 0.1F : 360);
+        float yaw = updateRotation(currentYaw + (mouseFix ? f2 * 0.15F: 0), yawAngle, smooth ? Math.abs(MathHelper.wrapAngleTo180_float(difYaw)) * 0.1F : 360);
         float pitch = updateRotation(currentPitch - (mouseFix ? f3 * 0.15F : 0), pitchAngle, smooth ? Math.abs(MathHelper.wrapAngleTo180_float(difPitch)) * 0.1F : 360);
 
         if(percentFix) {
@@ -81,7 +85,7 @@ public class RotationUtil {
             pitch -= pitch % f1;
         }
 
-        return new float[]{yaw, pitch >= 90 ? 90 : pitch <= -90 ? -90 : pitch};
+        return new float[]{yaw, MathHelper.clamp_float(pitch, -90, 90)};
     }
 
     public float[] faceBlock(BlockPos pos, float currentYaw, float currentPitch, float speed) {

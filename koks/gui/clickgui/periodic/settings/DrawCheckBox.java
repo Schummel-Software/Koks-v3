@@ -24,9 +24,9 @@ public class DrawCheckBox extends Element {
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-        renderUtil.drawRect(x,y - 5, x + 13, y+ 5, -1);
-        renderUtil.drawCircle(x + 13, y, 5D, -1);
-        renderUtil.drawCircle(x, y, 5D, -1);
+        renderUtil.drawRect(x,y - 5, x + 13, y+ 5, !setting.isToggled() ? Color.darkGray.getRGB() : -1);
+        renderUtil.drawCircle(x + 13, y, 5D, !setting.isToggled() ? Color.darkGray.getRGB() : -1);
+        renderUtil.drawCircle(x, y, 5D, !setting.isToggled() ? Color.darkGray.getRGB() : -1);
 
         if(animation.getX() == 0)
             animation.setX(x + (setting.isToggled() ? 13 : 0));
