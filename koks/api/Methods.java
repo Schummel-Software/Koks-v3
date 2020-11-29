@@ -18,99 +18,107 @@ import net.minecraft.world.World;
  * @author Deleteboys | lmao | kroko
  * @created on 13.09.2020 : 11:23
  */
-public class Methods {
+public interface Methods {
 
-    public final Console console = new Console();
+    Console console = new Console();
 
-    public final Minecraft mc = Minecraft.getMinecraft();
+    Minecraft mc = Minecraft.getMinecraft();
 
-    public EntityPlayerSP getPlayer() {
+    default EntityPlayerSP getPlayer() {
         return mc.thePlayer;
     }
 
-    public void sendPacket(Packet<?> packet) {
+    default void sendPacket(Packet<?> packet) {
         getPlayer().sendQueue.addToSendQueue(packet);
     }
 
-    public void sendPacketUnlogged(Packet<?> packet) {
+    default void sendPacketUnlogged(Packet<?> packet) {
         getPlayer().sendQueue.addToSendQueueUnlogged(packet);
     }
 
-    public PlayerControllerMP getPlayerController() {
+    default PlayerControllerMP getPlayerController() {
         return mc.playerController;
     }
 
-    public World getWorld() {
+    default World getWorld() {
         return mc.theWorld;
     }
 
-    public GameSettings getGameSettings() {
+    default GameSettings getGameSettings() {
         return mc.gameSettings;
     }
 
-    public BlockPos getPosition() {
+    default BlockPos getPosition() {
         return getPlayer().getPosition();
     }
 
-    public double getX() {
+    default double getX() {
         return getPlayer().posX;
     }
 
-    public double getY() {
+    default double getY() {
         return getPlayer().posY;
     }
 
-    public double getZ() {
+    default double getZ() {
         return getPlayer().posZ;
     }
 
-    public Timer getTimer() {
+    default Timer getTimer() {
         return mc.timer;
     }
 
-    public int getHurtTime() {
+    default int getHurtTime() {
         return mc.thePlayer.hurtTime;
     }
 
-    public boolean isMoving() {
+    default boolean isMoving() {
         return getPlayer().moveForward != 0 || getPlayer().moveStrafing != 0;
     }
 
-    public double getDirection() {
+    default double getDirection() {
         return Math.toRadians(getPlayer().rotationYaw);
     }
 
-    public void sendmsg(String msg, boolean prefix) {
+    default float getYaw() {
+        return getPlayer().renderYawOffset;
+    }
+
+    default float getPitch() {
+        return getPlayer().rotationPitchHead;
+    }
+
+    default void sendmsg(String msg, boolean prefix) {
         mc.thePlayer.addChatMessage(new ChatComponentText((prefix ? Koks.getKoks().PREFIX : "") + msg));
     }
 
-    public void setMotion(double motion) {
+    default void setMotion(double motion) {
         getPlayer().motionX = getPlayer().motionZ = 0;
     }
 
-    public void sendURL(String msg, String url, boolean underline, boolean prefix) {
+    default void sendURL(String msg, String url, boolean underline, boolean prefix) {
         IChatComponent chatComponent = new ChatComponentText((prefix ? Koks.getKoks().PREFIX : "") + msg);
         chatComponent.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, url));
         chatComponent.getChatStyle().setUnderlined(underline);
         mc.thePlayer.addChatMessage(chatComponent);
     }
 
-    public void sendError(String type, String solution) {
+    default void sendError(String type, String solution) {
         sendmsg("§c§lERROR §e" + type.toUpperCase() + "§7: §f" + solution, true);
     }
 
-    public Koks getKoks() {
+    default Koks getKoks() {
         return Koks.getKoks();
     }
 
-    public void pushPlayer(double push) {
+    default void pushPlayer(double push) {
         double x = -Math.sin(getDirection());
         double z = Math.cos(getDirection());
         mc.thePlayer.motionX = x * push;
         mc.thePlayer.motionZ = z * push;
     }
 
-    public void debugEntity(Entity finalEntity) {
+    default void debugEntity(Entity finalEntity) {
         System.out.println("----DEBUG----");
         System.out.println("Name: " + finalEntity.getName());
         System.out.println("ExistTime: " + finalEntity.ticksExisted);
@@ -138,12 +146,12 @@ public class Methods {
         System.out.println("MaxFallHeight: " + finalEntity.getMaxFallHeight());
     }
 
-    public void setPosition(double x, double y, double z, boolean ground) {
+    default void setPosition(double x, double y, double z, boolean ground) {
         getPlayer().setPosition(x, y, z);
         getPlayer().sendQueue.addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(x, y, z, ground));
     }
 
-    public void changePosition(double x, double y, double z) {
+    default void changePosition(double x, double y, double z) {
         mc.thePlayer.setPosition(mc.thePlayer.posX + x, mc.thePlayer.posY + y, mc.thePlayer.posZ + z);
         getPlayer().sendQueue.addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX + x, mc.thePlayer.posY + y, mc.thePlayer.posZ + z, getPlayer().onGround));
     }
@@ -153,7 +161,7 @@ public class Methods {
         mc.thePlayer.motionZ = 0;
     }*/
 
-    public boolean validEntityName(Entity entity) {
+    default boolean validEntityName(Entity entity) {
         if (!(entity instanceof EntityPlayer))
             return true;
         String name = entity.getName();

@@ -2,6 +2,7 @@ package koks.filemanager.impl;
 
 import koks.Koks;
 import koks.filemanager.Files;
+import koks.filemanager.IFile;
 
 import java.io.BufferedReader;
 import java.io.FileWriter;
@@ -11,11 +12,8 @@ import java.io.IOException;
  * @author kroko
  * @created on 06.10.2020 : 21:20
  */
+@IFile(name = "api-keys")
 public class AlteningToken extends Files {
-
-    public AlteningToken() {
-        super("api-keys");
-    }
 
     @Override
     public void readFile(BufferedReader bufferedReader) throws IOException {
@@ -29,12 +27,10 @@ public class AlteningToken extends Files {
                 }
             }
         }
-        bufferedReader.close();
     }
 
     @Override
     public void writeFile(FileWriter fileWriter) throws IOException {
         fileWriter.write("apiToken:" + Koks.getKoks().alteningApiKey);
-        fileWriter.close();
     }
 }

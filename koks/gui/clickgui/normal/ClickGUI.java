@@ -7,6 +7,7 @@ import koks.module.Module;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.ScaledResolution;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -35,6 +36,8 @@ public class ClickGUI extends GuiScreen {
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+        ScaledResolution scaledResolution = new ScaledResolution(mc);
+        drawString(fontRendererObj, "§aby Herokot", scaledResolution.getScaledWidth() - fontRendererObj.getStringWidth("by Herokot"), scaledResolution.getScaledHeight() - fontRendererObj.FONT_HEIGHT, -1);
         for (DrawCategory drawCategory : drawCategories) {
             if (!drawCategory.category.equals(Module.Category.DEBUG) || Koks.getKoks().CLManager.getUser().getRole().equals(Role.Developer))
                 drawCategory.drawScreen(mouseX, mouseY, partialTicks);

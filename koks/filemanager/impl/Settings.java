@@ -4,6 +4,7 @@ import com.sun.org.apache.xpath.internal.operations.Mod;
 import koks.Koks;
 import koks.api.settings.Setting;
 import koks.filemanager.Files;
+import koks.filemanager.IFile;
 import koks.module.Module;
 
 import java.awt.*;
@@ -15,11 +16,8 @@ import java.io.IOException;
  * @author kroko
  * @created on 21.10.2020 : 05:34
  */
+@IFile(name = "settings")
 public class Settings extends Files {
-
-    public Settings() {
-        super("settings");
-    }
 
     @Override
     public void readFile(BufferedReader bufferedReader) throws IOException {
@@ -52,7 +50,6 @@ public class Settings extends Files {
                 }
             }
         }
-        bufferedReader.close();
     }
 
     @Override
@@ -85,6 +82,5 @@ public class Settings extends Files {
                 }
             }
         }
-        fileWriter.close();
     }
 }

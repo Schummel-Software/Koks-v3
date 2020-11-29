@@ -47,42 +47,44 @@ public class RotationUtil {
     //SANTEX
 
     @BCompiler(aot = BCompiler.AOT.AGGRESSIVE)
-    public float[] faceEntity(Entity entity, boolean mouseFix, boolean percentFix,  float currentYaw, float currentPitch, boolean smooth, float accuracy, float precision, float predictionMultiplier) {
+    public float[] faceEntity(Entity entity, boolean mouseFix, float currentYaw, float currentPitch, boolean smooth, float accuracy, float precision, float predictionMultiplier) {
         Vec3 rotations = getBestVector(entity, accuracy, precision);
 
         double x = rotations.xCoord - mc.thePlayer.posX;
-        double y = rotations.yCoord - (mc.thePlayer.posY + (double) mc.thePlayer.getEyeHeight()) + randomUtil.getRandomDouble(-0.1, 0.1);
+        double y = rotations.yCoord - (mc.thePlayer.posY + (double) mc.thePlayer.getEyeHeight()) + randomUtil.getRandomDouble(-0.05, 0.05);
         double z = rotations.zCoord - mc.thePlayer.posZ;
 
         double xDiff = (entity.posX - entity.prevPosX) * predictionMultiplier;
         double zDiff = (entity.posZ - entity.prevPosZ) * predictionMultiplier;
 
-        double distance = mc.thePlayer.getDistanceToEntity(entity);
-
-        if (distance < 0.05)
-            return new float[]{currentYaw, currentPitch};
-
+        float range = entity.getDistanceToEntity(mc.thePlayer);
         double angle = MathHelper.sqrt_double(x * x + z * z);
-        float yawAngle = (float) (MathHelper.func_181159_b(z + zDiff, x + xDiff) * 180.0D / Math.PI) - 90.0F;
-        float pitchAngle = (float) (-(MathHelper.func_181159_b(y, angle) * 180.0D / Math.PI));
+        float yawAngle = (float) ((float) (MathHelper.func_181159_b(z + zDiff, x + xDiff) * 180.0D / Math.PI) - 90.0F + randomUtil.getRandomGaussian(randomUtil.getRandomDouble(0.6, 1.1) / range));
+        float pitchAngle = (float) (-(MathHelper.func_181159_b(y, angle) * 180.0D / Math.PI) + randomUtil.getRandomGaussian(randomUtil.getRandomDouble(0.6, 1.1) / range));
 
         //0.5 == 100% Mouse Sensitivity #HARDCODED
         //0.8 -> Ausprobieren
         float f = 0.5F * 0.8F + 0.2F;
-        float f1 = f * f * f * (8.0F * 0.15F);
+        float f1 = (float) (Math.pow(f, 3) * 1.5F);
 
-        float f2 = (float) ((yawAngle - currentYaw) * f1);
-        float f3 = (float) ((pitchAngle - currentPitch) * f1);
+        int deltaX = (int) (yawAngle - currentYaw);
+        int deltaY = (int) (pitchAngle - currentPitch);
+
+        float f2 = (float) deltaX * f1;
+        float f3 = (float) deltaY * f1;
 
         float difYaw = yawAngle - currentYaw;
         float difPitch = pitchAngle - currentPitch;
 
-        float yaw = updateRotation(currentYaw + (mouseFix ? f2 * 0.15F: 0), yawAngle, smooth ? Math.abs(MathHelper.wrapAngleTo180_float(difYaw)) * 0.1F : 360);
-        float pitch = updateRotation(currentPitch - (mouseFix ? f3 * 0.15F : 0), pitchAngle, smooth ? Math.abs(MathHelper.wrapAngleTo180_float(difPitch)) * 0.1F : 360);
+        float yaw = updateRotation(currentYaw, yawAngle, smooth ? Math.abs(MathHelper.wrapAngleTo180_float(difYaw)) * 0.1F : 360);
+        float pitch = updateRotation(currentPitch, pitchAngle, smooth ? Math.abs(MathHelper.wrapAngleTo180_float(difPitch)) * 0.1F : 360);
 
-        if(percentFix) {
+        if (mouseFix) {
             yaw -= yaw % f1;
-            pitch -= pitch % f1;
+            pitch -= yaw % f1;
+
+            mc.thePlayer.prevRotationPitch += yaw - f;
+            mc.thePlayer.prevRotationYaw += pitch - f1;
         }
 
         return new float[]{yaw, MathHelper.clamp_float(pitch, -90, 90)};
@@ -104,24 +106,36 @@ public class RotationUtil {
 
         //TODO: Besserer Mouse Sensi Fix da er auf Verus Kickt
 
-        float yaw = updateRotation(currentYaw , calcYaw, speed);
+        float f = 0.5F * 0.8F + 0.2F;
+        float f1 = (float) (Math.pow(f, 3) * (8.0 * 0.15F));
+
+        int deltaX = (int) (calcYaw - currentYaw);
+        int deltaY = (int) (calcPitch - currentPitch);
+
+        float f2 = (float) deltaX * f1;
+        float f3 = (float) deltaY * f1;
+
+        float yaw = updateRotation(currentYaw, calcYaw, speed);
         float pitch = updateRotation(currentPitch, calcPitch, speed);
 
+        yaw -= yaw % f1;
+        pitch -= yaw % f1;
 
-        return new float[]{yaw, pitch >= 90 ? 90 : pitch <= -90 ? -90 : pitch};
+        mc.thePlayer.prevRotationPitch += yaw - f;
+        mc.thePlayer.prevRotationYaw += pitch - f1;
+
+
+        return new float[]{yaw, MathHelper.clamp_float(pitch, -90, 90)};
     }
 
-    public float updateRotation(float curRot, float destination, float speed)
-    {
+    public float updateRotation(float curRot, float destination, float speed) {
         float f = MathHelper.wrapAngleTo180_float(destination - curRot);
 
-        if (f > speed)
-        {
+        if (f > speed) {
             f = speed;
         }
 
-        if (f < -speed)
-        {
+        if (f < -speed) {
             f = -speed;
         }
 

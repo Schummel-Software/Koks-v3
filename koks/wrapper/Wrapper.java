@@ -2,6 +2,7 @@ package koks.wrapper;
 
 import koks.api.Methods;
 import koks.api.util.*;
+import org.apache.commons.lang3.math.NumberUtils;
 
 /**
  * @author kroko
@@ -17,7 +18,7 @@ public class Wrapper {
     public final RayCastUtil rayCastUtil = new RayCastUtil();
     public final RenderUtil renderUtil = new RenderUtil();
     public final RotationUtil rotationUtil = new RotationUtil();
-    public final Methods methods = new Methods();
     public final InventoryUtil inventoryUtil = new InventoryUtil();
+    public final NumbersUtil numberUtil = new NumbersUtil();
 
 }

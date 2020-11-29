@@ -3,6 +3,7 @@ package koks.filemanager.impl;
 import com.sun.org.apache.xpath.internal.operations.Bool;
 import koks.Koks;
 import koks.filemanager.Files;
+import koks.filemanager.IFile;
 import koks.module.Module;
 
 import java.io.BufferedReader;
@@ -13,11 +14,8 @@ import java.io.IOException;
  * @author kroko
  * @created on 20.10.2020 : 15:20
  */
+@IFile(name = "toggle")
 public class Toggle extends Files {
-
-    public Toggle() {
-        super("toggle");
-    }
 
     @Override
     public void readFile(BufferedReader bufferedReader) throws IOException {
@@ -30,7 +28,6 @@ public class Toggle extends Files {
                 module.setBypass(Boolean.parseBoolean(split[2]));
             }
         }
-        bufferedReader.close();
     }
 
     @Override
@@ -38,6 +35,5 @@ public class Toggle extends Files {
         for(Module module : Koks.getKoks().moduleManager.getModules()) {
             fileWriter.write(module.getName() + ":" + module.isToggled() + ":" + module.isBypass() + "\n");
         }
-        fileWriter.close();
     }
 }

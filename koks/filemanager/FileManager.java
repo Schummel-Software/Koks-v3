@@ -1,6 +1,7 @@
 package koks.filemanager;
 
 import koks.Koks;
+import koks.api.Methods;
 import koks.filemanager.impl.AlteningToken;
 import koks.filemanager.impl.Settings;
 import koks.filemanager.impl.Toggle;
@@ -13,9 +14,8 @@ import java.util.ArrayList;
  * @author deleteboys | lmao | kroko
  * @created on 13.09.2020 : 04:10
  */
-public class FileManager {
+public class FileManager implements Methods {
 
-    public final Minecraft mc = Minecraft.getMinecraft();
     public final File DIR = new File(mc.mcDataDir + "/" + Koks.getKoks().NAME + "/files");
     public ArrayList<Files> files = new ArrayList<>();
 
@@ -37,7 +37,9 @@ public class FileManager {
                     }
                 }
                 try {
-                    file.writeFile(new FileWriter(file.getFile()));
+                    FileWriter fileWriter = new FileWriter(file.getFile());
+                    file.writeFile(fileWriter);
+                    fileWriter.close();
                 } catch (IOException ignored) {
                 }
 
@@ -57,7 +59,9 @@ public class FileManager {
                 }
             }
             try {
-                file.writeFile(new FileWriter(file.getFile()));
+                FileWriter fileWriter = new FileWriter(file.getFile());
+                file.writeFile(fileWriter);
+                fileWriter.close();
             } catch (IOException ignored) {
             }
         }
@@ -78,7 +82,9 @@ public class FileManager {
                     }
                 }
                 try {
-                    file.readFile(new BufferedReader(new FileReader(file.getFile())));
+                    BufferedReader reader = new BufferedReader(new FileReader(file.getFile()));
+                    file.readFile(reader);
+                    reader.close();
                 } catch (IOException ignored) {
                 }
             }

@@ -211,6 +211,8 @@ public class EntityPlayerSP extends AbstractClientPlayer
         EventWalk walk = new EventWalk();
         Koks.getKoks().eventManager.onEvent(walk);
 
+        EventMotion eventMotion = this.eventMotion;
+
         boolean flag = this.isSprinting();
 
         if (flag != this.serverSprintState) {
@@ -239,10 +241,10 @@ public class EntityPlayerSP extends AbstractClientPlayer
             double d0 = this.posX - this.lastReportedPosX;
             double d1 = this.getEntityBoundingBox().minY - this.lastReportedPosY;
             double d2 = this.posZ - this.lastReportedPosZ;
-            double d3 = this.eventMotion.getYaw() - this.lastReportedYaw;
-            double d4 = this.eventMotion.getPitch() - this.lastReportedPitch;
-            double d31 = this.rotationYaw - this.lastReportedYaw;
-            double d41 = this.rotationPitch - this.lastReportedPitch;
+            double d3 = this.rotationYaw - this.lastReportedYaw;
+            double d4 = this.rotationPitch - this.lastReportedPitch;
+            double d31 = eventMotion.getYaw() - this.lastReportedYaw;
+            double d41 = eventMotion.getPitch() - this.lastReportedPitch;
             boolean flag2 = d0 * d0 + d1 * d1 + d2 * d2 > 9.0E-4D || this.positionUpdateTicks >= 20;
             boolean flag3 = d3 != 0.0D || d4 != 0.0D || d31 != 0.0D || d41 != 0.0D;
 
@@ -252,16 +254,16 @@ public class EntityPlayerSP extends AbstractClientPlayer
 
             if (this.ridingEntity == null) {
                 if (flag2 && flag3) {
-                    this.sendQueue.addToSendQueue(new C03PacketPlayer.C06PacketPlayerPosLook(this.posX, this.getEntityBoundingBox().minY, this.posZ, this.eventMotion.getYaw(), this.eventMotion.getPitch(), this.onGround));
+                    this.sendQueue.addToSendQueue(new C03PacketPlayer.C06PacketPlayerPosLook(this.posX, this.getEntityBoundingBox().minY, this.posZ, eventMotion.getYaw(), eventMotion.getPitch(), this.onGround));
                 } else if (flag2) {
                     this.sendQueue.addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(this.posX, this.getEntityBoundingBox().minY, this.posZ, this.onGround));
                 } else if (flag3) {
-                    this.sendQueue.addToSendQueue(new C03PacketPlayer.C05PacketPlayerLook(this.eventMotion.getYaw(), this.eventMotion.getPitch(), this.onGround));
+                    this.sendQueue.addToSendQueue(new C03PacketPlayer.C05PacketPlayerLook(eventMotion.getYaw(), eventMotion.getPitch(), this.onGround));
                 } else {
                     this.sendQueue.addToSendQueue(new C03PacketPlayer(this.onGround));
                 }
             } else {
-                this.sendQueue.addToSendQueue(new C03PacketPlayer.C06PacketPlayerPosLook(this.motionX, -999.0D, this.motionZ, this.eventMotion.getYaw(), this.eventMotion.getPitch(), this.onGround));
+                this.sendQueue.addToSendQueue(new C03PacketPlayer.C06PacketPlayerPosLook(this.motionX, -999.0D, this.motionZ, eventMotion.getYaw(), eventMotion.getPitch(), this.onGround));
                 flag2 = false;
             }
 
@@ -275,11 +277,11 @@ public class EntityPlayerSP extends AbstractClientPlayer
             }
 
             if (flag3) {
-                this.lastReportedYaw = this.eventMotion.getYaw();
-                this.lastReportedPitch = this.eventMotion.getPitch();
+                this.lastReportedYaw = eventMotion.getYaw();
+                this.lastReportedPitch = eventMotion.getPitch();
             }
         }
-        EventMotion eventMotionPost = new EventMotion(EventMotion.Type.POST,this.eventMotion.getYaw(),this.eventMotion.getPitch());
+        EventMotion eventMotionPost = new EventMotion(EventMotion.Type.POST,eventMotion.getYaw(),eventMotion.getPitch());
         Koks.getKoks().eventManager.onEvent(eventMotionPost);
     }
 

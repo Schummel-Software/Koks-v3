@@ -133,6 +133,7 @@ import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.entity.item.EntityPainting;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.event.ClickEvent;
 import net.minecraft.init.Bootstrap;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -155,21 +156,7 @@ import net.minecraft.stats.AchievementList;
 import net.minecraft.stats.IStatStringFormat;
 import net.minecraft.stats.StatFileWriter;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.FrameTimer;
-import net.minecraft.util.IThreadListener;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.MinecraftError;
-import net.minecraft.util.MouseHelper;
-import net.minecraft.util.MovementInputFromOptions;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.ReportedException;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.ScreenShotHelper;
-import net.minecraft.util.Session;
-import net.minecraft.util.Timer;
-import net.minecraft.util.Util;
+import net.minecraft.util.*;
 import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.WorldProviderEnd;
 import net.minecraft.world.WorldProviderHell;
@@ -1596,6 +1583,18 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
     /**
      * Runs the current tick.
      */
+
+    private void sendmsg(String msg, boolean prefix) {
+        this.thePlayer.addChatMessage(new ChatComponentText((prefix ? Koks.getKoks().PREFIX : "") + msg));
+    }
+
+    private void sendURL(String msg, String url, boolean underline, boolean prefix) {
+        IChatComponent chatComponent = new ChatComponentText((prefix ? Koks.getKoks().PREFIX : "") + msg);
+        chatComponent.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, url));
+        chatComponent.getChatStyle().setUnderlined(underline);
+        this.thePlayer.addChatMessage(chatComponent);
+    }
+
     public void runTick() throws IOException {
 
         if(theWorld != null) {
@@ -1605,10 +1604,9 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
 
         if (theWorld != null) {
             if (Koks.getKoks().isNew) {
-                Methods methods = Koks.getKoks().wrapper.methods;
-                methods.sendmsg("§aWelcome to Koks!", true);
-                methods.sendURL("§aPlease join the Discord server! §7(§cClick§7)", "https://discord.gg/dZPjSBFMC7", false, true);
-                methods.sendmsg("§aYou can open the ClickGUI with §e" + Keyboard.getKeyName(Koks.getKoks().moduleManager.getModule(ClickGui.class).getKey()).toUpperCase(), true);
+                sendmsg("§aWelcome to Koks!", true);
+                sendURL("§aPlease join the Discord server! §7(§cClick§7)", "https://discord.gg/dZPjSBFMC7", false, true);
+                sendmsg("§aYou can open the ClickGUI with §e" + Keyboard.getKeyName(Koks.getKoks().moduleManager.getModule(ClickGui.class).getKey()).toUpperCase(), true);
                 Koks.getKoks().isNew = false;
             }
         }

@@ -16,6 +16,7 @@ import org.lwjgl.input.Keyboard;
 public class ClickGui extends Module {
 
     public Setting mode = new Setting("Mode", new String[]{"Panel", "PSE"}, "Panel", this);
+    public Setting fakeCredits = new Setting("Fake Credits", true, this);
 
     @Override
     public void onEvent(Event event) {

@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author deleteboys | lmao | kroko
  * @created on 12.09.2020 : 20:36
  */
-public abstract class Module extends Methods {
+public abstract class Module implements Methods {
 
     private String name, description, info = "";
     private int key;
@@ -35,6 +35,7 @@ public abstract class Module extends Methods {
     public RenderUtil renderUtil;
     public RotationUtil rotationUtil;
     public InventoryUtil inventoryUtil;
+    public NumbersUtil numbersUtil;
 
     public Module() {
         ModuleInfo moduleInfo = getClass().getAnnotation(ModuleInfo.class);
@@ -52,6 +53,7 @@ public abstract class Module extends Methods {
         renderUtil = Koks.getKoks().wrapper.renderUtil;
         rotationUtil = Koks.getKoks().wrapper.rotationUtil;
         inventoryUtil = Koks.getKoks().wrapper.inventoryUtil;
+        numbersUtil = Koks.getKoks().wrapper.numberUtil;
 
         /* for(Field field : getClass().getDeclaredFields()) {
             try{

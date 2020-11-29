@@ -9,7 +9,7 @@ import net.minecraft.util.ChatComponentText;
  * @author deleteboys | lmao | kroko
  * @created on 12.09.2020 : 20:47
  */
-public abstract class Command extends Methods {
+public abstract class Command implements Methods {
 
     public String name,alias;
 

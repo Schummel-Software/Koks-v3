@@ -49,7 +49,7 @@ public class AimBot extends Module {
             if (((EventMotion) event).getType() == EventMotion.Type.PRE) {
 
                 if (finalEntity != null) {
-                    float[] rots = rotationUtil.faceEntity(finalEntity, true, false, curYaw, curPitch, smooth.isToggled(), 0.3F, 0.1F, 0.4F);
+                    float[] rots = rotationUtil.faceEntity(finalEntity, true, curYaw, curPitch, smooth.isToggled(), 0.3F, 0.1F, 0.4F);
                     ((EventMotion) event).setYaw(rots[0]);
                     ((EventMotion) event).setPitch(rots[1]);
                     curYaw = ((EventMotion) event).getYaw();
