@@ -29,6 +29,10 @@ public class Blink extends Module {
 
     @Override
     public void onEvent(Event event) {
+
+        if (!this.isToggled())
+            return;
+
         if(event instanceof EventPacket) {
             if(((EventPacket) event).getType() == EventPacket.Type.SEND) {
                 Packet<?> packet = ((EventPacket) event).getPacket();

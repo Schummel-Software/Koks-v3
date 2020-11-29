@@ -51,6 +51,9 @@ public class HUD extends Module {
     @Override
     public void onEvent(Event event) {
 
+        if (!this.isToggled())
+            return;
+
         if (event instanceof EventTick) {
             if (Koks.getKoks().CLManager.getUser().getRole() != Role.Developer) {
                 waterMarkFont.setTyped("NONE");

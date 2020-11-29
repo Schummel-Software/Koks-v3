@@ -41,6 +41,10 @@ public class Fly extends Module {
     @BCompiler(aot = BCompiler.AOT.AGGRESSIVE)
     @Override
     public void onEvent(Event event) {
+
+        if (!this.isToggled())
+            return;
+
         if (event instanceof EventUpdate) {
             String extra = mode.getCurrentMode().equalsIgnoreCase("AAC3.3.12") ? " [" + aac3312boost.getCurrentValue() + "]" : "";
             setInfo(mode.getCurrentMode() + extra);

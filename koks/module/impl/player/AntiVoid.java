@@ -20,6 +20,10 @@ public class AntiVoid extends Module {
 
     @Override
     public void onEvent(Event event) {
+
+        if (!this.isToggled())
+            return;
+
         if (event instanceof EventUpdate) {
             switch (mode.getCurrentMode()) {
                 case "AAC1.9.10":

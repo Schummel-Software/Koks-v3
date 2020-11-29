@@ -22,6 +22,10 @@ public class GodMode extends Module {
     @BCompiler(aot = BCompiler.AOT.AGGRESSIVE)
     @Override
     public void onEvent(Event event) {
+
+        if (!this.isToggled())
+            return;
+
         switch (mode.getCurrentMode()) {
             case "Intave Border":
                 if (event instanceof EventHeadLook) {

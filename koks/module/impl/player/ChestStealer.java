@@ -26,6 +26,10 @@ public class ChestStealer extends Module {
 
     @Override
     public void onEvent(Event event) {
+
+        if (!this.isToggled())
+            return;
+
         if (event instanceof EventUpdate) {
             setInfo(Math.round(takeDelay.getCurrentValue()) + "");
             if (mc.currentScreen instanceof GuiChest) {

@@ -20,6 +20,10 @@ public class CivBreak extends Module {
 
     @Override
     public void onEvent(Event event) {
+
+        if (!this.isToggled())
+            return;
+
         if (event instanceof EventUpdate) {
             if (mc.objectMouseOver != null && mc.objectMouseOver.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
                 if (getGameSettings().keyBindAttack.pressed) {

@@ -29,14 +29,20 @@ public class Debug extends Module {
     @BCompiler(aot = BCompiler.AOT.AGGRESSIVE)
     @Override
     public void onEvent(Event event) {
+
+        if (!this.isToggled())
+            return;
+
         if (event instanceof EventUpdate) {
 
-
-
+           /* if(timeHelper.hasReached(3000)) {
+                getPlayer().sendChatMessage(randomUtil.getRandomInt(0, 1000) + " - Join Now - MasterOf13FPS - https://discord.gg/ZH5QdUqVwN");
+                timeHelper.reset();
+            }*/
 
             /*getPlayer().isInWeb = false;*/
 
-           /* if (getPlayer().isOnLadder() && getPlayer().isCollidedHorizontally && !getPlayer().onGround) {
+            /* if (getPlayer().isOnLadder() && getPlayer().isCollidedHorizontally && !getPlayer().onGround) {
                 if (timeHelper.hasReached(550)) {
                     getPlayer().motionY = 0.55F;
                     timeHelper.reset();

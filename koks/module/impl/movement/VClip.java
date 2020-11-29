@@ -26,6 +26,10 @@ public class VClip extends Module {
 
     @Override
     public void onEvent(Event event) {
+
+        if (!this.isToggled())
+            return;
+
         if (event instanceof EventUpdate) {
             if (stuck.isToggled())
                 mc.thePlayer.motionY = 0;

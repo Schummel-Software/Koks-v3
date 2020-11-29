@@ -44,6 +44,10 @@ public class BedFucker extends Module {
 
     @Override
     public void onEvent(Event event) {
+
+        if (!this.isToggled())
+            return;
+
         if (event instanceof EventMotion) {
             if (curPos != null) {
                 if (((EventMotion) event).getType() == EventMotion.Type.PRE) {

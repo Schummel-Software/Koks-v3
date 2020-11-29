@@ -30,6 +30,9 @@ public class TrailESP extends Module {
     @Override
     public void onEvent(Event event) {
 
+        if (!this.isToggled())
+            return;
+
         if (event instanceof EventRender3D) {
             if (mc.gameSettings.thirdPersonView != 0 || inFirstPerson.isToggled()) {
                 GL11.glPushMatrix();

@@ -15,6 +15,9 @@ public class Criticals extends Module {
 
     @Override
     public void onEvent(Event event) {
+        if (!this.isToggled())
+            return;
+
         if (event instanceof EventUpdate) {
             if (getPlayer().onGround)
                 getPlayer().jump();

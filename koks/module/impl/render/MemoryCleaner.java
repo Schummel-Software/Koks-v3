@@ -20,20 +20,20 @@ public class MemoryCleaner extends Module {
 
     @Override
     public void onEvent(Event event) {
+
+        if (!this.isToggled())
+            return;
+
         if (event instanceof EventUpdate) {
 
             setInfo(memorySize.getCurrentMode() + "," + minutes.getCurrentValue());
 
             if (timeHelper.hasReached((long) (60000 * minutes.getCurrentValue()))) {
 
+                long totalMemory = Runtime.getRuntime().totalMemory();
+
                 String mode = memorySize.getCurrentMode();
                 int memo = mode.equalsIgnoreCase("Byte") ? 0 : mode.equalsIgnoreCase("Kilobyte") ? 1 : mode.equalsIgnoreCase("Megabyte") ? 2 : mode.equalsIgnoreCase("Gigabyte") ? 3 : mode.equalsIgnoreCase("Terabyte") ? 4 : mode.equalsIgnoreCase("Petabyte") ? 5 : mode.equalsIgnoreCase("Exabyte") ? 6 : 0;
-
-                double memory = Math.round((Runtime.getRuntime().totalMemory() / Math.pow(1024.0, memo) * 100));
-                double roundedMemory = memory / 100;
-                String gigabyte = roundedMemory + "§f" + memorySize.getCurrentMode().substring(0, 1).toUpperCase() + "B";
-
-                sendmsg("§aCleared §e" + (memo != 0 ? gigabyte : Runtime.getRuntime().totalMemory() + "§fB"), true);
 
                 Thread clearMemory = new Thread("clearMemory") {
                     public void run() {
@@ -42,6 +42,16 @@ public class MemoryCleaner extends Module {
                     }
                 };
                 clearMemory.start();
+
+                long currentMemory = Runtime.getRuntime().totalMemory();
+                long removedMemory = Math.abs(totalMemory - currentMemory);
+
+                double memory = Math.round((removedMemory / Math.pow(1024.0, memo) * 100));
+                double roundedMemory = memory / 100;
+                String gigabyte = roundedMemory + "§f" + memorySize.getCurrentMode().substring(0, 1).toUpperCase() + "B";
+
+                sendmsg("§aCleared §e" + (memo != 0 ? gigabyte : removedMemory + "§fB"), true);
+
                 timeHelper.reset();
             }
         }

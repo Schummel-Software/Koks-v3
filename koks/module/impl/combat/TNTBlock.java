@@ -28,6 +28,10 @@ public class TNTBlock extends Module {
 
     @Override
     public void onEvent(Event event) {
+
+        if (!this.isToggled())
+            return;
+
         if (event instanceof EventUpdate) {
             if(getPlayer().getCurrentEquippedItem() != null) {
                 for (Entity entity : getWorld().loadedEntityList) {

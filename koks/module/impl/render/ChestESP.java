@@ -30,6 +30,10 @@ public class ChestESP extends Module {
 
     @Override
     public void onEvent(Event event) {
+
+        if (!this.isToggled())
+            return;
+
         if(event instanceof EventOutline) {
             ((EventOutline) event).setOutline(espMode.getCurrentMode().equalsIgnoreCase("Shader"));
         }

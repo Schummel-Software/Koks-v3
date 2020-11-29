@@ -21,6 +21,10 @@ public class WallSpeed extends Module {
 
     @Override
     public void onEvent(Event event) {
+
+        if (!this.isToggled())
+            return;
+
         switch (mode.getCurrentMode()) {
             case "Intave":
                 if (event instanceof EventUpdate) {

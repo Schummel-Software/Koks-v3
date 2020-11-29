@@ -20,6 +20,10 @@ public class ClickGui extends Module {
 
     @Override
     public void onEvent(Event event) {
+
+        if (!this.isToggled())
+            return;
+
         if (mc.currentScreen == null) {
             switch (mode.getCurrentMode()) {
                 case "PSE":

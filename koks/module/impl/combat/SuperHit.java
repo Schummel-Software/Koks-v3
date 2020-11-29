@@ -28,6 +28,10 @@ public class SuperHit extends Module {
     @BCompiler(aot = BCompiler.AOT.AGGRESSIVE)
     @Override
     public void onEvent(Event event) {
+
+        if (!this.isToggled())
+            return;
+
         if (event instanceof EventMouseOver) {
             ((EventMouseOver) event).setReach(reach.getCurrentValue());
             ((EventMouseOver) event).setDistanceCheck(false);

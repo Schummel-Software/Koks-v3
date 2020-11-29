@@ -38,6 +38,9 @@ public class AimBot extends Module {
     @Override
     public void onEvent(Event event) {
 
+        if (!this.isToggled())
+            return;
+
         if (event instanceof EventWalk) {
             if (lockView.isToggled() && finalEntity != null) {
                 getPlayer().rotationYaw = curYaw;
@@ -58,17 +61,17 @@ public class AimBot extends Module {
             }
         }
 
-        if(event instanceof EventJump) {
+        if (event instanceof EventJump) {
             if (finalEntity != null) {
-                if(moveFix.isToggled()) {
+                if (moveFix.isToggled()) {
                     ((EventJump) event).setYaw(curYaw);
                 }
             }
         }
 
-        if(event instanceof EventMoveFlying) {
+        if (event instanceof EventMoveFlying) {
             if (finalEntity != null) {
-                if(moveFix.isToggled()) {
+                if (moveFix.isToggled()) {
                     ((EventMoveFlying) event).setYaw(curYaw);
                 }
             }
@@ -91,12 +94,12 @@ public class AimBot extends Module {
 
     public boolean isValid(Entity entity) {
         if (entity == mc.thePlayer) return false;
-        if(entity == null) return false;
-        if(entity.isInvisible())return false;
-        if(entity.isDead)return false;
-        if(!getWorld().loadedEntityList.contains(entity)) return false;
-        if(getPlayer().getDistanceToEntity(entity) > getPlayerController().getBlockReachDistance()) return false;
-        if(!(entity instanceof EntityLivingBase)) return false;
+        if (entity == null) return false;
+        if (entity.isInvisible()) return false;
+        if (entity.isDead) return false;
+        if (!getWorld().loadedEntityList.contains(entity)) return false;
+        if (getPlayer().getDistanceToEntity(entity) > getPlayerController().getBlockReachDistance()) return false;
+        if (!(entity instanceof EntityLivingBase)) return false;
         if (entity instanceof EntityPlayer && !player.isToggled()) return false;
         if (entity instanceof EntityArmorStand && !armorStands.isToggled()) return false;
         if (entity instanceof EntityAnimal && !animals.isToggled()) return false;

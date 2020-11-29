@@ -29,6 +29,10 @@ public class ShopSaver extends Module {
 
     @Override
     public void onEvent(Event event) {
+
+        if (!this.isToggled())
+            return;
+
         if (event instanceof EventPacket) {
             Packet<? extends INetHandler> packet = ((EventPacket) event).getPacket();
             if (packet instanceof C0DPacketCloseWindow || packet instanceof S2EPacketCloseWindow) {

@@ -15,6 +15,10 @@ public class NoRotate extends Module {
 
     @Override
     public void onEvent(Event event) {
+
+        if (!this.isToggled())
+            return;
+
         if(event instanceof EventHeadLook) {
             ((EventHeadLook) event).setF1(getPlayer().rotationYaw);
             ((EventHeadLook) event).setF2(getPlayer().rotationPitch);

@@ -15,6 +15,10 @@ public class NoBob extends Module {
 
     @Override
     public void onEvent(Event event) {
+
+        if (!this.isToggled())
+            return;
+
         if(event instanceof EventBobbing) {
             ((EventBobbing) event).setBobbing(0);
         }

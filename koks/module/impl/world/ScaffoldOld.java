@@ -78,6 +78,10 @@ public class ScaffoldOld extends Module {
     @BCompiler(aot = BCompiler.AOT.NORMAL)
     @Override
     public void onEvent(Event event) {
+
+        if (!this.isToggled())
+            return;
+
         if (event instanceof EventMotion) {
             if (((EventMotion) event).getType() == EventMotion.Type.PRE) {
                 ((EventMotion) event).setYaw(yaw);

@@ -20,6 +20,10 @@ public class NoCobweb extends Module {
 
     @Override
     public void onEvent(Event event) {
+
+        if (!this.isToggled())
+            return;
+
         if (event instanceof EventUpdate) {
             setInfo(mode.getCurrentMode());
             switch (mode.getCurrentMode()) {

@@ -27,6 +27,10 @@ public class FastBow extends Module {
     @BCompiler(aot = BCompiler.AOT.NORMAL)
     @Override
     public void onEvent(Event event) {
+
+        if (!this.isToggled())
+            return;
+
         if (event instanceof EventUpdate) {
             setInfo(mode.getCurrentMode() + (mode.getCurrentMode().equalsIgnoreCase("Vanilla") ? " " + strength.getCurrentValue() : ""));
             switch (mode.getCurrentMode()) {

@@ -24,6 +24,10 @@ public class BoatFly extends Module {
     @BCompiler(aot = BCompiler.AOT.NORMAL)
     @Override
     public void onEvent(Event event) {
+
+        if (!this.isToggled())
+            return;
+
         if(event instanceof EventUpdate) {
             String extra = Mode.getCurrentMode().equalsIgnoreCase("AAC4") ? " [" + AAC4Boost.getCurrentValue() + "]" : "";
             setInfo(Mode.getCurrentMode() + extra);

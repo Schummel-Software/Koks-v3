@@ -22,6 +22,10 @@ public class IceSpeed extends Module {
 
     @Override
     public void onEvent(Event event) {
+
+        if (!this.isToggled())
+            return;
+
         if (event instanceof EventUpdate) {
             Blocks.ice.slipperiness = slipperiness.getCurrentValue();
             Blocks.packed_ice.slipperiness = slipperiness.getCurrentValue();

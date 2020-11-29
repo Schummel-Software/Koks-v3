@@ -19,6 +19,10 @@ public class NoFov extends Module {
 
     @Override
     public void onEvent(Event event) {
+
+        if (!this.isToggled())
+            return;
+
         if(event instanceof EventUpdate) {
             setInfo(fov.getCurrentValue() + "");
         }

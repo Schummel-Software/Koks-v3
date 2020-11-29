@@ -46,6 +46,10 @@ public class InventoryCleaner extends Module {
 
     @Override
     public void onEvent(Event event) {
+
+        if (!this.isToggled())
+            return;
+
         if (event instanceof EventUpdate) {
 
             setInfo(Math.round(throwDelay.getCurrentValue()) + "");

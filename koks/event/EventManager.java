@@ -11,9 +11,7 @@ public class EventManager {
 
     public void onEvent(Event e) {
         for (Module module : Koks.getKoks().moduleManager.getModules()) {
-            if (module.isToggled()) {
-                module.onEvent(e);
-            }
+            module.onEvent(e);
         }
     }
 }

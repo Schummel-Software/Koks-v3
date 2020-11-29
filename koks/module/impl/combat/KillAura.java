@@ -102,6 +102,10 @@ public class KillAura extends Module {
 
     @Override
     public void onEvent(Event event) {
+
+        if (!this.isToggled())
+            return;
+
         if (event instanceof EventUpdate) {
             if(mc.currentScreen != null && noInvAttack.isToggled())
                 return;

@@ -14,6 +14,10 @@ import koks.module.ModuleInfo;
 public class Safewalk extends Module {
     @Override
     public void onEvent(Event event) {
+
+        if (!this.isToggled())
+            return;
+
         if(event instanceof EventSafeWalk) {
             if(getPlayer().onGround)((EventSafeWalk) event).setSafe(true);
         }

@@ -68,6 +68,10 @@ public class Scaffold extends Module {
 
     @Override
     public void onEvent(Event event) {
+
+        if (!this.isToggled())
+            return;
+
         if (event instanceof EventSafeWalk) {
             if (safeWalk.isToggled())
                 ((EventSafeWalk) event).setSafe(mc.thePlayer.onGround || !onlyGround.isToggled());

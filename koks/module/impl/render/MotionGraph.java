@@ -22,6 +22,9 @@ public class MotionGraph extends Module {
     @Override
     public void onEvent(Event event) {
 
+        if (!this.isToggled())
+            return;
+
         if (event instanceof EventRender2D) {
             ScaledResolution sr = new ScaledResolution(mc);
             GL11.glPushMatrix();

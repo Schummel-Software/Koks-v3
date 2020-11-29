@@ -16,6 +16,10 @@ public class AntiAim extends Module {
 
     @Override
     public void onEvent(Event event) {
+
+        if (!this.isToggled())
+            return;
+
         if (event instanceof EventMotion) {
             if (((EventMotion) event).getType() == EventMotion.Type.PRE) {
                 if (getPlayer().swingProgress == 0 && !getGameSettings().keyBindAttack.pressed && !getGameSettings().keyBindUseItem.pressed) {
