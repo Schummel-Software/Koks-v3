@@ -3,11 +3,14 @@ package koks.module.impl.movement;
 import koks.event.Event;
 import koks.event.impl.EventUpdate;
 import koks.module.Module;
+import koks.module.ModuleInfo;
 
 /**
  * @author kroko
  * @created on 30.11.2020 : 03:11
  */
+
+@ModuleInfo(name = "DoubleJump", category = Module.Category.MOVEMENT, description = "You can jump in the air")
 public class DoubleJump extends Module {
 
     @Override
