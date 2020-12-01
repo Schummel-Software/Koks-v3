@@ -57,21 +57,18 @@ public class RotationUtil {
         double xDiff = (entity.posX - entity.prevPosX) * predictionMultiplier;
         double zDiff = (entity.posZ - entity.prevPosZ) * predictionMultiplier;
 
+        float randomRot = randomUtil.getRandomFloat(0.6F, 1.1F);
+
         float range = entity.getDistanceToEntity(mc.thePlayer);
         double angle = MathHelper.sqrt_double(x * x + z * z);
-        float yawAngle = (float) ((float) (MathHelper.func_181159_b(z + zDiff, x + xDiff) * 180.0D / Math.PI) - 90.0F + randomUtil.getRandomGaussian(randomUtil.getRandomDouble(0.6, 1.1) / range));
-        float pitchAngle = (float) (-(MathHelper.func_181159_b(y, angle) * 180.0D / Math.PI) + randomUtil.getRandomGaussian(randomUtil.getRandomDouble(0.6, 1.1) / range));
+        float yawAngle = (float) ((float) ((float) (MathHelper.func_181159_b(z + zDiff, x + xDiff) * 180.0D / Math.PI) - 90.0F) + randomUtil.getRandomGaussian(randomRot / range));
+        float pitchAngle = (float) ((float) (-(MathHelper.func_181159_b(y, angle) * 180.0D / Math.PI)) + randomUtil.getRandomGaussian(randomRot / range));
 
         //0.5 == 100% Mouse Sensitivity #HARDCODED
         //0.8 -> Ausprobieren
-        float f = 0.5F * 0.8F + 0.2F;
-        float f1 = (float) (Math.pow(f, 3) * 1.5F);
 
         int deltaX = (int) (yawAngle - currentYaw);
         int deltaY = (int) (pitchAngle - currentPitch);
-
-        float f2 = (float) deltaX * f1;
-        float f3 = (float) deltaY * f1;
 
         float difYaw = yawAngle - currentYaw;
         float difPitch = pitchAngle - currentPitch;
@@ -79,12 +76,15 @@ public class RotationUtil {
         float yaw = updateRotation(currentYaw, yawAngle, smooth ? Math.abs(MathHelper.wrapAngleTo180_float(difYaw)) * 0.1F : 360);
         float pitch = updateRotation(currentPitch, pitchAngle, smooth ? Math.abs(MathHelper.wrapAngleTo180_float(difPitch)) * 0.1F : 360);
 
+        float f = 0.5F * 0.8F + 0.2F;
+        float f1 = (float) (Math.pow(f, 3) * 1.5F);
+
+        float f2 = (float) deltaX * f1;
+        float f3 = (float) deltaY * f1;
+
         if (mouseFix) {
             yaw -= yaw % f1;
             pitch -= yaw % f1;
-
-            mc.thePlayer.prevRotationPitch += yaw - f;
-            mc.thePlayer.prevRotationYaw += pitch - f1;
         }
 
         return new float[]{yaw, MathHelper.clamp_float(pitch, -90, 90)};

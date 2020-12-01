@@ -178,12 +178,11 @@ public class KillAura extends Module {
                 if (canBlock() && autoBlock.isToggled() && blockMode.getCurrentMode().equalsIgnoreCase("Full"))
                     mc.playerController.sendUseItem(mc.thePlayer, mc.theWorld, mc.thePlayer.getHeldItem());
 
-
-                int random = randomUtil.getRandomInt(1, 3);
-                long cps = (long) numbersUtil.smooth(this.cps.getCurrentValue() + random, this.cps.getCurrentValue(), 5, true, 0.4);
+                long cps = randomUtil.getRandomLong((long)this.cps.getCurrentValue() - 1, (long)this.cps.getCurrentValue() + 1);
                 cps = cps > 10 ? cps + 5 : cps;
+
                 if (((EntityLivingBase) finalEntity).hurtTime <= hurtTime.getCurrentValue()) {
-                    if (timeHelper.hasReached(1000L / cps)) {
+                    if (timeHelper.hasReached((long) (1000L / cps + randomUtil.getRandomGaussian(50)))) {
                         attackEntity();
                         if (canBlock() && autoBlock.isToggled() && (blockMode.getCurrentMode().equals("On Attack") || blockMode.getCurrentMode().equals("Half")))
                             mc.playerController.sendUseItem(mc.thePlayer, mc.theWorld, mc.thePlayer.getCurrentEquippedItem());

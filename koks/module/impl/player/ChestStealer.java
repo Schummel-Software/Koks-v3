@@ -1,72 +1,78 @@
 package koks.module.impl.player;
 
-import koks.Koks;
+import koks.api.settings.Setting;
 import koks.api.util.TimeHelper;
 import koks.event.Event;
 import koks.event.impl.EventUpdate;
 import koks.module.Module;
-import koks.api.settings.Setting;
 import koks.module.ModuleInfo;
 import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.inventory.ContainerChest;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
 
-/**
- * @author deleteboys | lmao | kroko
- * @created on 14.09.2020 : 16:37
- */
-
-@ModuleInfo(name = "ChestStealer", description = "You steal the items from a chest", category = Module.Category.PLAYER)
+@ModuleInfo(name = "ChestStealer", description = "Its steal items from a chest", category = Module.Category.PLAYER)
 public class ChestStealer extends Module {
 
-    public Setting startDelay = new Setting("Start Delay", 100.0F, 0.0F, 500.0F, true, this);
-    public Setting takeDelay = new Setting("Take Delay", 100.0F, 0.0F, 150.0F, true, this);
-    private final TimeHelper startTimer = timeHelper;
-    private final TimeHelper throwTimer = new TimeHelper();
-    private InventoryCleaner inventoryCleaner;
+    public TimeHelper startTimer = new TimeHelper();
+
+    public Setting startDelay = new Setting("Start Delay", 150, 0, 500, true, this);
+    public Setting grabDelay = new Setting("Grab Delay", 150, 0, 500, true, this);
+    public Setting autoClose = new Setting("Auto Close", true, this);
+    public Setting colorCodeCheck = new Setting("ColorCodeCheck", true, this);
 
     @Override
     public void onEvent(Event event) {
 
-        if (!this.isToggled())
+        if(!this.isToggled())
             return;
 
         if (event instanceof EventUpdate) {
-            setInfo(Math.round(takeDelay.getCurrentValue()) + "");
+            if (mc.currentScreen == null) {
+                timeHelper.reset();
+                startTimer.reset();
+                return;
+            }
             if (mc.currentScreen instanceof GuiChest) {
+                ContainerChest chest = (ContainerChest) mc.thePlayer.openContainer;
+                IInventory inventory = chest.getLowerChestInventory();
+                boolean isEmpty = true;
+
                 if (!startTimer.hasReached((long) startDelay.getCurrentValue()))
                     return;
-                ContainerChest chest = (ContainerChest) mc.thePlayer.openContainer;
-                boolean empty = true;
-                if(chest.getLowerChestInventory().getDisplayName().getFormattedText().contains("Chest")) {
-                    for (int i = 0; i < chest.getLowerChestInventory().getSizeInventory(); i++) {
-                        if (chest.getSlot(i).getHasStack() && chest.getSlot(i).getStack() != null && !inventoryCleaner.trashItems.contains(chest.getSlot(i).getStack().getItem())) {
-                            if (throwTimer.hasReached((long) ((long) takeDelay.getCurrentValue() + randomUtil.getRandomGaussian(20)))) {
+
+                if (inventory.getDisplayName().getFormattedText().contains("Chest") && !(colorCodeCheck.isToggled() && inventory.getDisplayName().getFormattedText().contains("§"))) {
+                    for (int i = 0; i < inventory.getSizeInventory(); i++) {
+                        if (inventory.getStackInSlot(i) != null) {
+                            ItemStack stack = inventory.getStackInSlot(i);
+                            if (!timeHelper.hasReached((long) grabDelay.getCurrentValue()))
+                                return;
+                            if (inventoryUtil.getItemSize(stack.getItem(), inventory) != 0 && inventoryUtil.getItemSize(stack.getItem(), inventory) != 1) {
+                                mc.playerController.windowClick(chest.windowId, i, 0, 0, mc.thePlayer);
+                                mc.playerController.windowClick(chest.windowId, i, 0, 6, mc.thePlayer);
+                                mc.playerController.windowClick(chest.windowId, i, 0, 0, mc.thePlayer);
+                            } else {
                                 mc.playerController.windowClick(chest.windowId, i, 0, 1, mc.thePlayer);
-                                throwTimer.reset();
                             }
-                            empty = false;
-                            break;
+                            timeHelper.reset();
+                            isEmpty = false;
                         }
                     }
-                    if (empty) {
-                        mc.thePlayer.closeScreen();
-                    }
-                }
 
-            } else {
-                startTimer.reset();
+                    if (isEmpty && autoClose.isToggled())
+                        mc.thePlayer.closeScreen();
+                }
             }
         }
     }
 
     @Override
     public void onEnable() {
-        inventoryCleaner = (InventoryCleaner) Koks.getKoks().moduleManager.getModule(InventoryCleaner.class);
+
     }
 
     @Override
     public void onDisable() {
 
     }
-
 }

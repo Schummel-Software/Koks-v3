@@ -3,6 +3,7 @@ package koks.filemanager;
 import koks.Koks;
 import koks.api.Methods;
 import koks.filemanager.impl.AlteningToken;
+import koks.filemanager.impl.Binds;
 import koks.filemanager.impl.Settings;
 import koks.filemanager.impl.Toggle;
 import net.minecraft.client.Minecraft;
@@ -16,13 +17,14 @@ import java.util.ArrayList;
  */
 public class FileManager implements Methods {
 
-    public final File DIR = new File(mc.mcDataDir + "/" + Koks.getKoks().NAME + "/files");
+    public final File DIR = new File(mc.mcDataDir + "/" + Koks.getKoks().NAME + "/Files");
     public ArrayList<Files> files = new ArrayList<>();
 
     public FileManager() {
         addFile(new AlteningToken());
         addFile(new Toggle());
         addFile(new Settings());
+        addFile(new Binds());
     }
 
     public void writeFile(Class<? extends Files> clazz) {

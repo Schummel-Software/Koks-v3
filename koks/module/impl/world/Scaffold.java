@@ -10,6 +10,7 @@ import koks.event.impl.EventUpdate;
 import koks.module.Module;
 import koks.module.ModuleInfo;
 import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemBlock;
@@ -121,15 +122,19 @@ public class Scaffold extends Module {
                 }
                 MovingObjectPosition ray = rayCastUtil.rayCastedBlock(curYaw, curPitch);
                 if (timeHelper.hasReached((long) delay.getCurrentValue()) && (ray != null && ray.getBlockPos().equals(blockPos) || !rayCast.isToggled())) {
-                    if (getPlayerController().onPlayerRightClick(getPlayer(), mc.theWorld, itemStack, blockPos, enumFacing, new Vec3(blockPos.getX(), blockPos.getY(), blockPos.getZ()))) {
-                        getPlayer().motionX *= motion.getCurrentValue();
-                        getPlayer().motionZ *= motion.getCurrentValue();
-                        sneakCount++;
-                        if (sneakCount > sneakAfter.getCurrentValue())
-                            sneakCount = 0;
+                    BlockPos blockpos = mc.objectMouseOver.getBlockPos();
 
-                        if (!noSwing.isToggled())
-                            getPlayer().swingItem();
+                    if (getWorld().getBlockState(blockpos).getBlock().getMaterial() != Material.air) {
+                        if (getPlayerController().onPlayerRightClick(getPlayer(), getWorld(), itemStack, blockpos, mc.objectMouseOver.sideHit, mc.objectMouseOver.hitVec)) {
+                            getPlayer().motionX *= motion.getCurrentValue();
+                            getPlayer().motionZ *= motion.getCurrentValue();
+                            sneakCount++;
+                            if (sneakCount > sneakAfter.getCurrentValue())
+                                sneakCount = 0;
+
+                            if (!noSwing.isToggled())
+                                getPlayer().swingItem();
+                        }
                     }
 
                     timeHelper.reset();

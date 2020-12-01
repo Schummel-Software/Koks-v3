@@ -10,7 +10,6 @@ import koks.filemanager.FileManager;
 import koks.friends.FriendManager;
 import koks.gui.clickgui.periodic.ClickGUIPSE;
 import koks.gui.tabgui.TabGUI;
-import koks.module.KeyBindManager;
 import koks.gui.clickgui.normal.ClickGUI;
 import koks.module.ModuleManager;
 import koks.api.settings.SettingsManager;
@@ -22,8 +21,6 @@ import koks.wrapper.Wrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.main.Main;
 import org.lwjgl.opengl.Display;
-
-import javax.swing.*;
 
 /**
  * @author deleteboys | lmao | kroko
@@ -62,7 +59,6 @@ public class Koks {
     public ModuleManager moduleManager;
     public EventManager eventManager;
     public CommandManager commandManager;
-    public KeyBindManager keyBindManager;
     public FileManager fileManager;
     public TabGUI tabGUI;
     public ConfigSystem configSystem;
@@ -88,8 +84,6 @@ public class Koks {
         commandManager = new CommandManager();
         clickGUI = new ClickGUI();
         clickGUIPE = new ClickGUIPSE();
-        keyBindManager = new KeyBindManager();
-        keyBindManager.readKeyBinds();
         fileManager = new FileManager();
         tabGUI = new TabGUI();
         fileManager.readAllFiles();

@@ -13,7 +13,7 @@ import java.io.*;
 public abstract class Files implements Methods {
 
     public File file;
-    public final File DIR = new File(mc.mcDataDir + "/" +  Koks.getKoks().NAME + "/files");
+    public final File DIR = new File(mc.mcDataDir + "/" +  Koks.getKoks().NAME + "/Files");
 
     public File getFile() {
         return file;

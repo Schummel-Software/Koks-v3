@@ -5,6 +5,7 @@ import koks.api.util.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
+import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -40,7 +41,7 @@ public interface Methods {
         return mc.playerController;
     }
 
-    default World getWorld() {
+    default WorldClient getWorld() {
         return mc.theWorld;
     }
 
