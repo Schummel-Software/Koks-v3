@@ -49,6 +49,8 @@ public class V3_0_0 extends Changelog{
         added("AimBot");
         added("AntiAim");
         added("SystemTray");
+        added("DoubleJump");
+        fixed("ChestStealer");
         fixed("Intave Scaffold");
         fixed("Block Bug");
         removed("ClickGUI Settings");
