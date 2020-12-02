@@ -47,7 +47,7 @@ public class ChestStealer extends Module {
                             ItemStack stack = inventory.getStackInSlot(i);
                             if (!timeHelper.hasReached((long) grabDelay.getCurrentValue()))
                                 return;
-                            if (inventoryUtil.getItemSize(stack.getItem(), inventory) != 0 && inventoryUtil.getItemSize(stack.getItem(), inventory) != 1) {
+                            if (stack.stackSize != 64 && stack.getMaxStackSize() != 1 && inventoryUtil.getItemSize(stack.getItem(), inventory) != 0 && inventoryUtil.getItemSize(stack.getItem(), inventory) != 1) {
                                 mc.playerController.windowClick(chest.windowId, i, 0, 0, mc.thePlayer);
                                 mc.playerController.windowClick(chest.windowId, i, 0, 6, mc.thePlayer);
                                 mc.playerController.windowClick(chest.windowId, i, 0, 0, mc.thePlayer);

@@ -14,6 +14,7 @@ import koks.api.util.*;
 import koks.api.util.fonts.GlyphPageFontRenderer;
 import koks.changelog.Changelog;
 import koks.filemanager.impl.AlteningToken;
+import koks.wrapper.Wrapper;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
@@ -24,13 +25,9 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 
-public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
+public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback, Wrapper {
 
     public GuiTextField email, password;
-
-    public LoginUtil loginUtil;
-    public RenderUtil renderUtil;
-
     private int currentScroll;
 
     public Animation resizeAnimation = new Animation();
@@ -68,8 +65,6 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
 
     public GuiMainMenu() {
         resizeAnimation.setY(80);
-        renderUtil = Koks.getKoks().wrapper.renderUtil;
-        loginUtil = Koks.getKoks().wrapper.loginUtil;
 
         try {
             this.shader = new GLSLSandboxShader("/mainmenu.fsh");

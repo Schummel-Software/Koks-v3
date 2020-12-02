@@ -7,6 +7,7 @@ import koks.gui.clickgui.Element;
 import koks.gui.clickgui.periodic.settings.DrawComboBox;
 import koks.gui.clickgui.periodic.settings.DrawType;
 import koks.module.Module;
+import koks.wrapper.Wrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
@@ -23,7 +24,7 @@ import java.util.ArrayList;
  * @author kroko
  * @created on 12.11.2020 : 15:46
  */
-public class ClickGUIPSE extends GuiScreen {
+public class ClickGUIPSE extends GuiScreen implements Wrapper {
 
     boolean bindModule, settingMenu;
     Module bindMod, curMod;
@@ -131,9 +132,9 @@ public class ClickGUIPSE extends GuiScreen {
         settingsSize = sr.getScaledHeight() / 2;
 
         if (curMod != null && settingMenu) {
-            Koks.getKoks().wrapper.renderUtil.drawOutlineRect(x - settingsSize / 2, y - settingsSize / 2, x + settingsSize / 2, y + settingsSize / 2, 2F, curMod.getCategory().getCategoryColor().getRGB(), new Color(16, 16, 16).getRGB());
+            renderUtil.drawOutlineRect(x - settingsSize / 2, y - settingsSize / 2, x + settingsSize / 2, y + settingsSize / 2, 2F, curMod.getCategory().getCategoryColor().getRGB(), new Color(16, 16, 16).getRGB());
             GL11.glPushMatrix();
-            Koks.getKoks().wrapper.renderUtil.scissor(x - settingsSize / 2, y - settingsSize / 2, x + settingsSize / 2, y + settingsSize / 2);
+            renderUtil.scissor(x - settingsSize / 2, y - settingsSize / 2, x + settingsSize / 2, y + settingsSize / 2);
             GL11.glEnable(GL11.GL_SCISSOR_TEST);
             fontRendererObj.drawString(curMod.getName(), x - fontRendererObj.getStringWidth(curMod.getName()) * 2 / 2, y - settingsSize / 2 + fontRendererObj.FONT_HEIGHT / 2 + settingScroll, 2F, curMod.isToggled() ? curMod.getCategory().getCategoryColor().getRGB() : curMod.getCategory().getCategoryColor().darker().getRGB());
             fontRendererObj.drawString(curMod.getKey() == 0 ? "" : Keyboard.getKeyName(curMod.getKey()), x - settingsSize / 2 + 3, y - settingsSize / 2 + fontRendererObj.FONT_HEIGHT / 2 + settingScroll, 1.6F, curMod.getCategory().getCategoryColor().getRGB());

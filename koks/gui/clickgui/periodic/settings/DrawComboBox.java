@@ -5,6 +5,7 @@ import koks.api.settings.Setting;
 import koks.api.util.Animation;
 import koks.api.util.RenderUtil;
 import koks.gui.clickgui.Element;
+import koks.wrapper.Wrapper;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
@@ -13,15 +14,13 @@ import java.awt.*;
  * @author kroko
  * @created on 12.11.2020 : 23:11
  */
-public class DrawComboBox extends Element {
+public class DrawComboBox extends Element implements Wrapper {
 
     public Animation animation = new Animation();
 
     public DrawComboBox(Setting setting) {
         this.setting = setting;
     }
-
-    public RenderUtil renderUtil = Koks.getKoks().wrapper.renderUtil;
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {

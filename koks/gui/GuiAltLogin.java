@@ -12,6 +12,7 @@ import koks.Koks;
 import koks.api.util.GLSLSandboxShader;
 import koks.api.util.LoginUtil;
 import koks.filemanager.impl.AlteningToken;
+import koks.wrapper.Wrapper;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
@@ -34,17 +35,14 @@ import java.util.ArrayList;
  * @author kroko
  * @created on 06.10.2020 : 20:19
  */
-public class GuiAltLogin extends GuiScreen {
+public class GuiAltLogin extends GuiScreen implements Wrapper {
 
     private GLSLSandboxShader shader;
-
-    LoginUtil loginUtil;
 
     public GuiScreen oldScreen;
 
     public GuiAltLogin(GuiScreen oldScreen) {
         this.oldScreen = oldScreen;
-        loginUtil = Koks.getKoks().wrapper.loginUtil;
         try {
             this.shader = new GLSLSandboxShader("/alts.fsh");
         } catch (IOException e) {

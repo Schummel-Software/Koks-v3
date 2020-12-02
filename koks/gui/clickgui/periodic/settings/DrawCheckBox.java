@@ -5,6 +5,7 @@ import koks.api.settings.Setting;
 import koks.api.util.Animation;
 import koks.api.util.RenderUtil;
 import koks.gui.clickgui.Element;
+import koks.wrapper.Wrapper;
 
 import java.awt.*;
 
@@ -12,11 +13,9 @@ import java.awt.*;
  * @author kroko
  * @created on 12.11.2020 : 22:42
  */
-public class DrawCheckBox extends Element {
+public class DrawCheckBox extends Element implements Wrapper {
 
     Animation animation = new Animation();
-
-    RenderUtil renderUtil = Koks.getKoks().wrapper.renderUtil;
 
     public DrawCheckBox(Setting setting) {
         this.setting = setting;

@@ -1,6 +1,7 @@
 package koks.gui.mainmenu.windows;
 
 import koks.Koks;
+import koks.wrapper.Wrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
@@ -11,7 +12,7 @@ import java.awt.*;
  * @author kroko
  * @created on 08.11.2020 : 18:00
  */
-public abstract class Window {
+public abstract class Window implements Wrapper {
 
     float x, y, dragX, dragY;
     boolean drag, visible, close;
@@ -72,7 +73,7 @@ public abstract class Window {
 
     public void drawBackground() {
         if(visible) {
-            Koks.getKoks().wrapper.renderUtil.drawOutlineRect(x - width, y - height, x + width, y + height, outline, colorOutline, color);
+            renderUtil.drawOutlineRect(x - width, y - height, x + width, y + height, outline, colorOutline, color);
             fr.drawString("§lx", x + width - 1, y - height + 1, Color.red.getRGB(), false);
         }
     }

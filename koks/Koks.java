@@ -26,7 +26,7 @@ import org.lwjgl.opengl.Display;
  * @author deleteboys | lmao | kroko
  * @created on 12.09.2020 : 19:20
  */
-public class Koks {
+public class Koks implements Wrapper {
 
     private static final Koks KOKS;
 
@@ -66,8 +66,6 @@ public class Koks {
     public FriendManager friendManager;
     public ChangelogManager changelogManager;
 
-    public Wrapper wrapper;
-
     public ClickGUI clickGUI;
     public ClickGUIPSE clickGUIPE;
 
@@ -75,9 +73,8 @@ public class Koks {
     public TrayUtil trayUtil;
 
     public void startClient() {
-        wrapper = new Wrapper();
         CLManager = new CLManager(Main.clName);
-        wrapper.logger.log("Client Launcher Name: " + Main.clName);
+        logger.log("Client Launcher Name: " + Main.clName);
         settingsManager = new SettingsManager();
         moduleManager = new ModuleManager();
         eventManager = new EventManager();

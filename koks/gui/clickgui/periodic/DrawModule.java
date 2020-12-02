@@ -6,6 +6,7 @@ import koks.api.util.RenderUtil;
 import koks.gui.clickgui.Element;
 import koks.gui.clickgui.periodic.settings.*;
 import koks.module.Module;
+import koks.wrapper.Wrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import org.lwjgl.input.Keyboard;
@@ -17,7 +18,7 @@ import java.util.ArrayList;
  * @author kroko
  * @created on 12.11.2020 : 15:47
  */
-public class DrawModule {
+public class DrawModule implements Wrapper {
 
     int x, y, size, outline;
     Module module;
@@ -52,13 +53,11 @@ public class DrawModule {
 
     public void drawScreen(int mouseX, int mouseY) {
 
-        Koks.getKoks().wrapper.renderUtil.drawOutline(x - (isHover(mouseX, mouseY) ? 1 : 0), y - (isHover(mouseX, mouseY) ? 1 : 0), x + size + (isHover(mouseX, mouseY) ? 1 : 0), y + size + (isHover(mouseX, mouseY) ? 1 : 0), outline, isHover(mouseX, mouseY) ? color.darker().getRGB() : color.getRGB());
+        renderUtil.drawOutline(x - (isHover(mouseX, mouseY) ? 1 : 0), y - (isHover(mouseX, mouseY) ? 1 : 0), x + size + (isHover(mouseX, mouseY) ? 1 : 0), y + size + (isHover(mouseX, mouseY) ? 1 : 0), outline, isHover(mouseX, mouseY) ? color.darker().getRGB() : color.getRGB());
         int width = Math.abs((x + size) - x);
 
         float sizeName = Math.min(0.8F, (float) size / fr.getStringWidth(module.getName()) * 0.7F);
         float sizeToggle = 0.8F;
-
-        RenderUtil renderUtil = Koks.getKoks().wrapper.renderUtil;
 
         Color toggleColor = module.isToggled() ? color : color.darker();
         fr.drawString(module.getName().substring(0, 2), x + width / 2 - fr.getStringWidth(module.getName().substring(0, 2)) / 2, y + size / 2 - fr.FONT_HEIGHT, isHover(mouseX, mouseY) ? toggleColor.darker().getRGB() : toggleColor.getRGB());

@@ -82,6 +82,7 @@ public class ModuleManager {
         addModule(new DormantESP());
         addModule(new Scoreboard());
         addModule(new Tracers());
+        addModule(new ItemTP());
         addModule(new WallSpeed());
         addModule(new Safewalk());
         addModule(new GommeMode());

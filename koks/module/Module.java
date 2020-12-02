@@ -7,6 +7,7 @@ import koks.api.util.*;
 import koks.event.Event;
 import koks.api.settings.Setting;
 import koks.module.impl.player.SendPublic;
+import koks.wrapper.Wrapper;
 
 import java.awt.*;
 import java.lang.reflect.Field;
@@ -16,7 +17,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author deleteboys | lmao | kroko
  * @created on 12.09.2020 : 20:36
  */
-public abstract class Module implements Methods {
+public abstract class Module implements Methods, Wrapper {
 
     private String name, description, info = "";
     private int key;
@@ -26,34 +27,12 @@ public abstract class Module implements Methods {
 
     public TimeHelper timeHelper = new TimeHelper();
 
-    public ESPUtil espUtil;
-    public Logger logger;
-    public LoginUtil loginUtil;
-    public MovementUtil movementUtil;
-    public RandomUtil randomUtil;
-    public RayCastUtil rayCastUtil;
-    public RenderUtil renderUtil;
-    public RotationUtil rotationUtil;
-    public InventoryUtil inventoryUtil;
-    public NumbersUtil numbersUtil;
-
     public Module() {
         ModuleInfo moduleInfo = getClass().getAnnotation(ModuleInfo.class);
         this.category = moduleInfo.category();
         this.name = moduleInfo.name();
         this.description = moduleInfo.description();
         this.key = moduleInfo.key();
-
-        espUtil = Koks.getKoks().wrapper.espUtil;
-        logger = Koks.getKoks().wrapper.logger;
-        loginUtil = Koks.getKoks().wrapper.loginUtil;
-        movementUtil = Koks.getKoks().wrapper.movementUtil;
-        randomUtil = Koks.getKoks().wrapper.randomUtil;
-        rayCastUtil = Koks.getKoks().wrapper.rayCastUtil;
-        renderUtil = Koks.getKoks().wrapper.renderUtil;
-        rotationUtil = Koks.getKoks().wrapper.rotationUtil;
-        inventoryUtil = Koks.getKoks().wrapper.inventoryUtil;
-        numbersUtil = Koks.getKoks().wrapper.numberUtil;
 
         /* for(Field field : getClass().getDeclaredFields()) {
             try{

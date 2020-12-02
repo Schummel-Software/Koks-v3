@@ -2,6 +2,7 @@ package koks.command;
 
 import koks.Koks;
 import koks.api.Methods;
+import koks.wrapper.Wrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ChatComponentText;
 
@@ -9,7 +10,7 @@ import net.minecraft.util.ChatComponentText;
  * @author deleteboys | lmao | kroko
  * @created on 12.09.2020 : 20:47
  */
-public abstract class Command implements Methods {
+public abstract class Command implements Methods, Wrapper {
 
     public String name,alias;
 
