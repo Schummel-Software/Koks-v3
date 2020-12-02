@@ -2,12 +2,12 @@ package koks.gui.clickgui.periodic;
 
 import koks.Koks;
 import koks.api.settings.Setting;
-import koks.cl.Role;
+import koks.manager.cl.Role;
 import koks.gui.clickgui.Element;
 import koks.gui.clickgui.periodic.settings.DrawComboBox;
 import koks.gui.clickgui.periodic.settings.DrawType;
-import koks.module.Module;
-import koks.wrapper.Wrapper;
+import koks.manager.module.Module;
+import koks.api.interfaces.Wrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;

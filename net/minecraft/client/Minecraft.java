@@ -38,14 +38,12 @@ import java.util.concurrent.FutureTask;
 import javax.imageio.ImageIO;
 
 import koks.Koks;
-import koks.api.Methods;
-import koks.event.impl.EventAttack;
-import koks.event.impl.EventKeyPress;
-import koks.event.impl.EventTick;
-import koks.module.Module;
+import koks.manager.event.impl.EventAttack;
+import koks.manager.event.impl.EventKeyPress;
+import koks.manager.event.impl.EventTick;
+import koks.manager.module.Module;
 
-import koks.module.impl.gui.ClickGui;
-import koks.wrapper.Wrapper;
+import koks.manager.module.impl.gui.ClickGui;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.audio.MusicTicker;

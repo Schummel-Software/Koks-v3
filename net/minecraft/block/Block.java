@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.Random;
 
 import koks.Koks;
-import koks.module.impl.player.FastBreak;
-import koks.module.impl.render.XRay;
+import koks.manager.module.impl.player.FastBreak;
+import koks.manager.module.impl.render.XRay;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;

@@ -1,11 +1,9 @@
 package koks.gui.clickgui.periodic.settings;
 
-import koks.Koks;
 import koks.api.settings.Setting;
 import koks.api.util.Animation;
-import koks.api.util.RenderUtil;
 import koks.gui.clickgui.Element;
-import koks.wrapper.Wrapper;
+import koks.api.interfaces.Wrapper;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;

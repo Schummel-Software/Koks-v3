@@ -3,7 +3,7 @@ package koks.gui.clickgui.normal.elements;
 import koks.Koks;
 import koks.gui.clickgui.Element;
 import koks.gui.clickgui.normal.elements.settings.*;
-import koks.module.Module;
+import koks.manager.module.Module;
 import koks.api.settings.Setting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;

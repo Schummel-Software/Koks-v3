@@ -1,7 +1,7 @@
 package net.minecraft.inventory;
 
 import koks.Koks;
-import koks.module.impl.player.OverArmor;
+import koks.manager.module.impl.player.OverArmor;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Blocks;

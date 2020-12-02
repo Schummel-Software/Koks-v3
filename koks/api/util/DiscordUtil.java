@@ -3,9 +3,7 @@ package koks.api.util;
 import club.minnced.discord.rpc.DiscordEventHandlers;
 import club.minnced.discord.rpc.DiscordRPC;
 import club.minnced.discord.rpc.DiscordRichPresence;
-import koks.Koks;
-import koks.wrapper.Wrapper;
-import org.lwjgl.Sys;
+import koks.api.interfaces.Wrapper;
 
 /**
  * @author kroko

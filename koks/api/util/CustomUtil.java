@@ -1,11 +1,10 @@
 package koks.api.util;
 
 import koks.Koks;
-import koks.api.Methods;
+import koks.api.interfaces.Methods;
 import net.minecraft.client.Minecraft;
 
 import java.util.HashMap;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author kroko

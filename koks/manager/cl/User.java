@@ -1,4 +1,4 @@
-package koks.cl;
+package koks.manager.cl;
 
 /**
  * @author kroko

@@ -1,7 +1,6 @@
 package koks.api.settings;
 
-import koks.api.settings.Setting;
-import koks.module.Module;
+import koks.manager.module.Module;
 
 import java.util.ArrayList;
 

@@ -1,27 +1,18 @@
 package koks.api.util;
 
-import jdk.internal.util.xml.impl.Input;
 import koks.Koks;
 import koks.api.settings.Setting;
-import koks.module.Module;
+import koks.manager.module.Module;
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.ResourceLocation;
-import org.lwjgl.Sys;
 import org.lwjgl.input.Keyboard;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.io.File;
-import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.EventListener;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author kroko

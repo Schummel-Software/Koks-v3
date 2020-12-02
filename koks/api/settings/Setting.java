@@ -1,7 +1,7 @@
 package koks.api.settings;
 
 import koks.Koks;
-import koks.module.Module;
+import koks.manager.module.Module;
 
 /**
  * @author deleteboys | lmao | kroko

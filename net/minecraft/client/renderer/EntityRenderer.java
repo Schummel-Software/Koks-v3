@@ -13,12 +13,8 @@ import java.util.Random;
 import java.util.concurrent.Callable;
 
 import koks.Koks;
-import koks.event.EventManager;
-import koks.event.impl.*;
-import koks.module.impl.render.CameraClip;
-import koks.module.impl.render.NoBob;
-import koks.module.impl.render.NoFov;
-import koks.module.impl.render.NoHurtCam;
+import koks.manager.event.impl.*;
+import koks.manager.module.impl.render.CameraClip;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockBed;
 import net.minecraft.block.material.Material;

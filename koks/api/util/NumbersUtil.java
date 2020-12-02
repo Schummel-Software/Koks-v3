@@ -1,8 +1,5 @@
 package koks.api.util;
 
-import koks.Koks;
-import koks.module.impl.combat.KillAura;
-
 import java.util.concurrent.ThreadLocalRandom;
 
 public class NumbersUtil {

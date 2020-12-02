@@ -1,14 +1,13 @@
 package net.minecraft.client.entity;
 
-import com.mojang.authlib.GameProfile;
 import koks.Koks;
-import koks.command.Command;
-import koks.event.impl.EventDamage;
-import koks.event.impl.EventMotion;
-import koks.event.impl.EventUpdate;
-import koks.event.impl.EventWalk;
-import koks.module.impl.gui.ClickGui;
-import koks.module.impl.movement.NoSlowdown;
+import koks.manager.command.Command;
+import koks.manager.event.impl.EventDamage;
+import koks.manager.event.impl.EventMotion;
+import koks.manager.event.impl.EventUpdate;
+import koks.manager.event.impl.EventWalk;
+import koks.manager.module.impl.gui.ClickGui;
+import koks.manager.module.impl.movement.NoSlowdown;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.MovingSoundMinecartRiding;
 import net.minecraft.client.audio.PositionedSoundRecord;

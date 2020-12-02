@@ -24,8 +24,8 @@ import java.util.concurrent.Callable;
 
 import koks.Koks;
 import koks.api.util.ESPUtil;
-import koks.event.impl.EventOutline;
-import koks.module.impl.render.*;
+import koks.manager.event.impl.EventOutline;
+import koks.manager.module.impl.render.*;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockChest;
 import net.minecraft.block.BlockEnderChest;

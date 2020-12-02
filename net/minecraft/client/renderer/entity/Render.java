@@ -1,7 +1,7 @@
 package net.minecraft.client.renderer.entity;
 
 import koks.Koks;
-import koks.module.impl.render.NameTags;
+import koks.manager.module.impl.render.NameTags;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -24,8 +24,6 @@ import optifine.Config;
 
 import org.lwjgl.opengl.GL11;
 import shadersmod.client.Shaders;
-
-import java.awt.*;
 
 public abstract class Render<T extends Entity> {
     private static final ResourceLocation shadowTextures = new ResourceLocation("textures/misc/shadow.png");

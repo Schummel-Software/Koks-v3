@@ -11,7 +11,7 @@ import java.util.Random;
 import java.util.UUID;
 
 import koks.Koks;
-import koks.event.impl.EventJump;
+import koks.manager.event.impl.EventJump;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;

@@ -2,11 +2,10 @@ package koks.gui.clickgui.periodic;
 
 import koks.Koks;
 import koks.api.settings.Setting;
-import koks.api.util.RenderUtil;
 import koks.gui.clickgui.Element;
 import koks.gui.clickgui.periodic.settings.*;
-import koks.module.Module;
-import koks.wrapper.Wrapper;
+import koks.manager.module.Module;
+import koks.api.interfaces.Wrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import org.lwjgl.input.Keyboard;

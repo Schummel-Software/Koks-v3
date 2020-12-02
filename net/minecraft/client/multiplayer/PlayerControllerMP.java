@@ -1,7 +1,7 @@
 package net.minecraft.client.multiplayer;
 
 import koks.Koks;
-import koks.event.impl.EventBlockReach;
+import koks.manager.event.impl.EventBlockReach;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;

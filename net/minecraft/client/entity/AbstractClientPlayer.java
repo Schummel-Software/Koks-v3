@@ -4,7 +4,7 @@ import com.mojang.authlib.GameProfile;
 import java.io.File;
 
 import koks.Koks;
-import koks.module.impl.render.GommeMode;
+import koks.manager.module.impl.render.GommeMode;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.client.renderer.ImageBufferDownload;
