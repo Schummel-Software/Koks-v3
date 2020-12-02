@@ -3,7 +3,7 @@ package net.minecraft.block;
 import java.util.Random;
 
 import koks.Koks;
-import koks.module.impl.movement.Jesus;
+import koks.manager.module.impl.movement.Jesus;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyInteger;

@@ -1,11 +1,10 @@
 package koks.gui.tabgui;
 
 import koks.Koks;
-import koks.event.impl.EventKeyPress;
-import koks.module.Module;
+import koks.manager.event.impl.EventKeyPress;
+import koks.manager.module.Module;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.Gui;
 
 import java.awt.*;
 

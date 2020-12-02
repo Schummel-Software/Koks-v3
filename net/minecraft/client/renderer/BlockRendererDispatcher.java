@@ -1,7 +1,7 @@
 package net.minecraft.client.renderer;
 
 import koks.Koks;
-import koks.module.impl.render.XRay;
+import koks.manager.module.impl.render.XRay;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -21,7 +21,6 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.WorldType;
 import optifine.Config;
 import optifine.Reflector;
-import org.lwjgl.opengl.GL11;
 import shadersmod.client.SVertexBuilder;
 
 public class BlockRendererDispatcher implements IResourceManagerReloadListener

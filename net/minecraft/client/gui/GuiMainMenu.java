@@ -2,19 +2,17 @@ package net.minecraft.client.gui;
 
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
-import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-import javafx.scene.transform.Scale;
 import koks.Koks;
 import koks.api.util.GLSLSandboxShader;
 import koks.api.util.*;
 import koks.api.util.fonts.GlyphPageFontRenderer;
-import koks.changelog.Changelog;
-import koks.filemanager.impl.AlteningToken;
-import koks.wrapper.Wrapper;
+import koks.manager.changelog.Changelog;
+import koks.manager.file.impl.AlteningToken;
+import koks.api.interfaces.Wrapper;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;

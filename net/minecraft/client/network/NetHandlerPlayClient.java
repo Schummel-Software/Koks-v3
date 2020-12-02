@@ -15,9 +15,9 @@ import java.util.UUID;
 import java.util.Map.Entry;
 
 import koks.Koks;
-import koks.event.impl.EventHeadLook;
-import koks.event.impl.EventPacket;
-import koks.event.impl.EventVelocity;
+import koks.manager.event.impl.EventHeadLook;
+import koks.manager.event.impl.EventPacket;
+import koks.manager.event.impl.EventVelocity;
 import net.minecraft.block.Block;
 import net.minecraft.client.ClientBrandRetriever;
 import net.minecraft.client.Minecraft;

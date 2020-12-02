@@ -1,9 +1,8 @@
 package koks.gui.clickgui.normal;
 
 import koks.Koks;
-import koks.api.settings.Setting;
-import koks.cl.Role;
-import koks.module.Module;
+import koks.manager.cl.Role;
+import koks.manager.module.Module;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;

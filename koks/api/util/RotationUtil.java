@@ -1,12 +1,9 @@
 package koks.api.util;
 
 import god.buddy.aot.BCompiler;
-import koks.Koks;
-import koks.module.impl.combat.KillAura;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
 

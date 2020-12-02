@@ -6,7 +6,7 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 
 import koks.Koks;
-import koks.module.impl.render.TrueSight;
+import koks.manager.module.impl.render.TrueSight;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;

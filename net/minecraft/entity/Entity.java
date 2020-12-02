@@ -6,11 +6,11 @@ import java.util.UUID;
 import java.util.concurrent.Callable;
 
 import koks.Koks;
-import koks.event.impl.EventMoveFlying;
-import koks.event.impl.EventSafeWalk;
-import koks.event.impl.EventWeb;
-import koks.module.impl.player.NoPitchLimit;
-import koks.module.impl.render.TrueSight;
+import koks.manager.event.impl.EventMoveFlying;
+import koks.manager.event.impl.EventSafeWalk;
+import koks.manager.event.impl.EventWeb;
+import koks.manager.module.impl.player.NoPitchLimit;
+import koks.manager.module.impl.render.TrueSight;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFence;
 import net.minecraft.block.BlockFenceGate;

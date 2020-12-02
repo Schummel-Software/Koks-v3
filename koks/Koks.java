@@ -2,22 +2,22 @@ package koks;
 
 import koks.api.util.DiscordUtil;
 import koks.api.util.TrayUtil;
-import koks.changelog.ChangelogManager;
-import koks.command.CommandManager;
-import koks.config.ConfigSystem;
-import koks.event.EventManager;
-import koks.filemanager.FileManager;
-import koks.friends.FriendManager;
+import koks.manager.changelog.ChangelogManager;
+import koks.manager.command.CommandManager;
+import koks.manager.config.ConfigSystem;
+import koks.manager.event.EventManager;
+import koks.manager.file.FileManager;
+import koks.manager.friends.FriendManager;
 import koks.gui.clickgui.periodic.ClickGUIPSE;
 import koks.gui.tabgui.TabGUI;
 import koks.gui.clickgui.normal.ClickGUI;
-import koks.module.ModuleManager;
+import koks.manager.module.ModuleManager;
 import koks.api.settings.SettingsManager;
 
 import java.awt.*;
 
-import koks.cl.CLManager;
-import koks.wrapper.Wrapper;
+import koks.manager.cl.CLManager;
+import koks.api.interfaces.Wrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.main.Main;
 import org.lwjgl.opengl.Display;

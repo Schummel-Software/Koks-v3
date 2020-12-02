@@ -10,8 +10,8 @@ import java.util.Collection;
 import java.util.Random;
 
 import koks.Koks;
-import koks.event.impl.EventRender2D;
-import koks.module.Module;
+import koks.manager.event.impl.EventRender2D;
+import koks.manager.module.Module;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -501,7 +501,7 @@ public class GuiIngame extends Gui {
     }
 
     private void renderScoreboard(ScoreObjective p_180475_1_, ScaledResolution p_180475_2_) {
-        if (Koks.getKoks().moduleManager.getModule(koks.module.impl.render.Scoreboard.class).isToggled()) {
+        if (Koks.getKoks().moduleManager.getModule(koks.manager.module.impl.render.Scoreboard.class).isToggled()) {
             Scoreboard scoreboard = p_180475_1_.getScoreboard();
             Collection collection = scoreboard.getSortedScores(p_180475_1_);
             ArrayList arraylist = Lists.newArrayList(Iterables.filter(collection, new Predicate() {
@@ -563,7 +563,7 @@ public class GuiIngame extends Gui {
                 drawRect(j - 2 - 2, l - 2, j - 2, l + this.getFontRenderer().FONT_HEIGHT, Koks.getKoks().clientColor.getRGB());
                 this.getFontRenderer().drawString(s1, j, l, 553648127);
                 //POINT
-                if (((koks.module.impl.render.Scoreboard) Koks.getKoks().moduleManager.getModule("Scoreboard")).numbers.isToggled())
+                if (((koks.manager.module.impl.render.Scoreboard) Koks.getKoks().moduleManager.getModule("Scoreboard")).numbers.isToggled())
                     this.getFontRenderer().drawString(s2, i1 - this.getFontRenderer().getStringWidth(s2), l, 553648127);
 
                 if (k == arraylist1.size()) {

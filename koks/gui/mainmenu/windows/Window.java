@@ -1,10 +1,8 @@
 package koks.gui.mainmenu.windows;
 
-import koks.Koks;
-import koks.wrapper.Wrapper;
+import koks.api.interfaces.Wrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.GuiScreen;
 
 import java.awt.*;
 

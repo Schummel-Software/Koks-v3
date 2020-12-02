@@ -2,14 +2,12 @@ package koks.gui.tabgui;
 
 import koks.Koks;
 import koks.api.util.RenderUtil;
-import koks.event.impl.EventKeyPress;
-import koks.module.Module;
+import koks.manager.event.impl.EventKeyPress;
+import koks.manager.module.Module;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.Gui;
 import org.lwjgl.input.Keyboard;
 
-import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
 /**

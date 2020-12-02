@@ -1,25 +1,14 @@
 package koks.gui;
 
-import com.mojang.authlib.Agent;
-import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
-import com.mojang.authlib.yggdrasil.YggdrasilUserAuthentication;
-import com.thealtening.api.response.Account;
-import com.thealtening.api.retriever.AsynchronousDataRetriever;
-import com.thealtening.api.retriever.BasicDataRetriever;
-import com.thealtening.auth.TheAlteningAuthentication;
-import com.thealtening.auth.service.AlteningServiceType;
 import koks.Koks;
 import koks.api.util.GLSLSandboxShader;
-import koks.api.util.LoginUtil;
-import koks.filemanager.impl.AlteningToken;
-import koks.wrapper.Wrapper;
+import koks.manager.file.impl.AlteningToken;
+import koks.api.interfaces.Wrapper;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.util.Session;
-import org.lwjgl.Sys;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
@@ -27,9 +16,6 @@ import org.lwjgl.opengl.GL20;
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.io.IOException;
-import java.net.Proxy;
-import java.security.Key;
-import java.util.ArrayList;
 
 /**
  * @author kroko

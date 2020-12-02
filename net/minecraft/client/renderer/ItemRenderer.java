@@ -1,9 +1,9 @@
 package net.minecraft.client.renderer;
 
 import koks.Koks;
-import koks.module.impl.render.CustomItem;
-import koks.module.impl.render.FakeAutoBlock;
-import koks.module.impl.render.Swing;
+import koks.manager.module.impl.render.CustomItem;
+import koks.manager.module.impl.render.FakeAutoBlock;
+import koks.manager.module.impl.render.Swing;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;

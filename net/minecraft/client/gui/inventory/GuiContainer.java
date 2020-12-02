@@ -6,8 +6,8 @@ import java.io.IOException;
 import java.util.Set;
 
 import koks.Koks;
-import koks.module.ModuleManager;
-import koks.module.impl.combat.KillAura;
+import koks.manager.module.ModuleManager;
+import koks.manager.module.impl.combat.KillAura;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;

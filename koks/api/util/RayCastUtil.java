@@ -1,26 +1,12 @@
 package koks.api.util;
 
-import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
-import koks.Koks;
-import koks.event.impl.EventMouseOver;
-import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItemFrame;
-import net.minecraft.init.Blocks;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.*;
-import net.minecraft.world.World;
 import optifine.Reflector;
-import org.lwjgl.Sys;
 
 import java.util.List;
-import java.util.Random;
 
 /**
  * @author deleteboys | lmao | kroko
