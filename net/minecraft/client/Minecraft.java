@@ -1596,8 +1596,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
     public void runTick() throws IOException {
 
         if(theWorld != null) {
-            EventTick eventTick = new EventTick();
-            Koks.getKoks().eventManager.onEvent(eventTick);
+            new EventTick().onFire();
         }
 
         if (theWorld != null) {
@@ -1760,7 +1759,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
                     } else {
 
                         EventKeyPress eventKeyPress = new EventKeyPress(k);
-                        Koks.getKoks().eventManager.onEvent(eventKeyPress);
+                        eventKeyPress.onFire();
                         if (eventKeyPress.isCanceled()) return;
 
                         for (Module module : Koks.getKoks().moduleManager.getModules()) {
@@ -1907,8 +1906,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
                 this.displayGuiScreen(new GuiChat("/"));
             }
 
-            EventAttack eventAttack = new EventAttack();
-            Koks.getKoks().eventManager.onEvent(eventAttack);
+            new EventAttack().onFire();
 
             if (this.thePlayer.isUsingItem()) {
                 if (!this.gameSettings.keyBindUseItem.isKeyDown()) {

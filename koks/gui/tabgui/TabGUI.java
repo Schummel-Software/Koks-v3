@@ -1,7 +1,7 @@
 package koks.gui.tabgui;
 
 import koks.Koks;
-import koks.api.util.RenderUtil;
+import koks.api.interfaces.Wrapper;
 import koks.manager.event.impl.EventKeyPress;
 import koks.manager.module.Module;
 import net.minecraft.client.Minecraft;
@@ -14,7 +14,7 @@ import java.util.ArrayList;
  * @author deleteboys | lmao | kroko
  * @created on 14.09.2020 : 12:40
  */
-public class TabGUI {
+public class TabGUI implements Wrapper {
 
     private final ArrayList<DrawCategory> drawCategories = new ArrayList<>();
     private final Minecraft mc = Minecraft.getMinecraft();
@@ -32,7 +32,6 @@ public class TabGUI {
     }
 
     public void drawScreen(int x, int y, int width, int height) {
-        RenderUtil renderUtil = new RenderUtil();
         this.x = x;
         this.y = y;
         this.width = width;

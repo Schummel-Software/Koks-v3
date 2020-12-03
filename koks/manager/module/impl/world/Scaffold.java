@@ -120,7 +120,7 @@ public class Scaffold extends Module {
                 if (timeHelper.hasReached((long) delay.getCurrentValue()) && (ray != null && ray.getBlockPos().equals(blockPos) || !rayCast.isToggled())) {
                     BlockPos blockpos = mc.objectMouseOver.getBlockPos();
 
-                    if (getWorld().getBlockState(blockpos).getBlock().getMaterial() != Material.air) {
+                    if (blockpos != null && getWorld().getBlockState(blockPos) != null && getWorld().getBlockState(blockpos).getBlock().getMaterial() != Material.air) {
                         if (getPlayerController().onPlayerRightClick(getPlayer(), getWorld(), itemStack, blockpos, mc.objectMouseOver.sideHit, mc.objectMouseOver.hitVec)) {
                             getPlayer().motionX *= motion.getCurrentValue();
                             getPlayer().motionZ *= motion.getCurrentValue();

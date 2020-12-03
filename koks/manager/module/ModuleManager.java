@@ -85,6 +85,7 @@ public class ModuleManager {
         addModule(new GommeMode());
         addModule(new XRay());
         addModule(new TrueSight());
+        addModule(new Ambiance());
         addModule(new BedFucker());
         addModule(new Fullbright());
         addModule(new AntiVoid());

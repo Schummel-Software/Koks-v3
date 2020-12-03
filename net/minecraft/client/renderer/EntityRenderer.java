@@ -469,11 +469,11 @@ public class EntityRenderer implements IResourceManagerReloadListener {
                 d0 = d0;
             }
 
-            EventMouseOver event = new EventMouseOver(d0, flag);
-            Koks.getKoks().eventManager.onEvent(event);
-            d0 = event.getReach();
-            d1 = event.getReach();
-            flag = event.isDistanceCheck();
+            EventMouseOver eventMouseOver = new EventMouseOver(d0, flag);
+            eventMouseOver.onFire();
+            d0 = eventMouseOver.getReach();
+            d1 = eventMouseOver.getReach();
+            flag = eventMouseOver.isDistanceCheck();
 
             if (this.mc.objectMouseOver != null) {
                 d1 = this.mc.objectMouseOver.hitVec.distanceTo(vec3);
@@ -564,7 +564,7 @@ public class EntityRenderer implements IResourceManagerReloadListener {
         }
 
         EventFOV eventFOV = new EventFOV(this.fovModifierHand);
-        Koks.getKoks().eventManager.onEvent(eventFOV);
+        eventFOV.onFire();
         this.fovModifierHand = eventFOV.getFOV();
     }
 
@@ -640,7 +640,7 @@ public class EntityRenderer implements IResourceManagerReloadListener {
     private void hurtCameraEffect(float partialTicks) {
         if (this.mc.getRenderViewEntity() instanceof EntityLivingBase) {
             EventHurtCamera hurtCamera = new EventHurtCamera();
-            Koks.getKoks().eventManager.onEvent(hurtCamera);
+            hurtCamera.onFire();
             if(hurtCamera.isCanceled())return;
             EntityLivingBase entitylivingbase = (EntityLivingBase) this.mc.getRenderViewEntity();
             float f = (float) entitylivingbase.hurtTime - partialTicks;
@@ -669,9 +669,9 @@ public class EntityRenderer implements IResourceManagerReloadListener {
     private void setupViewBobbing(float partialTicks) {
         if (this.mc.getRenderViewEntity() instanceof EntityPlayer) {
 
-            EventBobbing bobbing = new EventBobbing(mc.thePlayer.distanceWalkedModified);
-            Koks.getKoks().eventManager.onEvent(bobbing);
-            mc.thePlayer.distanceWalkedModified = bobbing.getBobbing();
+            EventBobbing eventBobbing = new EventBobbing(mc.thePlayer.distanceWalkedModified);
+            eventBobbing.onFire();
+            mc.thePlayer.distanceWalkedModified = eventBobbing.getBobbing();
             EntityPlayer entityplayer = (EntityPlayer) this.mc.getRenderViewEntity();
             float f = entityplayer.distanceWalkedModified - entityplayer.prevDistanceWalkedModified;
             float f1 = -(entityplayer.distanceWalkedModified + f * partialTicks);
@@ -1681,8 +1681,7 @@ public class EntityRenderer implements IResourceManagerReloadListener {
             Reflector.callVoid(Reflector.ForgeHooksClient_dispatchRenderLast, new Object[]{renderglobal, Float.valueOf(partialTicks)});
         }
 
-        EventRender3D eventRender3D = new EventRender3D(partialTicks);
-        Koks.getKoks().eventManager.onEvent(eventRender3D);
+        new EventRender3D(partialTicks).onFire();
 
         this.mc.mcProfiler.endStartSection("hand");
         boolean flag2 = ReflectorForge.renderFirstPersonHand(this.mc.renderGlobal, partialTicks, pass);

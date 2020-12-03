@@ -144,9 +144,9 @@ public class NetworkManager extends SimpleChannelInboundHandler<Packet> {
     @Override
     protected void messageReceived(ChannelHandlerContext channelHandlerContext, Packet packet) throws Exception {
         if (this.channel.isOpen()) {
-            EventPacket event = new EventPacket(packet, EventPacket.Type.RECEIVE);
-            Koks.getKoks().eventManager.onEvent(event);
-            if (event.isCanceled()) return;
+            EventPacket eventPacket = new EventPacket(packet, EventPacket.Type.RECEIVE);
+            eventPacket.onFire();
+            if (eventPacket.isCanceled()) return;
             try {
                 packet.processPacket(this.packetListener);
             } catch (ThreadQuickExitException var4) {

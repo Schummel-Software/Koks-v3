@@ -592,7 +592,7 @@ public abstract class Entity implements ICommandSender {
             double d2 = this.posZ;
 
             EventWeb eventWeb = new EventWeb(this.isInWeb);
-            Koks.getKoks().eventManager.onEvent(eventWeb);
+            eventWeb.onFire();
 
             if (eventWeb.isWeb()) {
                 this.isInWeb = false;
@@ -610,7 +610,7 @@ public abstract class Entity implements ICommandSender {
             boolean flag = this.onGround && this.isSneaking() && this instanceof EntityPlayer;
 
             EventSafeWalk eventSafeWalk = new EventSafeWalk(flag);
-            Koks.getKoks().eventManager.onEvent(eventSafeWalk);
+            eventSafeWalk.onFire();
 
             if (eventSafeWalk.isSafe()) {
                 double d6;
@@ -1097,7 +1097,7 @@ public abstract class Entity implements ICommandSender {
      */
     public void moveFlying(float strafe, float forward, float friction) {
         EventMoveFlying eventMoveFlying = new EventMoveFlying(this.rotationYaw, strafe, forward, friction);
-        Koks.getKoks().eventManager.onEvent(eventMoveFlying);
+        eventMoveFlying.onFire();
         if (eventMoveFlying.isCanceled()) return;
         strafe = eventMoveFlying.getStrafe();
         forward = eventMoveFlying.getForward();

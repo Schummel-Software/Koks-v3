@@ -50,6 +50,7 @@ public class V3_0_0 extends Changelog{
         added("AntiAim");
         added("SystemTray");
         added("ItemTP (WIP)");
+        added("Ambiance");
         added("DoubleJump");
         fixed("ChestStealer");
         fixed("Intave Scaffold");

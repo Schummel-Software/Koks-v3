@@ -15,6 +15,7 @@ import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemSword;
+import net.minecraft.network.INetHandler;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.*;
 import net.minecraft.network.play.server.*;
@@ -115,15 +116,11 @@ public class KillAura extends Module {
         }
 
         if (event instanceof EventPacket) {
-            Packet packet = ((EventPacket) event).getPacket();
+            Packet<? extends INetHandler> packet = ((EventPacket) event).getPacket();
             if (((EventPacket) event).getType() == EventPacket.Type.RECEIVE) {
                 if (packet instanceof S29PacketSoundEffect) {
                     S29PacketSoundEffect soundEffect = (S29PacketSoundEffect) packet;
-                    for (Entity entity : getWorld().loadedEntityList) {
-                        if (entity != getPlayer() && entity.getDistance(soundEffect.getX(), soundEffect.getY(), soundEffect.getZ()) <= 1) {
-                            madeSound.add(entity);
-                        }
-                    }
+                    getWorld().loadedEntityList.stream().filter(entity -> entity != getPlayer() && entity.getDistance(soundEffect.getX(), soundEffect.getY(), soundEffect.getZ()) <= 1).forEach(entity -> madeSound.add(entity));
                 }
             }
         }

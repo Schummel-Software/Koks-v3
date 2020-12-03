@@ -49,6 +49,12 @@ public class ConfigSystem {
     }
 
     public void loadConfigOnline(String config) {
+
+        for(Module module : Koks.getKoks().moduleManager.getModules()) {
+            if(module.getCategory() != Module.Category.RENDER && module.getCategory() != Module.Category.GUI)
+                module.setToggled(false);
+        }
+
         try {
             URL url = new URL(config);
             Scanner scanner = new Scanner(url.openStream(), "UTF-8");
@@ -92,6 +98,12 @@ public class ConfigSystem {
     }
 
     public void loadConfig(String config) {
+
+        for(Module module : Koks.getKoks().moduleManager.getModules()) {
+            if(module.getCategory() != Module.Category.RENDER && module.getCategory() != Module.Category.GUI)
+                module.setToggled(false);
+        }
+
         try {
             BufferedReader bufferedReader = new BufferedReader(new FileReader(Minecraft.getMinecraft().mcDataDir + "/Koks/Configs/" + config + ".koks"));
             String line;

@@ -23,6 +23,7 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 
 import koks.Koks;
+import koks.api.interfaces.Wrapper;
 import koks.api.util.ESPUtil;
 import koks.manager.event.impl.EventOutline;
 import koks.manager.module.impl.render.*;
@@ -118,7 +119,7 @@ import shadersmod.client.Shaders;
 import shadersmod.client.ShadersRender;
 import shadersmod.client.ShadowUtils;
 
-public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListener {
+public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListener, Wrapper {
     private static final Logger logger = LogManager.getLogger();
     private static final ResourceLocation locationMoonPhasesPng = new ResourceLocation("textures/environment/moon_phases.png");
     private static final ResourceLocation locationSunPng = new ResourceLocation("textures/environment/sun.png");
@@ -330,7 +331,7 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
 
     protected boolean isRenderEntityOutlines() {
         EventOutline eventOutline = new EventOutline(!Config.isFastRender() && !Config.isShaders() && !Config.isAntialiasing() ? this.entityOutlineFramebuffer != null && this.entityOutlineShader != null && this.mc.thePlayer != null && this.mc.thePlayer.isSpectator() && this.mc.gameSettings.keyBindSpectatorOutlines.isKeyDown() : false);
-        Koks.getKoks().eventManager.onEvent(eventOutline);
+        eventOutline.onFire();
         return eventOutline.isOutline();
     }
 
@@ -2275,7 +2276,6 @@ public class RenderGlobal implements IWorldAccess, IResourceManagerReloadListene
             float f = 0.002F;
             BlockPos blockpos = movingObjectPositionIn.getBlockPos();
             Block block = this.theWorld.getBlockState(blockpos).getBlock();
-            ESPUtil espUtil = new ESPUtil();
 
             if (block.getMaterial() != Material.air && this.theWorld.getWorldBorder().contains(blockpos)) {
                 block.setBlockBoundsBasedOnState(this.theWorld, blockpos);

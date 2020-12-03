@@ -169,8 +169,7 @@ public class GuiIngame extends Gui {
             this.renderTooltip(scaledresolution, partialTicks);
         }
 
-        EventRender2D eventRender2D = new EventRender2D();
-        Koks.getKoks().eventManager.onEvent(eventRender2D);
+        new EventRender2D().onFire();
 
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         this.mc.getTextureManager().bindTexture(icons);

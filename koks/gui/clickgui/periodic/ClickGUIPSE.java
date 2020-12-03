@@ -8,6 +8,7 @@ import koks.gui.clickgui.periodic.settings.DrawComboBox;
 import koks.gui.clickgui.periodic.settings.DrawType;
 import koks.manager.module.Module;
 import koks.api.interfaces.Wrapper;
+import koks.manager.module.impl.gui.ClickGui;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
@@ -66,6 +67,9 @@ public class ClickGUIPSE extends GuiScreen implements Wrapper {
 
         drawRect(0, 0, sr.getScaledWidth(), sr.getScaledHeight(), new Color(16, 16, 16).getRGB());
 
+        ClickGui clickGui = (ClickGui) Koks.getKoks().moduleManager.getModule(ClickGui.class);
+        if (clickGui.fakeCredits.isToggled())
+            drawString(fontRendererObj, "§aby " + clickGui.fakeAuthor.getTyped(), sr.getScaledWidth() - fontRendererObj.getStringWidth("by " + clickGui.fakeAuthor.getTyped()), sr.getScaledHeight() - fontRendererObj.FONT_HEIGHT, -1);
 
         for (int i = 0; i < drawModules.size(); i++) {
             Module module = drawModules.get(i).module;

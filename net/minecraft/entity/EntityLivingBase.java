@@ -1569,7 +1569,7 @@ public abstract class EntityLivingBase extends Entity
         this.motionY = (double)this.getJumpUpwardsMotion();
 
         EventJump eventJump = new EventJump(this.rotationYaw);
-        Koks.getKoks().eventManager.onEvent(eventJump);
+        eventJump.onFire();
 
         if (this.isPotionActive(Potion.jump))
         {

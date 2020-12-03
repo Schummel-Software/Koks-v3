@@ -296,7 +296,7 @@ public class PlayerControllerMP {
      */
     public float getBlockReachDistance() {
         EventBlockReach blockReach = new EventBlockReach(this.currentGameType.isCreative() ? 5.0F : 4.5F);
-        Koks.getKoks().eventManager.onEvent(blockReach);
+        blockReach.onFire();
         return blockReach.getReach();
     }
 

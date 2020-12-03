@@ -3,6 +3,7 @@ package koks.gui.clickgui.normal;
 import koks.Koks;
 import koks.manager.cl.Role;
 import koks.manager.module.Module;
+import koks.manager.module.impl.gui.ClickGui;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
@@ -36,7 +37,9 @@ public class ClickGUI extends GuiScreen {
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         ScaledResolution scaledResolution = new ScaledResolution(mc);
-        drawString(fontRendererObj, "§aby Herokot", scaledResolution.getScaledWidth() - fontRendererObj.getStringWidth("by Herokot"), scaledResolution.getScaledHeight() - fontRendererObj.FONT_HEIGHT, -1);
+        ClickGui clickGui = (ClickGui) Koks.getKoks().moduleManager.getModule(ClickGui.class);
+        if (clickGui.fakeCredits.isToggled())
+            drawString(fontRendererObj, "§aby " + clickGui.fakeAuthor.getTyped(), scaledResolution.getScaledWidth() - fontRendererObj.getStringWidth("by " + clickGui.fakeAuthor.getTyped()), scaledResolution.getScaledHeight() - fontRendererObj.FONT_HEIGHT, -1);
         for (DrawCategory drawCategory : drawCategories) {
             if (!drawCategory.category.equals(Module.Category.DEBUG) || Koks.getKoks().CLManager.getUser().getRole().equals(Role.Developer))
                 drawCategory.drawScreen(mouseX, mouseY, partialTicks);

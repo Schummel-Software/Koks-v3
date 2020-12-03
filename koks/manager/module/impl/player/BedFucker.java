@@ -33,6 +33,8 @@ public class BedFucker extends Module {
     public Setting range = new Setting("Range", 10, 5, 30, true, this);
     public Setting delay = new Setting("Delay", 10, 0, 300, true, this);
 
+    //TODO: ThroughWalls einstellung, Intelligent machen und nur abbauen wenn er ihn anguckt
+
     public BedFucker() {
         blocks.put(Blocks.bed, DestroyType.BREAK);
         blocks.put(Blocks.dragon_egg, DestroyType.CLICK);

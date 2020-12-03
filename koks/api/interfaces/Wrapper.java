@@ -17,7 +17,7 @@ public interface Wrapper {
     RenderUtil renderUtil = new RenderUtil();
     RotationUtil rotationUtil = new RotationUtil();
     InventoryUtil inventoryUtil = new InventoryUtil();
-    NumbersUtil numberUtil = new NumbersUtil();
+    NumbersUtil numbersUtil = new NumbersUtil();
     CustomUtil customUtil = new CustomUtil();
 
 }

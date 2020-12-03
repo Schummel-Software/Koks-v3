@@ -1,6 +1,8 @@
 package koks.api.util;
 
 import god.buddy.aot.BCompiler;
+import koks.api.interfaces.Methods;
+import koks.api.interfaces.Wrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.BlockPos;
@@ -11,10 +13,7 @@ import net.minecraft.util.Vec3;
  * @author deleteboys | lmao | kroko
  * @created on 13.09.2020 : 17:14
  */
-public class RotationUtil {
-
-    public final Minecraft mc = Minecraft.getMinecraft();
-    public final RandomUtil randomUtil = new RandomUtil();
+public class RotationUtil implements Methods, Wrapper {
 
     @BCompiler(aot = BCompiler.AOT.NORMAL)
     public Vec3 getBestVector(Entity entity, float accuracy, float precision) {

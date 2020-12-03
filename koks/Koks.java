@@ -1,23 +1,22 @@
 package koks;
 
+import koks.api.interfaces.Wrapper;
 import koks.api.util.DiscordUtil;
 import koks.api.util.TrayUtil;
 import koks.manager.changelog.ChangelogManager;
 import koks.manager.command.CommandManager;
 import koks.manager.config.ConfigSystem;
-import koks.manager.event.EventManager;
 import koks.manager.file.FileManager;
 import koks.manager.friends.FriendManager;
 import koks.gui.clickgui.periodic.ClickGUIPSE;
 import koks.gui.tabgui.TabGUI;
 import koks.gui.clickgui.normal.ClickGUI;
-import koks.module.ModuleManager;
 import koks.api.settings.SettingsManager;
 
 import java.awt.*;
 
 import koks.manager.cl.CLManager;
-import koks.wrapper.Wrapper;
+import koks.manager.module.ModuleManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.main.Main;
 import org.lwjgl.opengl.Display;
@@ -57,7 +56,6 @@ public class Koks implements Wrapper {
     public volatile Minecraft mc = Minecraft.getMinecraft();
 
     public ModuleManager moduleManager;
-    public EventManager eventManager;
     public CommandManager commandManager;
     public FileManager fileManager;
     public TabGUI tabGUI;
@@ -77,7 +75,6 @@ public class Koks implements Wrapper {
         logger.log("Client Launcher Name: " + Main.clName);
         settingsManager = new SettingsManager();
         moduleManager = new ModuleManager();
-        eventManager = new EventManager();
         commandManager = new CommandManager();
         clickGUI = new ClickGUI();
         clickGUIPE = new ClickGUIPSE();
