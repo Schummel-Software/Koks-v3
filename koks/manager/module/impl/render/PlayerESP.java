@@ -31,7 +31,8 @@ public class PlayerESP extends Module {
             return;
 
         if(event instanceof EventOutline) {
-            ((EventOutline) event).setOutline(espMode.getCurrentMode().equalsIgnoreCase("Shader"));
+            if (espMode.getCurrentMode().equalsIgnoreCase("Shader"))
+                ((EventOutline) event).setOutline(true);
         }
 
         if (event instanceof EventUpdate) {

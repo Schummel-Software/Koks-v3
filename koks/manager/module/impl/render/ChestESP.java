@@ -32,8 +32,9 @@ public class ChestESP extends Module {
         if (!this.isToggled())
             return;
 
-        if(event instanceof EventOutline) {
-            ((EventOutline) event).setOutline(espMode.getCurrentMode().equalsIgnoreCase("Shader"));
+        if (event instanceof EventOutline) {
+            if (espMode.getCurrentMode().equalsIgnoreCase("Shader"))
+                ((EventOutline) event).setOutline(true);
         }
 
         if (event instanceof EventUpdate) {
@@ -57,8 +58,8 @@ public class ChestESP extends Module {
                     if (espMode.getCurrentMode().equalsIgnoreCase("Cylinder")) {
 
                         GL11.glPushMatrix();
-                        GL11.glTranslated(x + 0.5,y + 0.9,z + 0.5);
-                        GL11.glRotated(90,1,0,0);
+                        GL11.glTranslated(x + 0.5, y + 0.9, z + 0.5);
+                        GL11.glRotated(90, 1, 0, 0);
                         GL11.glDisable(GL11.GL_TEXTURE_2D);
                         GL11.glEnable(GL11.GL_BLEND);
                         GL11.glDisable(GL11.GL_DEPTH_TEST);
@@ -71,12 +72,12 @@ public class ChestESP extends Module {
 //
                         cylinder.setDrawStyle(GLU.GLU_LINE);
                         cylinder.setOrientation(GLU.GLU_INSIDE);
-                        cylinder.draw(0.62f,0.62f,0.9f,8,1);
+                        cylinder.draw(0.62f, 0.62f, 0.9f, 8, 1);
 
                         renderUtil.setColor(renderUtil.getAlphaColor(Koks.getKoks().clientColor, 150));
                         cylinder.setDrawStyle(GLU.GLU_FILL);
                         cylinder.setOrientation(GLU.GLU_INSIDE);
-                        cylinder.draw(0.62f,0.65f,0.9f,8,1);
+                        cylinder.draw(0.62f, 0.65f, 0.9f, 8, 1);
 
                         GL11.glDisable(GL11.GL_BLEND);
                         GL11.glEnable(GL11.GL_TEXTURE_2D);
