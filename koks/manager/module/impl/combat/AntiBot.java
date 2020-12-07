@@ -41,6 +41,8 @@ public class AntiBot extends Module {
 
     @Override
     public void onEvent(Event event) {
+        if(!this.isToggled())
+            return;
         if (event instanceof EventPacket) {
             Packet<? extends INetHandler> packet = ((EventPacket) event).getPacket();
             if (((EventPacket) event).getType() == EventPacket.Type.RECEIVE) {
@@ -79,7 +81,9 @@ public class AntiBot extends Module {
 
     @Override
     public void onDisable() {
-
+        hitBeforeEntity.clear();
+        madeSound.clear();
+        swingEntity.clear();
     }
 
     public boolean isBot(EntityLivingBase entity) {
