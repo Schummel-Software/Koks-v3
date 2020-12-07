@@ -3,6 +3,10 @@ package koks.api.settings;
 import koks.Koks;
 import koks.manager.module.Module;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+
 /**
  * @author deleteboys | lmao | kroko
  * @created on 13.09.2020 : 00:25
@@ -53,6 +57,7 @@ public class Setting {
 
     // ComboBox
     public Setting(String name, String[] modes, String currentMode, Module module) {
+        Arrays.sort(modes);
         this.name = name;
         this.modes = modes;
         this.currentMode = currentMode;

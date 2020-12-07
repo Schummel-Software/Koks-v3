@@ -13,20 +13,36 @@ import java.net.InetSocketAddress;
 import java.net.PasswordAuthentication;
 import java.net.Proxy;
 import java.net.Proxy.Type;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
+import god.buddy.aot.BCompiler;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import joptsimple.OptionSpec;
 import koks.Koks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Session;
+import sun.util.calendar.BaseCalendar;
+import sun.util.calendar.CalendarSystem;
+import sun.util.calendar.CalendarUtils;
 
 public class Main {
 
     public static String clName;
 
+
+    @BCompiler(aot = BCompiler.AOT.AGGRESSIVE)
+    public static boolean isInvalid() {
+        return new Date().after(getDate(2021, 2, 1)) || !ManagementFactory.getRuntimeMXBean().getInputArguments().toString().contains("-Xverify");
+    }
+
     public static void main(String[] p_main_0_) {
+
+        if(isInvalid())
+            return;
+
         System.setProperty("java.net.preferIPv4Stack", "true");
         OptionParser optionparser = new OptionParser();
         optionparser.allowsUnrecognizedOptions();
@@ -89,12 +105,7 @@ public class Main {
         boolean flag2 = optionset.has("demo");
         RuntimeMXBean runtimeMXBean = ManagementFactory.getRuntimeMXBean();
         List<String> jvmArgs = runtimeMXBean.getInputArguments();
-        boolean noverify = false;
-        for(String argument : jvmArgs) {
-            String[] args = argument.split(":");
-            if(args[0].equalsIgnoreCase("-noverify") || args[0].equalsIgnoreCase("-Xverify"))
-                noverify = true;
-        }
+
         String s3 = (String) optionset.valueOf(optionspec12);
         Gson gson = (new GsonBuilder()).registerTypeAdapter(PropertyMap.class, new Serializer()).create();
         PropertyMap propertymap = (PropertyMap) gson.fromJson((String) optionset.valueOf(optionspec15), PropertyMap.class);
@@ -107,17 +118,24 @@ public class Main {
         String s6 = (String) optionset.valueOf(optionspec);
         Integer integer = (Integer) optionset.valueOf(optionspec1);
         clName = (String) optionspec9.value(optionset);
-        if(noverify) {
-            Session session = new Session((String) optionspec9.value(optionset), s4, (String) optionspec11.value(optionset), (String) optionspec18.value(optionset));
-            GameConfiguration gameconfiguration = new GameConfiguration(new GameConfiguration.UserInformation(session, propertymap, propertymap1, proxy), new GameConfiguration.DisplayInformation(i, j, flag, flag1), new GameConfiguration.FolderInformation(file1, file3, file2, s5), new GameConfiguration.GameInformation(flag2, s3), new GameConfiguration.ServerInformation(s6, integer.intValue()));
-            Runtime.getRuntime().addShutdownHook(new Thread("Client Shutdown Thread") {
-                public void run() {
-                    Minecraft.stopIntegratedServer();
-                }
-            });
-            Thread.currentThread().setName("Client thread");
-            (new Minecraft(gameconfiguration)).run();
-        }
+
+        Session session = new Session((String) optionspec9.value(optionset), s4, (String) optionspec11.value(optionset), (String) optionspec18.value(optionset));
+        GameConfiguration gameconfiguration = new GameConfiguration(new GameConfiguration.UserInformation(session, propertymap, propertymap1, proxy), new GameConfiguration.DisplayInformation(i, j, flag, flag1), new GameConfiguration.FolderInformation(file1, file3, file2, s5), new GameConfiguration.GameInformation(flag2, s3), new GameConfiguration.ServerInformation(s6, integer.intValue()));
+        Runtime.getRuntime().addShutdownHook(new Thread("Client Shutdown Thread") {
+            public void run() {
+                Minecraft.stopIntegratedServer();
+            }
+        });
+        Thread.currentThread().setName("Client thread");
+        (new Minecraft(gameconfiguration)).run();
+
+    }
+
+    public static Date getDate(int year, int month, int day) {
+        BaseCalendar.Date date = CalendarSystem.getGregorianCalendar().newCalendarDate(null);
+        date.setNormalizedDate(year, month, day);
+        return new Date(CalendarSystem.getGregorianCalendar().getTime(date));
+
     }
 
     private static boolean isNullOrEmpty(String str) {

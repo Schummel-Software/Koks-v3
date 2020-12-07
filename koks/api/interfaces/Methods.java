@@ -119,34 +119,6 @@ public interface Methods {
         mc.thePlayer.motionZ = z * push;
     }
 
-    default void debugEntity(Entity finalEntity) {
-        System.out.println("----DEBUG----");
-        System.out.println("Name: " + finalEntity.getName());
-        System.out.println("ExistTime: " + finalEntity.ticksExisted);
-        System.out.println("Eye Height: " + finalEntity.getEyeHeight());
-        System.out.println("DistanceToPlayer: " + finalEntity.getDistanceToEntity(getPlayer()));
-        System.out.println("CanBePushed: " + finalEntity.canBePushed());
-        System.out.println("canAttackWithItem: " + finalEntity.canAttackWithItem());
-        System.out.println("EntityID: " + finalEntity.getEntityId());
-        System.out.println("LookVec: " + finalEntity.getLookVec());
-        System.out.println("UUID: " + finalEntity.getUniqueID());
-        if (finalEntity.getInventory() != null)
-            System.out.println("Inventory Length: " + finalEntity.getInventory().length);
-        System.out.println("Position: " + finalEntity.getPosition());
-        System.out.println("onGround: " + finalEntity.onGround);
-        System.out.println("hurtResistantTime: " + finalEntity.hurtResistantTime);
-        System.out.println("MotionY: " + finalEntity.motionY);
-        System.out.println("isDead: " + finalEntity.isDead);
-        if (finalEntity instanceof EntityPlayer) {
-            System.out.println("Health: " + ((EntityPlayer) finalEntity).getHealth());
-            System.out.println("MaxHealth: " + ((EntityPlayer) finalEntity).getMaxHealth());
-            System.out.println("Team: " + ((EntityPlayer) finalEntity).getTeam());
-            System.out.println("AIMoveSpeed: " + ((EntityPlayer) finalEntity).getAIMoveSpeed());
-            System.out.println("BedLocation: " + ((EntityPlayer) finalEntity).getBedLocation());
-        }
-        System.out.println("MaxFallHeight: " + finalEntity.getMaxFallHeight());
-    }
-
     default void setPosition(double x, double y, double z, boolean ground) {
         getPlayer().setPosition(x, y, z);
         getPlayer().sendQueue.addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(x, y, z, ground));

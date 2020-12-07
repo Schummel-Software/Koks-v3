@@ -1,5 +1,6 @@
 package koks.manager.module.impl.render;
 
+import koks.Koks;
 import koks.api.settings.Setting;
 import koks.manager.event.Event;
 import koks.manager.event.impl.EventOutline;

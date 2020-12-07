@@ -50,9 +50,11 @@ public class ConfigSystem {
 
     public void loadConfigOnline(String config) {
 
-        for(Module module : Koks.getKoks().moduleManager.getModules()) {
-            if(module.getCategory() != Module.Category.RENDER && module.getCategory() != Module.Category.GUI)
+        for (Module module : Koks.getKoks().moduleManager.getModules()) {
+            if (module.getCategory() != Module.Category.RENDER && module.getCategory() != Module.Category.GUI) {
                 module.setToggled(false);
+                module.setBypass(false);
+            }
         }
 
         try {
@@ -99,8 +101,8 @@ public class ConfigSystem {
 
     public void loadConfig(String config) {
 
-        for(Module module : Koks.getKoks().moduleManager.getModules()) {
-            if(module.getCategory() != Module.Category.RENDER && module.getCategory() != Module.Category.GUI)
+        for (Module module : Koks.getKoks().moduleManager.getModules()) {
+            if (module.getCategory() != Module.Category.RENDER && module.getCategory() != Module.Category.GUI)
                 module.setToggled(false);
         }
 

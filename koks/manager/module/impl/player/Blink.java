@@ -1,12 +1,16 @@
 package koks.manager.module.impl.player;
 
+import koks.Koks;
 import koks.manager.event.Event;
+import koks.manager.event.impl.EventMotion;
 import koks.manager.event.impl.EventPacket;
+import koks.manager.event.impl.EventRender3D;
 import koks.manager.module.Module;
 import koks.manager.module.ModuleInfo;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.C00PacketKeepAlive;
+import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 
@@ -28,16 +32,17 @@ public class Blink extends Module {
         if (!this.isToggled())
             return;
 
-        if(event instanceof EventPacket) {
-            if(((EventPacket) event).getType() == EventPacket.Type.SEND) {
+        if (event instanceof EventPacket) {
+            if (((EventPacket) event).getType() == EventPacket.Type.SEND) {
                 Packet<?> packet = ((EventPacket) event).getPacket();
-                if(!(packet instanceof C00PacketKeepAlive)) {
+                if (!(packet instanceof C00PacketKeepAlive)) {
                     packets.add(packet);
                     event.setCanceled(true);
                 }
             }
         }
     }
+
 
     EntityOtherPlayerMP fakeEntity;
 

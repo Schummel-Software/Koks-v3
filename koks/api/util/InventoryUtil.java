@@ -31,7 +31,7 @@ public class InventoryUtil {
         for(int i = 0; i < inventory.getSizeInventory(); i++) {
             if(inventory.getStackInSlot(i) != null) {
                 ItemStack stack = inventory.getStackInSlot(i);
-                if(stack.getItem().equals(item) && stack.stackSize != 64)
+                if(stack.getItem().equals(item) && stack.stackSize != stack.getMaxStackSize())
                     size++;
             }
         }

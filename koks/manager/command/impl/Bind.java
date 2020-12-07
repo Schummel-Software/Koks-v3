@@ -22,7 +22,7 @@ public class Bind extends Command {
             if (module != null) {
                 module.setKey(Keyboard.getKeyIndex(args[1].toUpperCase()));
                 Koks.getKoks().fileManager.writeFile(Binds.class);
-                sendmsg("Binded §e" + module.getName() + " to Key " + args[1], true);
+                sendmsg("Bound §e" + module.getName() + " §7to Key §e" + args[1], true);
             } else {
                 sendError("Module", args[0] + " doesn't exist!");
             }

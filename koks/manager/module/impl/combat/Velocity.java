@@ -8,6 +8,7 @@ import koks.manager.event.impl.EventUpdate;
 import koks.manager.event.impl.EventVelocity;
 import koks.manager.module.Module;
 import koks.manager.module.ModuleInfo;
+import net.minecraft.network.INetHandler;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S12PacketEntityVelocity;
 import net.minecraft.network.play.server.S27PacketExplosion;
@@ -53,7 +54,7 @@ public class Velocity extends Module {
                 break;
             case "Cancel":
                 if (event instanceof EventPacket && ((EventPacket) event).getType() == EventPacket.Type.RECEIVE) {
-                    Packet packet = ((EventPacket) event).getPacket();
+                    Packet<? extends INetHandler> packet = ((EventPacket) event).getPacket();
                     if (packet instanceof S12PacketEntityVelocity || packet instanceof S27PacketExplosion) {
                         event.setCanceled(true);
                     }

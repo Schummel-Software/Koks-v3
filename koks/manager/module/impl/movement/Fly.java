@@ -7,7 +7,9 @@ import koks.manager.event.Event;
 import koks.manager.event.impl.EventUpdate;
 import koks.manager.module.Module;
 import koks.manager.module.ModuleInfo;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.play.client.*;
+import net.minecraft.world.WorldSettings;
 
 /**
  * @author avox | lmao | kroko
@@ -21,7 +23,7 @@ public class Fly extends Module {
     public Setting aac1910motion = new Setting("AAC1.9.10-MotionY", 0.8F, 0F, 1.1F, false, this);
 
     public Setting aac3312boost = new Setting("AAC3.3.12-Boost", 9F, 1F, 10F, true, this);
-    public Setting mode = new Setting("Mode", new String[]{"AAC3.3.12", "AAC1.9.10", "Redesky", "MCCentral", "CubeCraft", "Verus", "Bizzi", "Vanilla"}, "AAC3.3.12", this);
+    public Setting mode = new Setting("Mode", new String[]{"AAC3.3.12", "AAC1.9.10", "HypixelJump", "Redesky", "MCCentral", "CubeCraft", "Verus", "Bizzi", "Vanilla"}, "AAC3.3.12", this);
     public TimeHelper damageTime = new TimeHelper();
 
     @BCompiler(aot = BCompiler.AOT.AGGRESSIVE)
@@ -37,7 +39,7 @@ public class Fly extends Module {
         }
         switch (mode.getCurrentMode()) {
             case "Vanilla":
-                if(event instanceof EventUpdate) {
+                if (event instanceof EventUpdate) {
                     getPlayer().capabilities.isFlying = true;
                     getPlayer().capabilities.allowFlying = true;
                 }
@@ -60,6 +62,18 @@ public class Fly extends Module {
                         }
 
                     }
+                }
+                break;
+            case "HypixelJump":
+                if (event instanceof EventUpdate) {
+                    if (getPlayer().fallDistance > 3.5) {
+                        sendPacket(new C03PacketPlayer(true));
+                        getPlayer().onGround = true;
+                        getPlayer().fallDistance = 0;
+                        getPlayer().motionY = 0.64;
+                        movementUtil.setSpeed(0.45, true);
+                    }
+
                 }
                 break;
             case "AAC1.9.10":
@@ -125,11 +139,7 @@ public class Fly extends Module {
                 break;
             case "CubeCraft":
                 if (event instanceof EventUpdate) {
-
-                    getPlayer().motionY = 0;
-                    getPlayer().motionY = randomUtil.getRandomDouble(-0.01, 0.01);
-
-                    /* mc.thePlayer.motionY = 0.0;
+                    mc.thePlayer.motionY = 0.0;
                     mc.timer.timerSpeed = 0.3F;
                     if (mc.thePlayer.ticksExisted % 2 == 0) {
                         mc.thePlayer.motionY -= 0.01;
@@ -144,7 +154,7 @@ public class Fly extends Module {
                     if (timeHelper.hasReached(800)) {
                         movementUtil.setSpeed(0.4, false);
                         timeHelper.reset();
-                    }*/
+                    }
                 }
                 break;
         }
@@ -169,6 +179,11 @@ public class Fly extends Module {
         mc.timer.timerSpeed = 1.0F;
         mc.thePlayer.motionX = 0;
         mc.thePlayer.motionZ = 0;
+
+        if (getPlayerController().getCurrentGameType() != WorldSettings.GameType.CREATIVE && getPlayerController().getCurrentGameType() != WorldSettings.GameType.SPECTATOR) {
+            getPlayer().capabilities.isFlying = false;
+            getPlayer().capabilities.allowFlying = false;
+        }
     }
 
 }

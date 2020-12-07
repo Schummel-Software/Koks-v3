@@ -1,6 +1,7 @@
 package koks.manager.module;
 
 import koks.Koks;
+import koks.api.interfaces.Debug;
 import koks.api.interfaces.Methods;
 import koks.api.util.*;
 import koks.manager.event.Event;
@@ -15,7 +16,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author deleteboys | lmao | kroko
  * @created on 12.09.2020 : 20:36
  */
-public abstract class Module implements Methods, Wrapper {
+public abstract class Module implements Methods, Wrapper, Debug {
 
     private String name, description, info = "";
     private int key;

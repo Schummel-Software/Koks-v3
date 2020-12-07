@@ -7,6 +7,7 @@ import koks.manager.module.impl.gui.*;
 import koks.manager.module.impl.movement.*;
 import koks.manager.module.impl.player.*;
 import koks.manager.module.impl.render.*;
+import koks.manager.module.impl.utilities.Disabler;
 import koks.manager.module.impl.world.*;
 import koks.manager.cl.Role;
 
@@ -96,6 +97,7 @@ public class ModuleManager {
         addModule(new AimBot());
         addModule(new Scaffold());
         addModule(new Blink());
+        addModule(new Disabler());
 
         if(Koks.getKoks().CLManager.getUser().getRole() != Role.Developer) {
             modules.removeIf(module -> module.getCategory().equals(Module.Category.DEBUG));

@@ -14,7 +14,6 @@ public class Friends extends Module {
 
     @Override
     public void onEvent(Event event) {
-
     }
 
     @Override

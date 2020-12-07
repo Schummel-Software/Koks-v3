@@ -22,7 +22,9 @@ import net.minecraft.network.play.server.*;
 import net.minecraft.util.*;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Random;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * @author deleteboys | lmao | kroko ist der beste coder
@@ -120,7 +122,13 @@ public class KillAura extends Module {
             if (((EventPacket) event).getType() == EventPacket.Type.RECEIVE) {
                 if (packet instanceof S29PacketSoundEffect) {
                     S29PacketSoundEffect soundEffect = (S29PacketSoundEffect) packet;
-                    getWorld().loadedEntityList.stream().filter(entity -> entity != getPlayer() && entity.getDistance(soundEffect.getX(), soundEffect.getY(), soundEffect.getZ()) <= 1).forEach(entity -> madeSound.add(entity));
+
+                    for (Entity entity : getWorld().loadedEntityList) {
+                        if (entity != getPlayer() && entity.getDistance(soundEffect.getX(), soundEffect.getY(), soundEffect.getZ()) <= 0.8) {
+                            madeSound.add(entity);
+                        }
+
+                    }
                 }
             }
         }

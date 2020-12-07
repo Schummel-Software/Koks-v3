@@ -2,11 +2,18 @@ package koks.manager.module.impl.debug;
 
 import god.buddy.aot.BCompiler;
 import koks.manager.event.Event;
+import koks.manager.event.impl.EventPacket;
 import koks.manager.event.impl.EventTick;
 import koks.manager.event.impl.EventUpdate;
 import koks.manager.module.Module;
 import koks.api.settings.Setting;
 import koks.manager.module.ModuleInfo;
+import net.minecraft.entity.player.PlayerCapabilities;
+import net.minecraft.network.INetHandler;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.client.C0FPacketConfirmTransaction;
+import net.minecraft.network.play.client.C13PacketPlayerAbilities;
+import net.minecraft.network.play.server.S32PacketConfirmTransaction;
 
 /**
  * @author deleteboys | lmao | kroko
@@ -28,7 +35,19 @@ public class Debug extends Module {
         if (!this.isToggled())
             return;
 
+        //C0FPacketConfirmTransaction
+
         if (event instanceof EventUpdate) {
+
+            /*PlayerCapabilities capabilities = new PlayerCapabilities();
+            capabilities.isCreativeMode = false;
+            capabilities.isFlying = true;
+            capabilities.disableDamage = false;
+            capabilities.allowFlying = true;
+            capabilities.allowEdit = true;
+
+            sendPacket(new C13PacketPlayerAbilities(capabilities));*/
+
 
            /* if(timeHelper.hasReached(3000)) {
                 getPlayer().sendChatMessage(randomUtil.getRandomInt(0, 1000) + " - Join Now - MasterOf13FPS - https://discord.gg/ZH5QdUqVwN");

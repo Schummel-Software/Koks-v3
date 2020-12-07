@@ -11,7 +11,6 @@ import koks.manager.changelog.ChangelogInfo;
 @ChangelogInfo(version = "3.0.0")
 public class V3_0_0 extends Changelog{
 
-
     @Override
     public void changes() {
         added("ShaderESP to all ESP's");
@@ -52,6 +51,9 @@ public class V3_0_0 extends Changelog{
         added("ItemTP (WIP)");
         added("Ambiance");
         added("DoubleJump");
+        added("Hypixel AntiVoid");
+        added("Hypixel Jump Fly");
+        added("Disabler");
         fixed("ChestStealer");
         fixed("Intave Scaffold");
         fixed("Block Bug");

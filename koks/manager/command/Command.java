@@ -1,5 +1,6 @@
 package koks.manager.command;
 
+import koks.api.interfaces.Debug;
 import koks.api.interfaces.Methods;
 import koks.api.interfaces.Wrapper;
 
@@ -7,7 +8,7 @@ import koks.api.interfaces.Wrapper;
  * @author deleteboys | lmao | kroko
  * @created on 12.09.2020 : 20:47
  */
-public abstract class Command implements Methods, Wrapper {
+public abstract class Command implements Methods, Wrapper, Debug {
 
     public String name,alias;
 

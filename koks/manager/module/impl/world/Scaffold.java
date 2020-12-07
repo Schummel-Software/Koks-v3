@@ -18,6 +18,7 @@ import net.minecraft.network.play.client.C09PacketHeldItemChange;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.Vec3;
 
 import java.util.Arrays;
 import java.util.List;
@@ -36,6 +37,7 @@ public class Scaffold extends Module {
     public Setting diagonal = new Setting("Diagonal", false, this);
     public Setting silent = new Setting("Silent", true, this);
     public Setting noSwing = new Setting("NoSwing", false, this);
+    public Setting smartPlacement = new Setting("Smart Placement", true, this);
 
     //MOVEMENT
     public Setting safeWalk = new Setting("Safewalk", false, this);
@@ -87,12 +89,13 @@ public class Scaffold extends Module {
             BlockPos blockPos = getBlockPosToPlaceOn(new BlockPos(getX(), getY() - 1, getZ()));
             ItemStack itemStack = getPlayer().getCurrentEquippedItem();
 
-            if (silent.isToggled() && itemStack == null || (itemStack != null && !(itemStack.getItem() instanceof ItemBlock))) {
+            if (silent.isToggled() && (itemStack == null || (itemStack != null && !(itemStack.getItem() instanceof ItemBlock)))) {
                 for (int i = 0; i < 9; i++) {
                     ItemStack item = getPlayer().inventory.getStackInSlot(i);
                     if (item != null && item.getItem() instanceof ItemBlock) {
                         if (!blackList.contains(Block.getBlockFromItem(item.getItem()))) {
                             itemStack = item;
+                            lastSlot = getPlayer().inventory.currentItem;
                             sendPacket(new C09PacketHeldItemChange(i));
                         }
                     }
@@ -117,11 +120,10 @@ public class Scaffold extends Module {
                     curPitch = getPlayer().onGround || staticPitch.isToggled() ? pitch.getCurrentValue() : rotation[1];
                 }
                 MovingObjectPosition ray = rayCastUtil.rayCastedBlock(curYaw, curPitch);
-                if (timeHelper.hasReached((long) delay.getCurrentValue()) && (ray != null && ray.getBlockPos().equals(blockPos) || !rayCast.isToggled())) {
+                if (timeHelper.hasReached((long) delay.getCurrentValue()) && ((ray != null && ray.getBlockPos().equals(blockPos)) || !rayCast.isToggled())) {
                     BlockPos blockpos = mc.objectMouseOver.getBlockPos();
-
                     if (blockpos != null && getWorld().getBlockState(blockPos) != null && getWorld().getBlockState(blockpos).getBlock().getMaterial() != Material.air) {
-                        if (getPlayerController().onPlayerRightClick(getPlayer(), getWorld(), itemStack, blockpos, mc.objectMouseOver.sideHit, mc.objectMouseOver.hitVec)) {
+                        if (smartPlacement.isToggled() ? (getPlayerController().onPlayerRightClick(getPlayer(), getWorld(), itemStack, blockpos, mc.objectMouseOver.sideHit, mc.objectMouseOver.hitVec)) : mc.playerController.onPlayerRightClick(mc.thePlayer, mc.theWorld, itemStack, blockPos, enumFacing, new Vec3(blockPos.getX() + randomUtil.getRandomDouble(0, 0.7), blockPos.getY() + randomUtil.getRandomDouble(0, 0.7), blockPos.getZ() + randomUtil.getRandomDouble(0, 0.7)))) {
                             getPlayer().motionX *= motion.getCurrentValue();
                             getPlayer().motionZ *= motion.getCurrentValue();
                             sneakCount++;
@@ -146,6 +148,7 @@ public class Scaffold extends Module {
     @Override
     public void onEnable() {
         sneakCount = 0;
+        lastSlot = -1;
         curYaw = getPlayer().rotationYaw;
         curPitch = getPlayer().rotationPitch;
         lastSlot = getPlayer().inventory.currentItem;
