@@ -5,7 +5,6 @@ import java.awt.datatransfer.DataFlavor;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-
 import koks.Koks;
 import koks.api.util.GLSLSandboxShader;
 import koks.api.util.*;
