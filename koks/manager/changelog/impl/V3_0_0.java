@@ -54,6 +54,7 @@ public class V3_0_0 extends Changelog{
         added("Hypixel AntiVoid");
         added("Hypixel Jump Fly");
         added("Disabler");
+        added("Moved all KillAura Bot settings to AntiBot");
         fixed("ChestStealer");
         fixed("Intave Scaffold");
         fixed("Block Bug");

@@ -46,8 +46,11 @@ public class KillAura extends Module {
     public Setting animals = new Setting("Animals", false, this);
     public Setting villager = new Setting("Villager", false, this);
     public Setting mobs = new Setting("Mobs", false, this);
+    public Setting ignoreInvisible = new Setting("Ignore Invisible", true, this);
+    public Setting ignoreDeath = new Setting("IgnoreDeath", true, this);
 
     // BASIC ATTACK SETTINGS
+    public Setting throughWalls = new Setting("Through Walls", false, this);
     public Setting noInvAttack = new Setting("NoInvAttack", false, this);
     public Setting eatAttack = new Setting("Attack While Eating", true, this);
     public Setting preAimAttack = new Setting("PreAimAttack", false, this);
@@ -75,17 +78,6 @@ public class KillAura extends Module {
     public Setting noSwingType = new Setting("NoSwingType", new String[]{"Vanilla", "Packet", "ServerSide"}, "Packet", this);
     public Setting crackSize = new Setting("Crack Size", 5.0F, 1.0F, 10.0F, true, this);
 
-    // ANTI BOT SETTINGS
-    public Setting healthNaNCheck = new Setting("Health NaN Check", false, this);
-    public Setting groundCheck = new Setting("GroundCheck", false, this);
-    public Setting nameCheck = new Setting("Name Check", true, this);
-    public Setting ignoreInvisible = new Setting("Ignore Invisible", true, this);
-    public Setting ignoreDeath = new Setting("IgnoreDeath", true, this);
-    public Setting throughWalls = new Setting("Through Walls", false, this);
-    public Setting soundCheck = new Setting("Sound Check", false, this);
-
-    //TODO: HitBefore, TablistCheck
-
     public ArrayList<Entity> entities = new ArrayList<>();
     public Entity finalEntity;
 
@@ -94,8 +86,6 @@ public class KillAura extends Module {
     public int switchCounter;
     public float yaw, pitch, curYaw, curPitch;
     public boolean failing;
-
-    public ArrayList<Entity> madeSound = new ArrayList();
 
     @Override
     public void onEvent(Event event) {
@@ -115,22 +105,6 @@ public class KillAura extends Module {
             }
 
             manageEntities();
-        }
-
-        if (event instanceof EventPacket) {
-            Packet<? extends INetHandler> packet = ((EventPacket) event).getPacket();
-            if (((EventPacket) event).getType() == EventPacket.Type.RECEIVE) {
-                if (packet instanceof S29PacketSoundEffect) {
-                    S29PacketSoundEffect soundEffect = (S29PacketSoundEffect) packet;
-
-                    for (Entity entity : getWorld().loadedEntityList) {
-                        if (entity != getPlayer() && entity.getDistance(soundEffect.getX(), soundEffect.getY(), soundEffect.getZ()) <= 0.8) {
-                            madeSound.add(entity);
-                        }
-
-                    }
-                }
-            }
         }
 
         if (event instanceof EventWalk) {
@@ -369,13 +343,8 @@ public class KillAura extends Module {
         if (entity.isDead)
             return false;
         EntityLivingBase entityLivingBase = (EntityLivingBase) entity;
-        if (healthNaNCheck.isToggled() && !Float.isNaN(entityLivingBase.getHealth()))
-            return false;
-        if (groundCheck.isToggled() && entity.onGround && getWorld().getBlockState(entity.getPosition().add(0, -0.05, 0)).getBlock() == Blocks.air)
-            return false;
-        if (soundCheck.isToggled() && !madeSound.contains(entity))
-            return false;
-        if (nameCheck.isToggled() && entity instanceof EntityPlayer && !checkedName(entity))
+        AntiBot antiBot = (AntiBot) Koks.getKoks().moduleManager.getModule(AntiBot.class);
+        if(antiBot.isToggled() && antiBot.isBot(entityLivingBase))
             return false;
         if (ignoreInvisible.isToggled() && entity.isInvisible())
             return false;
@@ -386,12 +355,6 @@ public class KillAura extends Module {
         if (((EntityLivingBase) entity).isOnSameTeam(getPlayer()) && Koks.getKoks().moduleManager.getModule(Teams.class).isToggled())
             return false;
         if (Koks.getKoks().friendManager.isFriend(entity.getName()) && Koks.getKoks().moduleManager.getModule(Friends.class).isToggled())
-            return false;
-        return true;
-    }
-
-    public boolean checkedName(Entity entity) {
-        if (!validEntityName(entity))
             return false;
         return true;
     }

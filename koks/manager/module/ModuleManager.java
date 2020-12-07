@@ -91,6 +91,7 @@ public class ModuleManager {
         addModule(new Fullbright());
         addModule(new AntiVoid());
         addModule(new ShopSaver());
+        addModule(new AntiBot());
         addModule(new FastBreak());
         addModule(new IceSpeed());
         addModule(new NoPitchLimit());

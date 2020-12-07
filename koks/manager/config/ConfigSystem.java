@@ -102,8 +102,10 @@ public class ConfigSystem {
     public void loadConfig(String config) {
 
         for (Module module : Koks.getKoks().moduleManager.getModules()) {
-            if (module.getCategory() != Module.Category.RENDER && module.getCategory() != Module.Category.GUI)
+            if (module.getCategory() != Module.Category.RENDER && module.getCategory() != Module.Category.GUI) {
                 module.setToggled(false);
+                module.setBypass(false);
+            }
         }
 
         try {
