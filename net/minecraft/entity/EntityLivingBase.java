@@ -70,6 +70,8 @@ public abstract class EntityLivingBase extends Entity
     public int swingProgressInt;
     public int arrowHitTimer;
 
+    public float serverMaxHealth;
+
     /**
      * The amount of time remaining this entity should act 'hurt'. (Visual appearance of red tint)
      */
@@ -1310,6 +1312,10 @@ public abstract class EntityLivingBase extends Entity
         return (float)this.getEntityAttribute(SharedMonsterAttributes.maxHealth).getAttributeValue();
     }
 
+    public float getServerMaxHealth() {
+        return serverMaxHealth;
+    }
+
     /**
      * counts the amount of arrows stuck in the entity. getting hit by arrows increases this, used in rendering
      */
@@ -1786,6 +1792,12 @@ public abstract class EntityLivingBase extends Entity
      */
     public void onUpdate()
     {
+        if(serverMaxHealth < getMaxHealth())
+            serverMaxHealth = getMaxHealth();
+
+        if(getHealth() > serverMaxHealth)
+            serverMaxHealth = getHealth();
+
         super.onUpdate();
 
         if (!this.worldObj.isRemote)
