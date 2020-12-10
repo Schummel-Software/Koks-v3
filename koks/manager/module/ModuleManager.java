@@ -43,6 +43,7 @@ public class ModuleManager {
         addModule(new NoFall());
         addModule(new NoSlowdown());
         addModule(new Speed());
+        addModule(new TargetHUD());
         addModule(new Sprint());
         addModule(new StairSpeed());
         addModule(new Step());
