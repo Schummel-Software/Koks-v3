@@ -157,6 +157,8 @@ public abstract class Entity implements ICommandSender {
      */
     public boolean isDead;
 
+    public float friction;
+
     /**
      * How wide this entity is considered to be
      */
@@ -1103,6 +1105,8 @@ public abstract class Entity implements ICommandSender {
         forward = eventMoveFlying.getForward();
         friction = eventMoveFlying.getFriction();
 
+        this.friction = eventMoveFlying.getFriction();
+
         float f = strafe * strafe + forward * forward;
 
         if (f >= 1.0E-4F) {
@@ -1112,7 +1116,7 @@ public abstract class Entity implements ICommandSender {
                 f = 1.0F;
             }
 
-            f = friction / f;
+            f = this.friction / f;
             strafe = strafe * f;
             forward = forward * f;
             float yaw = this instanceof EntityPlayerSP ? eventMoveFlying.getYaw() : this.rotationYaw;
@@ -1121,6 +1125,7 @@ public abstract class Entity implements ICommandSender {
 
             this.motionX += (double) (strafe * f2 - forward * f1);
             this.motionZ += (double) (forward * f2 + strafe * f1);
+
         }
     }
 

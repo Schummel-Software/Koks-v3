@@ -17,6 +17,7 @@ import net.minecraft.network.play.server.S0BPacketAnimation;
 import net.minecraft.network.play.server.S29PacketSoundEffect;
 
 import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * @author Kroko, Phantom, Deleteboys, Dirt
@@ -39,6 +40,8 @@ public class AntiBot extends Module {
     public ArrayList<Entity> swingEntity = new ArrayList<>();
     public ArrayList<Entity> hitBeforeEntity = new ArrayList<>();
 
+    public CopyOnWriteArrayList<Entity> copyEntities = new CopyOnWriteArrayList<>();
+
     @Override
     public void onEvent(Event event) {
         if(!this.isToggled())
@@ -49,12 +52,14 @@ public class AntiBot extends Module {
                 if (packet instanceof S29PacketSoundEffect) {
                     S29PacketSoundEffect soundEffect = (S29PacketSoundEffect) packet;
 
-                    for (Entity entity : getWorld().loadedEntityList) {
-                        if (entity != getPlayer() && entity.getDistance(soundEffect.getX(), soundEffect.getY(), soundEffect.getZ()) <= 0.8) {
-                            madeSound.add(entity);
-                        }
+                    copyEntities.addAll(getWorld().loadedEntityList);
 
-                    }
+                    copyEntities.forEach(entity -> {
+                        if(entity != getPlayer() && entity.getDistance(soundEffect.getX(), soundEffect.getY(), soundEffect.getZ()) <= 0.8)
+                            madeSound.add(entity);
+                    });
+
+                    copyEntities.clear();
                 }
                 if (packet instanceof S0BPacketAnimation) {
                     S0BPacketAnimation s0BPacketAnimation = (S0BPacketAnimation) packet;

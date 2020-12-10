@@ -17,7 +17,7 @@ public class InventoryUtil {
     private Minecraft mc = Minecraft.getMinecraft();
 
     public boolean hasAir() {
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < 9; i++) {
             ItemStack itemStack = mc.thePlayer.inventory.getStackInSlot(i);
             if (itemStack == null) {
                 return true;
@@ -39,7 +39,7 @@ public class InventoryUtil {
     }
 
     public int getAir() {
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < 9; i++) {
             ItemStack itemStack = mc.thePlayer.inventory.getStackInSlot(i);
             if (itemStack == null) {
                 return i;

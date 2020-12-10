@@ -92,6 +92,7 @@ public class ModuleManager {
         addModule(new AntiVoid());
         addModule(new ShopSaver());
         addModule(new AntiBot());
+        addModule(new DamageIndicator());
         addModule(new FastBreak());
         addModule(new IceSpeed());
         addModule(new NoPitchLimit());

@@ -28,7 +28,9 @@ public interface Debug {
         System.out.println("Position: " + finalEntity.getPosition());
         System.out.println("onGround: " + finalEntity.onGround);
         System.out.println("hurtResistantTime: " + finalEntity.hurtResistantTime);
+        System.out.println("MotionX: " + finalEntity.motionX);
         System.out.println("MotionY: " + finalEntity.motionY);
+        System.out.println("MotionZ: " + finalEntity.motionZ);
         System.out.println("isDead: " + finalEntity.isDead);
         if (finalEntity instanceof EntityPlayer) {
             System.out.println("Health: " + ((EntityPlayer) finalEntity).getHealth());

@@ -3,6 +3,7 @@ package koks.manager.module.impl.movement;
 import god.buddy.aot.BCompiler;
 import koks.api.settings.Setting;
 import koks.manager.event.Event;
+import koks.manager.event.impl.EventMoveWithHeading;
 import koks.manager.event.impl.EventUpdate;
 import koks.manager.module.Module;
 import koks.manager.module.ModuleInfo;
@@ -12,6 +13,7 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
+import net.minecraft.world.gen.structure.StructureVillagePieces;
 
 /**
  * @author avox | lmao | kroko
@@ -21,7 +23,7 @@ import net.minecraft.util.Vec3;
 @ModuleInfo(name = "Speed", description = "In germany we call it rasant", category = Module.Category.MOVEMENT)
 public class Speed extends Module {
 
-    public Setting mode = new Setting("Mode", new String[]{"Intave", "MCCentral", "Mineplex", "Mineplex FAST", "Mineplex Ground", "AAC4", "AAC3.3.12", "NCPBhop", "NCPGround", "Tired", "Legit"}, "Intave", this);
+    public Setting mode = new Setting("Mode", new String[]{"Intave", "Hypixel", "MCCentral", "Mineplex", "Mineplex FAST", "Mineplex Ground", "AAC4", "AAC3.3.12", "NCPBhop", "NCPGround", "Tired", "Legit"}, "Intave", this);
 
     public float mineplexMotion, mineplexSpeed;
 
@@ -36,33 +38,55 @@ public class Speed extends Module {
         if (!this.isToggled())
             return;
 
+        float expand = 0.08F;
+
+        if (event instanceof EventMoveWithHeading) {
+            switch (mode.getCurrentMode()) {
+                case "Hypixel":
+                    //STANDART 0.91F
+                    ((EventMoveWithHeading) event).setF4(1.2F);
+                    break;
+            }
+        }
+
         if (event instanceof EventUpdate) {
             setInfo(mode.getCurrentMode());
             switch (mode.getCurrentMode()) {
                 case "Legit":
-                    if (getPlayer().onGround)
+                    if(getPlayer().onGround)
                         getPlayer().jump();
+                    getPlayer().setSprinting(true);
+                    break;
+                case "Hypixel":
+                    if (getPlayer().onGround) {
+                        getPlayer().motionY = 0.42F;
+                        float f = getPlayer().rotationYaw * 0.017453292F;
+                        getPlayer().motionX -= (double) (MathHelper.sin(f) * (0.2F + expand));
+                        getPlayer().motionZ += (double) (MathHelper.cos(f) * (0.2F + expand));
+                    }
+
+
                     getPlayer().setSprinting(true);
                     break;
                 case "NCPBhop":
                     getPlayer().setSprinting(true);
                     movementUtil.setSpeed(0.26, true);
-                    if(movementUtil.isMoving()) {
+                    if (movementUtil.isMoving()) {
                         if (getPlayer().onGround) {
                             getPlayer().jump();
-                        }else{
+                        } else {
                         }
                     }
                     break;
                 case "NCPGround":
-                    if(getPlayer().onGround) {
+                    if (getPlayer().onGround) {
                         getPlayer().motionY = randomUtil.getRandomFloat(0.01F, 0.02F);
                         getPlayer().addExhaustion(0.8F);
-                    }else{
-                        float f = movementUtil.getDirection(getPlayer().rotationYaw) * 0.017453292F;
+                    } else {
+                        float dir = movementUtil.getDirection(getPlayer().rotationYaw) * 0.017453292F;
                         float speed = randomUtil.getRandomFloat(0.05F, 0.057F);
-                        getPlayer().motionX -= (double)(MathHelper.sin(f) * speed);
-                        getPlayer().motionZ += (double)(MathHelper.cos(f) * speed);
+                        getPlayer().motionX -= (double) (MathHelper.sin(dir) * speed);
+                        getPlayer().motionZ += (double) (MathHelper.cos(dir) * speed);
                     }
                     break;
                 case "AAC4":
@@ -151,12 +175,12 @@ public class Speed extends Module {
                             sendPacket(new C09PacketHeldItemChange(slot));
                             getPlayerController().onPlayerRightClick(mc.thePlayer, mc.theWorld, null, blockPos, EnumFacing.UP, new Vec3(vec.xCoord * 0.4F, vec.yCoord * 0.4F, vec.zCoord * 0.4F));
                             float targetSpeed = 0.8F;
-                            if(targetSpeed > mineplexSpeed)
+                            if (targetSpeed > mineplexSpeed)
                                 mineplexSpeed += targetSpeed / 8;
-                            if(mineplexSpeed >= targetSpeed)
+                            if (mineplexSpeed >= targetSpeed)
                                 mineplexSpeed = targetSpeed;
                             movementUtil.setSpeed(mineplexSpeed, true);
-                        }else{
+                        } else {
                             mineplexSpeed = 0;
                         }
                     } else {
@@ -202,7 +226,7 @@ public class Speed extends Module {
         mc.timer.timerSpeed = 1.0F;
         mc.thePlayer.speedInAir = 0.02F;
         mineplexSpeed = 0;
-        if(mode.getCurrentMode().equalsIgnoreCase("Mineplex Ground"))
+        if (mode.getCurrentMode().equalsIgnoreCase("Mineplex Ground"))
             sendPacket(new C09PacketHeldItemChange(curSlot));
     }
 

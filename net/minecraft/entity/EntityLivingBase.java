@@ -12,6 +12,7 @@ import java.util.UUID;
 
 import koks.Koks;
 import koks.manager.event.impl.EventJump;
+import koks.manager.event.impl.EventMoveWithHeading;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -1622,6 +1623,11 @@ public abstract class EntityLivingBase extends Entity
                     {
                         f4 = this.worldObj.getBlockState(new BlockPos(MathHelper.floor_double(this.posX), MathHelper.floor_double(this.getEntityBoundingBox().minY) - 1, MathHelper.floor_double(this.posZ))).getBlock().slipperiness * 0.91F;
                     }
+
+                    EventMoveWithHeading eventMoveWithHeading = new EventMoveWithHeading(f4);
+                    eventMoveWithHeading.onFire();
+
+                    f4 = eventMoveWithHeading.getF4();
 
                     float f = 0.16277136F / (f4 * f4 * f4);
                     float f5;

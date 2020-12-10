@@ -4,8 +4,10 @@ import koks.Koks;
 import koks.api.util.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.client.multiplayer.WorldClient;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -24,6 +26,8 @@ public interface Methods {
     Console console = new Console();
 
     Minecraft mc = Minecraft.getMinecraft();
+
+    FontRenderer fr = mc.fontRendererObj;
 
     default EntityPlayerSP getPlayer() {
         return mc.thePlayer;
@@ -63,6 +67,10 @@ public interface Methods {
 
     default double getZ() {
         return getPlayer().posZ;
+    }
+
+    default RenderManager getRenderManager() {
+        return mc.getRenderManager();
     }
 
     default Timer getTimer() {
