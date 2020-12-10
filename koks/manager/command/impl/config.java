@@ -38,7 +38,7 @@ public class config extends Command {
                 String cfgname = "";
                 for (int i = 1; i < args.length; i++)
                     cfgname += args[i] + " ";
-                config.loadConfigOnline("https://raw.githubusercontent.com/Koks-Team/Koks-Configs/main/" + cfgname.substring(0, cfgname.length() - 1)+ ".koks");
+                config.loadConfigOnline("https://raw.githubusercontent.com/Koks-Team/Koks-Configs/main/" + (cfgname.substring(0, cfgname.length() - 1)).toLowerCase()+ ".koks");
                 sendmsg("§aLoaded §e" + cfgname.substring(0, cfgname.length() - 1), true);
             }
         }

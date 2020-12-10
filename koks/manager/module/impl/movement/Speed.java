@@ -3,6 +3,7 @@ package koks.manager.module.impl.movement;
 import god.buddy.aot.BCompiler;
 import koks.api.settings.Setting;
 import koks.manager.event.Event;
+import koks.manager.event.impl.EventMotion;
 import koks.manager.event.impl.EventMoveWithHeading;
 import koks.manager.event.impl.EventUpdate;
 import koks.manager.module.Module;
@@ -44,8 +45,22 @@ public class Speed extends Module {
             switch (mode.getCurrentMode()) {
                 case "Hypixel":
                     //STANDART 0.91F
-                    ((EventMoveWithHeading) event).setF4(1.2F);
+                    ((EventMoveWithHeading) event).setF4(0.932f);
                     break;
+            }
+        }
+
+        if (event instanceof EventMotion) {
+            if(((EventMotion) event).getType().equals(EventMotion.Type.POST)) {
+                if (getPlayer().onGround && isMoving()) {
+                    getPlayer().jump();
+                    getPlayer().motionY = 0.41;
+                    float f = getPlayer().rotationYaw * 0.017453292F;
+                    getPlayer().motionX -= (double) (MathHelper.sin(f) * 0.065F);
+                    getPlayer().motionZ += (double) (MathHelper.cos(f) * 0.065F);
+                } else {
+                    getPlayer().motionY -= 0.004f;
+                }
             }
         }
 
@@ -53,19 +68,8 @@ public class Speed extends Module {
             setInfo(mode.getCurrentMode());
             switch (mode.getCurrentMode()) {
                 case "Legit":
-                    if(getPlayer().onGround)
+                    if (getPlayer().onGround && isMoving())
                         getPlayer().jump();
-                    getPlayer().setSprinting(true);
-                    break;
-                case "Hypixel":
-                    if (getPlayer().onGround) {
-                        getPlayer().motionY = 0.42F;
-                        float f = getPlayer().rotationYaw * 0.017453292F;
-                        getPlayer().motionX -= (double) (MathHelper.sin(f) * (0.2F + expand));
-                        getPlayer().motionZ += (double) (MathHelper.cos(f) * (0.2F + expand));
-                    }
-
-
                     getPlayer().setSprinting(true);
                     break;
                 case "NCPBhop":

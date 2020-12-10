@@ -1624,11 +1624,6 @@ public abstract class EntityLivingBase extends Entity
                         f4 = this.worldObj.getBlockState(new BlockPos(MathHelper.floor_double(this.posX), MathHelper.floor_double(this.getEntityBoundingBox().minY) - 1, MathHelper.floor_double(this.posZ))).getBlock().slipperiness * 0.91F;
                     }
 
-                    EventMoveWithHeading eventMoveWithHeading = new EventMoveWithHeading(f4);
-                    eventMoveWithHeading.onFire();
-
-                    f4 = eventMoveWithHeading.getF4();
-
                     float f = 0.16277136F / (f4 * f4 * f4);
                     float f5;
 
@@ -1642,7 +1637,9 @@ public abstract class EntityLivingBase extends Entity
                     }
 
                     this.moveFlying(strafe, forward, f5);
-                    f4 = 0.91F;
+                    EventMoveWithHeading eventMoveWithHeading = new EventMoveWithHeading(f4);
+                    eventMoveWithHeading.onFire();
+                    f4 = eventMoveWithHeading.getF4();
 
                     if (this.onGround)
                     {

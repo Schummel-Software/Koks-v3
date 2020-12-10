@@ -1,6 +1,7 @@
 package koks.api.settings;
 
 import koks.Koks;
+import koks.manager.event.impl.EventSettingUpdate;
 import koks.manager.module.Module;
 
 import java.util.ArrayList;
@@ -113,6 +114,7 @@ public class Setting {
     }
 
     public void setCurrentValue(float currentValue) {
+        new EventSettingUpdate(this).onFire();
         this.currentValue = currentValue;
     }
 

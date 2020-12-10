@@ -1,6 +1,5 @@
 package koks.manager.module.impl.render;
 
-import com.sun.deploy.security.SelectableSecurityManager;
 import koks.api.settings.Setting;
 import koks.manager.event.Event;
 import koks.manager.event.impl.EventRender3D;

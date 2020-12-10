@@ -132,7 +132,7 @@ public class KillAura extends Module {
             }
         }
 
-        if (event instanceof EventAttack) {
+        if (event instanceof EventUpdate) {
 
             if (finalEntity != null) {
 
@@ -148,8 +148,9 @@ public class KillAura extends Module {
                     hasenRange = 0;
                 }
 
-                if (canBlock() && autoBlock.isToggled() && blockMode.getCurrentMode().equalsIgnoreCase("Full"))
+                if (canBlock() && autoBlock.isToggled() && blockMode.getCurrentMode().equalsIgnoreCase("Full")) {
                     mc.playerController.sendUseItem(mc.thePlayer, mc.theWorld, mc.thePlayer.getHeldItem());
+                }
 
                 long cps = randomUtil.getRandomLong((long)this.cps.getCurrentValue() - 1, (long)this.cps.getCurrentValue() + 1);
                 cps = cps > 10 ? cps + 5 : cps;
