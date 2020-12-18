@@ -19,7 +19,7 @@ import net.minecraft.network.play.server.S32PacketConfirmTransaction;
 public class Disabler extends Module {
 
 
-    public Setting mode = new Setting("Mode", new String[] {"Hypixel"}, "Hypixel", this);
+    public Setting mode = new Setting("Mode", new String[]{"Hypixel"}, "Hypixel", this);
 
     @Override
     public void onEvent(Event event) {

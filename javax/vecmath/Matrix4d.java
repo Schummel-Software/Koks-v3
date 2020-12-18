@@ -3583,7 +3583,7 @@ public class Matrix4d implements java.io.Serializable, Cloneable {
      *
      * @return a clone of this instance.
      * @exception OutOfMemoryError if there is not enough memory.
-     * @see java.lang.Cloneable
+     * @see Cloneable
      * @since vecmath 1.3
      */
     @Override

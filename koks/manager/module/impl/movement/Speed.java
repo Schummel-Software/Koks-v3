@@ -39,8 +39,6 @@ public class Speed extends Module {
         if (!this.isToggled())
             return;
 
-        float expand = 0.08F;
-
         if (event instanceof EventMoveWithHeading) {
             switch (mode.getCurrentMode()) {
                 case "Hypixel":

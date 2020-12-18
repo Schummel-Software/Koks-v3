@@ -634,7 +634,7 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback, Wrapper 
                     event = "§2§lEaster";
                 else if (calendar.get(Calendar.DAY_OF_MONTH) == 4 && calendar.get(Calendar.MONTH) == Calendar.MAY)
                     event = "§6§lSTAR WARS §eDay";
-                else if (calendar.get(Calendar.DAY_OF_MONTH) == 12 && calendar.get(Calendar.MONTH) == Calendar.DECEMBER) {
+                else if (calendar.get(Calendar.DAY_OF_MONTH) == 24 && calendar.get(Calendar.MONTH) == Calendar.DECEMBER) {
                     type = "§cMerry";
                     event = "§f§lChristmas";
                 } else if (calendar.get(Calendar.DAY_OF_MONTH) == 1 && calendar.get(Calendar.MONTH) == Calendar.JANUARY)

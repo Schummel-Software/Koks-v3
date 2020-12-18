@@ -160,16 +160,6 @@ public class Scaffold extends Module {
             sendPacket(new C09PacketHeldItemChange(lastSlot));
     }
 
-    public boolean isNearAir(Entity entity, double expand) {
-        BlockPos blockPos = new BlockPos(Math.round(entity.posX), entity.posY - 1, Math.round(entity.posZ));
-        BlockPos blockPos1 = blockPos.add(expand, 0, 0);
-        BlockPos blockPos2 = blockPos.add(-expand, 0, 0);
-        BlockPos blockPos3 = blockPos.add(0, 0, expand);
-        BlockPos blockPos4 = blockPos.add(0, 0, -expand);
-        return getWorld().getBlockState(blockPos).getBlock() == Blocks.air || getWorld().getBlockState(blockPos1).getBlock() == Blocks.air || getWorld().getBlockState(blockPos2).getBlock() == Blocks.air || getWorld().getBlockState(blockPos3).getBlock() == Blocks.air
-                || getWorld().getBlockState(blockPos4).getBlock() == Blocks.air;
-    }
-
     @BCompiler(aot = BCompiler.AOT.AGGRESSIVE)
     private BlockPos getBlockPosToPlaceOn(BlockPos pos) {
         BlockPos blockPos1 = pos.add(-1, 0, 0);

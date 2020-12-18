@@ -1923,6 +1923,7 @@ public abstract class EntityLivingBase extends Entity
             this.prevRotationYawHead += 360.0F;
         }
 
+
         this.worldObj.theProfiler.endSection();
         this.movedDistance += f2;
     }
