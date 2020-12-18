@@ -39,7 +39,7 @@ public class config extends Command {
                 for (int i = 1; i < args.length; i++)
                     cfgname += args[i] + " ";
                 System.out.println(((cfgname.substring(0, cfgname.length() - 1)).toLowerCase()));
-                config.loadConfigOnline("https://github.com/Koks-Team/Koks-Configs/blob/v3/" + ((cfgname.substring(0, cfgname.length() - 1)).toLowerCase()) + ".koks");
+                config.loadConfigOnline("https://raw.githubusercontent.com/Koks-Team/Koks-Configs/v3/" + ((cfgname.substring(0, cfgname.length() - 1)).toLowerCase()) + ".koks");
                 sendmsg("§aLoaded §e" + cfgname.substring(0, cfgname.length() - 1), true);
             }
         }
