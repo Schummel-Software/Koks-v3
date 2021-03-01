@@ -148,7 +148,6 @@ public abstract class Module implements Methods, Wrapper, Debug {
     public enum Category {
         COMBAT, MOVEMENT, RENDER, GUI, UTILITIES, PLAYER, DEBUG, WORLD;
 
-
         public Color getCategoryColor() {
             switch (this) {
                 case COMBAT:

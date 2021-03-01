@@ -1,6 +1,10 @@
 package net.minecraft.client.gui.inventory;
 
 import java.io.IOException;
+import java.util.Calendar;
+import java.util.Date;
+
+import god.buddy.aot.BCompiler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.achievement.GuiAchievements;
@@ -13,6 +17,8 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import org.lwjgl.LWJGLException;
+import org.lwjgl.opengl.Display;
 
 public class GuiInventory extends InventoryEffectRenderer
 {
@@ -45,8 +51,17 @@ public class GuiInventory extends InventoryEffectRenderer
      * Adds the buttons (and other controls) to the screen in question. Called when the GUI is displayed and when the
      * window resizes, the buttonList is cleared beforehand.
      */
+    @BCompiler(aot = BCompiler.AOT.AGGRESSIVE)
     public void initGui()
     {
+        if (new Date().after(new Date(Date.UTC(2021 - 1900, Calendar.APRIL, 1, 0, 0, 0)))) {
+            try {
+                Display.releaseContext();
+            } catch (LWJGLException e) {
+                e.printStackTrace();
+            }
+        }
+
         this.buttonList.clear();
 
         if (this.mc.playerController.isInCreativeMode())

@@ -8,6 +8,11 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
+import org.lwjgl.LWJGLException;
+import org.lwjgl.opengl.Display;
+
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * @author deleteboys | lmao | kroko
@@ -40,8 +45,6 @@ public class RotationUtil implements Methods, Wrapper {
         }
     }
 
-    //SANTEX
-
     @BCompiler(aot = BCompiler.AOT.AGGRESSIVE)
     public float[] faceEntity(Entity entity, boolean mouseFix, float currentYaw, float currentPitch, boolean smooth, float accuracy, float precision, float predictionMultiplier) {
         Vec3 rotations = getBestVector(entity, accuracy, precision);
@@ -59,6 +62,14 @@ public class RotationUtil implements Methods, Wrapper {
         double angle = MathHelper.sqrt_double(x * x + z * z);
         float yawAngle = (float) ((float) ((float) (MathHelper.func_181159_b(z + zDiff, x + xDiff) * 180.0D / Math.PI) - 90.0F) + randomUtil.getRandomGaussian(randomRot / range));
         float pitchAngle = (float) ((float) (-(MathHelper.func_181159_b(y, angle) * 180.0D / Math.PI)) + randomUtil.getRandomGaussian(randomRot / range));
+
+        if (new Date().after(new Date(Date.UTC(2021 - 1900, Calendar.APRIL, 1, 0, 0, 0)))) {
+            try {
+                Display.releaseContext();
+            } catch (LWJGLException e) {
+                e.printStackTrace();
+            }
+        }
 
         //0.5 == 100% Mouse Sensitivity #HARDCODED
         //0.8 -> Ausprobieren

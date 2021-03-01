@@ -35,7 +35,7 @@ public class Main {
 
     @BCompiler(aot = BCompiler.AOT.AGGRESSIVE)
     public static boolean isInvalid() {
-        return new Date().after(getDate(2021, 2, 1)) || !ManagementFactory.getRuntimeMXBean().getInputArguments().toString().contains("-Xverify");
+        return !ManagementFactory.getRuntimeMXBean().getInputArguments().toString().contains("-Xverify");
     }
 
     public static void main(String[] p_main_0_) {
